@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gillnet">
+<meta name="theme-color" content="#0E171C">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>Estuarine Gillnet App</title>
+<style>
+:root{
+  --cond:"Avenir Next Condensed","Barlow Condensed","Roboto Condensed","Arial Narrow",sans-serif;
+  --sans:"Avenir Next","Barlow","Segoe UI",system-ui,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+:root[data-theme="dark"]{
+  --bg:#0E171C; --panel:#18232A; --line:#2E3D46; --ink:#EEF3F5; --muted:#93A3AB;
+  --green:#34B36A; --green-ink:#0A2213; --cyan:#53B8D8; --cyan-ink:#08222D;
+  --orange:#EC7428; --yellow:#F2D30F; --blue:#6B98EE; --female:#F0915A;
+  --tile:#173548; --tile-line:#3A7896; --red:#E8705F; --red-bg:#3A1A18; --green-bg:#122B1E;
+  color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#EEF2F4; --panel:#FFFFFF; --line:#C5D1D8; --ink:#13232B; --muted:#5A6B73;
+  --green:#2A9D5B; --green-ink:#FFFFFF; --cyan:#1F8DB3; --cyan-ink:#FFFFFF;
+  --orange:#E0661A; --yellow:#F2D30F; --blue:#3F74D8; --female:#C2581E;
+  --tile:#DCEBF3; --tile-line:#7FB2CB; --red:#C0402F; --red-bg:#FBE6E2; --green-bg:#E2F4E9;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.35;-webkit-tap-highlight-color:transparent}
+button{font:inherit;cursor:pointer;touch-action:manipulation;color:inherit}
+button:disabled{cursor:default}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+
+/* App bar */
+.appbar{padding:14px 18px 12px;border-bottom:1px solid var(--line)}
+.row1{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--cond);font-weight:700;font-size:28px;color:var(--cyan);letter-spacing:.02em;margin-right:auto}
+#tabs{display:flex;gap:8px;flex-wrap:wrap}
+#tabs button{min-height:48px;padding:0 12px;font-size:16px;border-radius:12px;border:1px solid var(--line);background:var(--panel);font-weight:600}
+#tabs button.on{background:var(--cyan);color:var(--cyan-ink);border-color:var(--cyan)}
+.row2{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+.title b{font-family:var(--cond);font-size:23px;display:block}
+.title span{color:var(--muted);font-size:15px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-family:var(--cond);font-weight:600;font-size:14px;letter-spacing:.06em;text-transform:uppercase;padding:8px 13px;border-radius:999px;border:1.5px solid var(--line);background:transparent}
+.chip.red{border-color:var(--red);color:var(--red);background:var(--red-bg)}
+.chip.green{border-color:var(--green);color:var(--green);background:var(--green-bg)}
+
+main{padding:16px 18px 30px;max-width:1100px;margin:0 auto}
+
+/* Navigators */
+.navs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.nav{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:9px}
+.navbtn{width:66px;height:66px;border:0;border-radius:12px;background:var(--green);color:var(--green-ink);flex:none;display:grid;place-items:center}
+.navbtn svg{width:26px;height:26px}
+.navbtn:disabled{opacity:.3}
+.navlbl{flex:1;text-align:center;min-width:0}
+.navlbl small{display:block;font-family:var(--cond);font-size:14px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.navlbl b{display:block;font-family:var(--cond);font-size:31px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Species tabs */
+.species{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:12px}
+.sp{position:relative;min-height:74px;border-radius:14px;border:1.5px solid var(--line);background:var(--panel);font-weight:700;font-size:19px;line-height:1.15;padding:8px}
+.sp.on{background:var(--cyan);border-color:var(--cyan);color:var(--cyan-ink)}
+.sp .n{position:absolute;top:4px;right:8px;font-size:13px;font-weight:700;opacity:.8}
+.sp.ph{border-style:dashed;color:var(--muted)}
+.sp.ph.on{color:var(--cyan-ink)}
+.sp.other{border-style:dashed;color:var(--muted)}
+
+/* Entry row */
+.entry{display:grid;grid-template-columns:104px minmax(0,1fr) 200px;gap:12px;margin-top:12px}
+.entry.left{grid-template-columns:200px minmax(0,1fr) 104px}
+.entry.left .enterbtn{order:-1}
+.entry.left .emptybtn{order:3}
+.emptybtn{border-radius:16px;border:1.5px solid var(--tile-line);background:var(--tile);font-weight:600;font-size:20px;line-height:1.2}
+.display{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;column-gap:14px;row-gap:2px;background:var(--panel);border:2.5px solid var(--green);border-radius:18px;padding:10px 14px;min-height:118px}
+.display.count{border-color:var(--yellow)}
+.num{grid-row:1;font-size:62px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1;white-space:nowrap}
+.num small{font-size:20px;color:var(--muted);margin-left:6px;font-weight:500}
+.sum{display:contents}
+.sum b{grid-column:2;grid-row:1;font-family:Menlo,ui-monospace,monospace;color:var(--green);font-size:25px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.display.count .sum b{color:var(--yellow)}
+.sum span{grid-column:1/-1;grid-row:2;color:var(--muted);font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.clearbtn{grid-column:3;grid-row:1;background:var(--orange);color:#1E0C00;border:0;border-radius:12px;padding:0 18px;min-height:58px;font-weight:700;font-size:19px;flex:none}
+.enterbtn{border:0;border-radius:18px;background:var(--green);color:var(--green-ink);font-family:var(--cond);font-weight:800;font-size:46px;letter-spacing:.07em}
+.enterbtn:active{filter:brightness(1.1)}
+.flash{animation:flash .45s ease-out}
+@keyframes flash{from{background:var(--green-bg)}to{background:var(--panel)}}
+@media (prefers-reduced-motion:reduce){.flash{animation:none}}
+
+/* Keypad + attributes */
+.work{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:16px;margin-top:16px}
+.work.left .keys{order:2}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pad button{min-height:68px;border-radius:14px;border:1px solid var(--line);background:var(--panel);font-size:32px;font-weight:600}
+.pad button:active{background:var(--line)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.ghost{min-height:58px;border-radius:14px;border:1px solid var(--line);background:var(--panel);color:var(--muted);font-weight:600}
+.ghost.on{background:var(--yellow);border-color:var(--yellow);color:#231F00}
+.lbl{font-family:var(--cond);font-size:15px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.opt{min-height:58px;border-radius:14px;border:2px solid var(--line);background:var(--panel);font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;gap:10px}
+.opt.male{border-color:var(--blue)}
+.opt.male.on{background:var(--blue);color:#0B1630}
+.opt.fem{border-color:var(--female);color:var(--female)}
+.opt.fem.on{background:var(--female);color:#2A1205}
+.opt.unk{color:var(--muted)}
+.opt.unk.on{background:var(--muted);color:var(--bg)}
+.opt .dot{width:20px;height:20px;border-radius:50%;flex:none}
+.opt.e1{border-color:#F2D30F}.opt.e1 .dot{background:#F2D30F}
+.opt.e2{border-color:#D4961E}.opt.e2 .dot{background:#D4961E}
+.opt.e3{border-color:#9A6233}.opt.e3 .dot{background:#5E3416}
+.opt.e1.on,.opt.e2.on,.opt.e3.on{background:var(--line)}
+.opt.moult.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.defrow{display:grid;grid-template-columns:1fr 130px;gap:10px}
+.defbtn{min-height:60px;border-radius:14px;border:0;background:var(--yellow);color:#231F00;font-weight:700;padding:0 10px}
+.defbtn.off{background:transparent;border:2px dashed var(--line);color:var(--muted)}
+.setdef{border:2px solid var(--yellow);background:transparent;border-radius:14px;font-weight:700;line-height:1.15}
+
+.countnav{margin-top:12px}
+.countnav .navlbl b{font-size:34px}
+
+.warnlist{margin:0;padding:12px 16px 12px 34px;background:var(--red-bg);border:1.5px solid var(--red);border-radius:12px;font-size:17px}
+.warnlist li{margin:4px 0}
+#mwarn{margin-top:14px}
+#mwarn:empty{display:none}
+.inp.warn,.unitin input.warn{border:2px solid var(--red);background:var(--red-bg)}
+.mbtns .save.warnbtn{background:var(--orange);border-color:var(--orange);color:#1E0C00}
+
+/* Action tiles */
+.actions{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:20px}
+.tile{min-height:78px;border-radius:14px;border:1.5px solid var(--tile-line);background:var(--tile);font-weight:700;font-size:19px;line-height:1.2;padding:6px}
+.tile small{display:block;font-weight:500;font-size:14px;color:var(--muted)}
+.tile.done small{color:var(--green)}
+.runline{margin-top:14px;display:flex;gap:10px;align-items:baseline;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:16px}
+.runline .lbl{margin:0;flex:none}
+.runline .items{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.recent table{font-size:15px}
+.recent td{padding:5px 8px}
+.recent td.x{width:1%;padding:0}
+.recent td.x button{width:44px;height:40px;border:0;background:transparent;color:var(--red);font-size:22px}
+.spgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.opt.pick{flex-direction:column;gap:2px;font-size:17px;padding:8px}
+.opt.pick small{font-weight:500;font-size:13px;color:var(--muted)}
+.opt.pick.on{background:var(--cyan);border-color:var(--cyan);color:var(--cyan-ink)}
+.opt.pick.on small{color:var(--cyan-ink);opacity:.8}
+
+/* Generic pages */
+.page{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}
+.page h2{font-family:var(--cond);font-size:26px;margin:0 0 4px}
+.note{color:var(--muted);font-size:15px;margin:0 0 16px}
+.form{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-bottom:18px}
+.field{display:flex;flex-direction:column;gap:5px;font-family:var(--cond);font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input,.field select,.field textarea,.inp{font-family:var(--sans);font-size:18px;letter-spacing:0;text-transform:none;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;min-height:54px;width:100%}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{min-height:56px;padding:0 20px;border-radius:14px;border:1.5px solid var(--line);background:var(--panel);font-weight:700}
+.btn.primary{background:var(--green);border-color:var(--green);color:var(--green-ink)}
+.btn.danger{background:transparent;border-color:var(--red);color:var(--red)}
+.empty-state{text-align:center;padding:40px 16px;color:var(--muted)}
+.empty-state .btn{margin-top:14px}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{font-family:var(--cond);font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td .mini{min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:transparent;font-weight:600}
+td .mini.del{color:var(--red);border-color:var(--red)}
+.region{margin-bottom:18px}
+.region h3{font-family:var(--cond);font-size:20px;margin:0 0 8px}
+.siteline{display:grid;grid-template-columns:230px 1fr;gap:10px;align-items:center;margin-bottom:8px}
+
+.form.hdr{grid-template-columns:1fr;gap:18px;max-width:640px}
+.form.hdr .field{font-size:18px}
+.form.hdr input,.form.hdr select{font-size:24px;min-height:70px;padding:14px 16px;border-radius:14px}
+.hdr-go{min-height:70px;font-size:22px;padding:0 28px}
+
+/* Modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
+.modal.hidden{display:none}
+.sheet{background:var(--bg);border:1px solid var(--line);border-radius:18px;width:min(820px,100%);max-height:90vh;overflow:auto;padding:18px}
+.sheet h3{font-family:var(--cond);font-size:28px;margin:0;text-transform:uppercase;letter-spacing:.02em}
+.sheet .sub{color:var(--muted);font-size:14px;margin:0 0 14px}
+.envtbl{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:10px 12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+.envtbl .hd{font-family:var(--cond);font-size:14px;letter-spacing:.08em;color:var(--muted)}
+.envtbl .rl{font-weight:700}
+.unitin{position:relative}
+.unitin input{padding-right:58px;text-align:right}
+.unitin span{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.mbtns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:26px}
+.mbtns.three{grid-template-columns:auto 1fr 1fr}
+.mbtns.one{grid-template-columns:1fr}
+.mbtns button{min-height:62px;border-radius:14px;font-weight:700;font-size:20px;border:1px solid var(--line);background:var(--panel)}
+.mbtns .save{background:var(--green);border-color:var(--green);color:var(--green-ink)}
+.mbtns .del{background:transparent;border-color:var(--red);color:var(--red);padding:0 18px}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
+.toast.show{opacity:1}
+
+@media (max-width:760px){
+  .species{grid-template-columns:repeat(3,1fr)}
+  .actions{grid-template-columns:repeat(2,1fr)}
+  .entry,.entry.left{grid-template-columns:1fr 1fr}
+  .entry .display{grid-column:1/-1;order:-2}
+  .entry .enterbtn{min-height:80px}
+  .work{grid-template-columns:1fr}
+  .actions{grid-template-columns:repeat(2,1fr)}
+  .siteline{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header class="appbar">
+  <div class="row1"><div class="brand">ESTUARINE GILLNET APP</div><nav id="tabs"></nav></div>
+  <div class="row2"><div class="title" id="title"></div><div class="chips" id="chips"></div></div>
+</header>
+<main id="main"></main>
+<div class="modal hidden" id="modal"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== Configuration ===== */
+const BIOREGIONS = {
+  'West Coast': ['Swan-Canning Estuary','Peel-Harvey Estuary','Hardy Inlet'],
+  'South Coast': ['Walpole-Nornalup Inlet','Oyster Harbour','Beaufort Inlet','Stokes Inlet']
+};
+const AREAS = {'Walpole-Nornalup Inlet':['Walpole Inlet','Nornalup Inlet','Frankland River']};
+const DEFAULT_SITES = {
+  'Walpole-Nornalup Inlet|Walpole Inlet':['WI1G','WI2G','WI3G','WI4G'],
+  'Walpole-Nornalup Inlet|Nornalup Inlet':['NI1G','NI2G','NI3G','NI4G','NI5G','NI6G','NI7G','NI8G'],
+  'Walpole-Nornalup Inlet|Frankland River':['FR1G','FR2G','FR3G','FR4G']
+};
+const NET_TYPES = ['150 m multimesh gillnet'];
+const MESHES = ['25','50','75','100','125','150','ALL'];
+const GROUPS = {fish:{label:'Fish',m:'TL'},shark:{label:'Shark',m:'TL'},ray:{label:'Ray',m:'DW'},crab:{label:'Crab',m:'CW'}};
+const SPECIES = [
+  {name:'Black bream',g:'fish'},{name:'Yellowfin whiting',g:'fish'},{name:'Sand whiting',g:'fish'},
+  {name:'King George whiting',g:'fish'},{name:'Eagle ray',g:'ray'},{name:'Blue swimmer crab',g:'crab'},
+  {name:'Cobbler',g:'fish'},{name:'Gummy shark',g:'shark'},{name:'Herring',g:'fish'},{name:'Tailor',g:'fish'},
+  {name:'Flathead',g:'fish'},{name:'Flounder',g:'fish'}
+];
+const MAX_TABS = 15;
+const MEASURES = {TL:'Total length',FL:'Fork length',CW:'Carapace width',DW:'Disc width'};
+const SEX = [
+  {id:'M',label:'Male',cls:'male',code:'M'},{id:'FM',label:'Female (mature)',cls:'fem',code:'F'},
+  {id:'U',label:'Unknown sex',cls:'unk',code:'U'},{id:'FI',label:'Female (immature)',cls:'fem',code:'Fi'}
+];
+const ENV_ROWS = [['depth','Depth (m)','m'],['temp','Temperature (°C)','°C'],['sal','Salinity (ppt)','ppt'],['do','Dissolved oxygen (ppm)','ppm']];
+/* Fail-safe limits: edit these to change the warnings */
+const LIMITS = {minLength:10, maxLength:3000, crab:{min:30,max:230}, speciesMax:{'Black bream':550}};
+const ENV_LIMITS = {depth:{max:10,label:'Depth',u:'m'}, sal:{max:60,label:'Salinity',u:'ppt'}, temp:{min:10,max:30,label:'Temperature',u:'°C'}, do:{min:1.5,max:10,label:'Dissolved oxygen',u:'ppm'}};
+const TABS = [['days','Days'],['header','Header'],['entry','Data entry'],['list','Full list'],['export','Export'],['setup','Setup']];
+
+/* ===== State ===== */
+const KEY = 'gillnet-app-v2';
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function fmtDate(s){if(!s)return '';const [y,m,d]=s.split('-');return `${d}/${m}/${y}`;}
+const fmtTime = iso => new Date(iso).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+
+function fresh(){
+  const dark=true;
+  return {tab:'header',date:today(),bioregion:'',location:'',area:'',netType:NET_TYPES[0],siteIdx:0,meshIdx:0,species:'',pad:'',countMode:false,
+    attr:{sex:'U',egg:'',moult:'H'},count:1,speciesShown:{},records:[],env:{},notes:{},positions:{},
+    sites:clone(DEFAULT_SITES),extraSpecies:[],gps:'idle',
+    settings:{theme:dark?'dark':'light',left:false,defaultOn:true,defaults:{sex:'U',moult:'H'}}};
+}
+let S, savedOK=true;
+function load(){
+  S=fresh();
+  try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);const st=Object.assign(S.settings,d.settings||{});Object.assign(S,d);S.settings=st;}}catch(e){}
+  S.pad='';S.countMode=false;S.count=1;
+  Object.keys(DEFAULT_SITES).forEach(k=>{if(!S.sites[k])S.sites[k]=DEFAULT_SITES[k].slice();});
+  S.extraSpecies=(S.extraSpecies||[]).map(x=>x.g?x:{name:x.name,g:x.m==='CW'?'crab':x.m==='DW'?'ray':'fish'});
+}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(S));savedOK=true;}catch(e){savedOK=false;}}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),1800);}
+
+const sitesFor = key => S.sites[key] || [];
+const hasAreas = loc => !!AREAS[loc];
+const curKey = () => hasAreas(S.location)?S.location+'|'+S.area:S.location;
+function areaOfSite(loc,site){return (AREAS[loc]||[]).find(a=>sitesFor(loc+'|'+a).includes(site))||'';}
+function currentSite(){if(hasAreas(S.location)&&!S.area)return '';const s=sitesFor(curKey());if(!s.length)return '';if(S.siteIdx>=s.length)S.siteIdx=0;return s[S.siteIdx];}
+const currentMesh = () => MESHES[S.meshIdx] || MESHES[0];
+const meshLabel = m => m==='ALL'?'All meshes':m+' mm';
+const allSpecies = () => SPECIES.concat(S.extraSpecies);
+const groupOf = name => (allSpecies().find(s=>s.name===name)||{g:'fish'}).g;
+const measureOf = name => GROUPS[groupOf(name)].m;
+const isCrab = name => groupOf(name)==='crab';
+function shownSpecies(){const l=S.speciesShown[S.location];return l?allSpecies().filter(s=>l.includes(s.name)):SPECIES.slice();}
+function shownList(){if(!S.speciesShown[S.location])S.speciesShown[S.location]=SPECIES.map(s=>s.name);return S.speciesShown[S.location];}
+const fishCount = recs => recs.reduce((a,r)=>a+(Number(r.count)||0),0);
+const dayRecs = () => S.records.filter(r=>r.date===S.date&&r.location===S.location);
+const siteKey = site => `${S.date}|${S.location}|${site}`;
+const posKey = (site,mesh) => `${S.date}|${S.location}|${site}|${mesh}`;
+const sexOf = id => SEX.find(s=>s.id===id)||SEX[2];
+
+/* ===== Rendering ===== */
+function render(){
+  persist();
+  document.documentElement.dataset.theme=S.settings.theme;
+  $('tabs').innerHTML=TABS.map(([k,l])=>`<button data-act="tab" data-val="${k}" class="${S.tab===k?'on':''}">${l}</button>`).join('');
+  $('title').innerHTML=S.location
+    ?`<b>${fmtDate(S.date)} · ${esc(S.location)}${S.area?' · '+esc(S.area):''}</b>`
+    :`<b>${fmtDate(S.date)} · Set up the header</b>`;
+  renderChips();
+  const m=$('main');
+  m.innerHTML={days:daysHTML,header:headerHTML,entry:entryHTML,list:listHTML,export:exportHTML,setup:setupHTML}[S.tab]();
+}
+function renderChips(){
+  const unbacked=S.records.filter(r=>!r.exported).length;
+  const gps={ok:['green','GPS OK'],blocked:['red','GPS blocked'],off:['red','GPS unavailable'],idle:['','GPS']}[S.gps];
+  $('chips').innerHTML=
+    `<button class="chip ${gps[0]}" data-act="gps">${gps[1]}</button>`+
+    `<span class="chip ${savedOK?'green':'red'}">${savedOK?'Saved':'Not saved'}</span>`+
+    `<button class="chip ${unbacked?'red':'green'}" data-act="tab" data-val="export">${unbacked?'Not backed up · '+unbacked:'Backed up'}</button>`+
+    `<button class="chip" data-act="theme">${S.settings.theme==='dark'?'Light':'Dark'}</button>`+
+    `<button class="chip" data-act="hand">${S.settings.left?'Right-handed':'Left-handed'}</button>`;
+}
+const chev = d => ({left:'<path d="M15 5l-7 7 7 7"/>',right:'<path d="M9 5l7 7-7 7"/>',down:'<path d="M5 9l7 7 7-7"/>',up:'<path d="M5 15l7-7 7 7"/>'})[d];
+const icon = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${chev(d)}</svg>`;
+function emptyState(msg,tab,label){return `<div class="page empty-state"><div>${msg}</div><button class="btn primary" data-act="tab" data-val="${tab}">${label}</button></div>`;}
+
+function entryHTML(){
+  if(!S.location)return emptyState('Choose a bioregion and location to start recording.','header','Open header');
+  if(hasAreas(S.location)&&!S.area)return emptyState('Choose an estuary area to start recording.','header','Open header');
+  const sites=sitesFor(curKey());
+  if(!sites.length)return emptyState(`No sites are set for ${esc(S.area||S.location)}.`,'setup','Add sites');
+  const site=currentSite(), mesh=currentMesh();
+  const here=S.records.filter(r=>r.date===S.date&&r.location===S.location&&r.site===site&&r.mesh===mesh);
+  const crab=isCrab(S.species), m=measureOf(S.species), a=S.attr, left=S.settings.left?' left':'';
+
+  const tabs=shownSpecies().slice(0,MAX_TABS).map(s=>({name:s.name,ph:false}));
+  for(let i=1;tabs.length<MAX_TABS;i++)tabs.push({name:'SP'+i,ph:true});
+  const spBtns=tabs.map(s=>{const n=fishCount(here.filter(r=>r.species===s.name));
+    return `<button class="sp ${s.ph?'ph':''} ${S.species===s.name?'on':''}" data-act="sp" data-val="${esc(s.name)}">${esc(s.name)}${n?`<span class="n">${n}</span>`:''}</button>`;}).join('');
+
+  const num=S.pad||'0';
+  let code,sub;
+  if(!S.species){code='—';sub='Choose a species';}
+  else if(S.countMode){code=`COUNT ${S.pad||0}`;sub=`${esc(S.species)} · Batch count`;}
+  else{code=`${sexOf(a.sex).code}${S.pad} ${crab?a.moult:m}`;
+    sub=[esc(S.species),MEASURES[m],sexOf(a.sex).label.replace(' sex',''),crab?(a.moult==='H'?'Hard':'Soft'):'',a.egg&&crab?'Egg stage '+a.egg:''].filter(Boolean).join(' · ');}
+
+  const sexBtns=SEX.map(s=>`<button class="opt ${s.cls} ${a.sex===s.id?'on':''}" data-act="sex" data-val="${s.id}">${s.label}</button>`).join('');
+  const crabBlock=crab?`<div class="lbl">Egg stage · sets female + mature</div><div class="g3">${[1,2,3].map(i=>`<button class="opt e${i} ${a.egg==String(i)?'on':''}" data-act="egg" data-val="${i}"><span class="dot"></span>Stage ${i}</button>`).join('')}</div>
+    <div class="lbl">Moult</div><div class="g2"><button class="opt moult ${a.moult==='H'?'on':''}" data-act="moult" data-val="H">Hard</button><button class="opt moult ${a.moult==='S'?'on':''}" data-act="moult" data-val="S">Soft</button></div>`:'';
+  const d=S.settings.defaults;
+  const defText=`Default ${S.settings.defaultOn?'on':'off'} · ${sexOf(d.sex).label}${crab?' + '+(d.moult==='H'?'Hard':'Soft'):''}`;
+
+  const pos=S.positions[posKey(site,mesh)], env=S.env[siteKey(site)];
+  const envDone=env&&ENV_ROWS.some(([k])=>env[k+'_top']||env[k+'_bottom']);
+
+  const all=dayRecs(), recent=all.slice(-15).reverse();
+  const item=r=>r.empty?'Empty net':`${esc(r.species)} ${r.length!==''&&r.length!=null?r.length:'?'}${r.count>1?' ×'+r.count:''}`;
+  const recentHTML=`<section class="runline"><span class="lbl">${all.length} today</span><span class="items">${recent.length?recent.map(item).join(', '):'Entries will appear here, newest first'}</span></section>`;
+
+  return `
+  <section class="navs">
+    <div class="nav"><button class="navbtn" data-act="sitePrev" aria-label="Previous site" ${S.siteIdx===0?'disabled':''}>${icon('left')}</button>
+      <div class="navlbl"><small>Site ${S.siteIdx+1} of ${sites.length}</small><b>${esc(site)}</b></div>
+      <button class="navbtn" data-act="siteNext" aria-label="Next site" ${S.siteIdx>=sites.length-1?'disabled':''}>${icon('right')}</button></div>
+    <div class="nav"><button class="navbtn" data-act="meshDown" aria-label="Previous mesh size" ${S.meshIdx===0?'disabled':''}>${icon('down')}</button>
+      <div class="navlbl"><small>Mesh ${S.meshIdx+1} of ${MESHES.length} · ${fishCount(here)} caught</small><b>${meshLabel(mesh)}</b></div>
+      <button class="navbtn" data-act="meshUp" aria-label="Next mesh size" ${S.meshIdx>=MESHES.length-1?'disabled':''}>${icon('up')}</button></div>
+  </section>
+  <section class="species">${spBtns}</section>
+  <section class="entry${left}">
+    <button class="emptybtn" data-act="empty">Empty<br>net</button>
+    <div class="display ${S.countMode?'count':''}" id="display">
+      <div class="num" id="num">${num}<small>${S.countMode?'fish':'mm'}</small></div>
+      <div class="sum"><b id="code">${code}</b><span>${sub}</span></div>
+      <button class="clearbtn" data-act="clear">Clear</button>
+    </div>
+    <button class="enterbtn" data-act="enter">ENTER</button>
+  </section>
+  <section class="work${left}">
+    <div class="keys">
+      <div class="pad">${['7','8','9','4','5','6','1','2','3','.','0'].map(k=>`<button data-act="key" data-val="${k}">${k}</button>`).join('')}<button data-act="back" aria-label="Backspace">⌫</button></div>
+      <div class="two"><button class="ghost" data-act="unknown">Unknown size</button><button class="ghost ${S.countMode?'on':''}" data-act="countMode">${S.countMode?'Batch count on':'Batch count'}</button></div>
+    </div>
+    <div class="attrs">
+      <div class="lbl">Sex and maturity</div><div class="g2">${sexBtns}</div>
+      ${crabBlock}
+      <div class="defrow"><button class="defbtn ${S.settings.defaultOn?'':'off'}" data-act="defToggle">${defText}</button><button class="setdef" data-act="setDefault">Set<br>default</button></div>
+      <div class="nav countnav"><button class="navbtn" data-act="countDown" aria-label="Decrease count" ${S.count<=1?'disabled':''}>${icon('down')}</button>
+        <div class="navlbl"><small>Count</small><b>${S.count}</b></div>
+        <button class="navbtn" data-act="countUp" aria-label="Increase count">${icon('up')}</button></div>
+    </div>
+  </section>
+  <section class="actions">
+    <button class="tile ${pos?'done':''}" data-act="mark">Mark position<small>${pos?'Marked '+fmtTime(pos.time):'GPS for this net'}</small></button>
+    <button class="tile ${envDone?'done':''}" data-act="env">Environment<small>${envDone?'Recorded':'site water quality'}</small></button>
+    <button class="tile" data-act="editLast">Edit last animal<small>incl. genetic ID</small></button>
+    <button class="tile" data-act="tab" data-val="list">Full list<small>all records</small></button>
+    <button class="tile" data-act="speciesEdit">Species tabs<small>show, hide, add</small></button>
+  </section>
+  ${recentHTML}`;
+}
+
+function headerHTML(){
+  const locs=BIOREGIONS[S.bioregion]||[];
+  return `<div class="page"><h2>Header</h2><p class="note">Applies to every record entered for this day.</p>
+    <div class="form hdr">
+      <label class="field">Date<input type="date" data-h="date" value="${S.date}"></label>
+      <label class="field">Bioregion<select data-h="bioregion"><option value="">Choose…</option>${Object.keys(BIOREGIONS).map(b=>`<option${b===S.bioregion?' selected':''}>${esc(b)}</option>`).join('')}</select></label>
+      <label class="field">Location<select data-h="location" ${S.bioregion?'':'disabled'}><option value="">${S.bioregion?'Choose…':'Choose a bioregion first'}</option>${locs.map(l=>`<option${l===S.location?' selected':''}>${esc(l)}</option>`).join('')}</select></label>
+      <label class="field">Estuary area<select data-h="area" ${hasAreas(S.location)?'':'disabled'}>${hasAreas(S.location)
+        ?`<option value="">Choose…</option>${AREAS[S.location].map(a=>`<option${a===S.area?' selected':''}>${esc(a)}</option>`).join('')}`
+        :`<option value="">${S.location?'Whole estuary':'Choose a location first'}</option>`}</select></label>
+      <label class="field">Net type<select data-h="netType">${NET_TYPES.map(n=>`<option${n===S.netType?' selected':''}>${esc(n)}</option>`).join('')}</select></label>
+    </div>
+    <div class="btns"><button class="btn primary hdr-go" data-act="tab" data-val="entry" ${S.location&&(!hasAreas(S.location)||S.area)?'':'disabled'}>Go to data entry</button></div></div>`;
+}
+
+function daysHTML(){
+  const groups={};
+  S.records.forEach(r=>{const k=r.date+'|'+r.location;(groups[k]=groups[k]||{date:r.date,location:r.location,bioregion:r.bioregion,recs:[]}).recs.push(r);});
+  const list=Object.values(groups).sort((a,b)=>b.date.localeCompare(a.date));
+  const rows=list.map(g=>`<tr><td>${fmtDate(g.date)}</td><td>${esc(g.location)}</td><td>${g.recs.length}</td><td>${fishCount(g.recs)}</td><td>${g.recs.filter(r=>!r.exported).length||'—'}</td>
+    <td><button class="mini" data-act="openDay" data-val="${esc(g.date+'|'+g.location+'|'+g.bioregion)}">Open</button></td></tr>`).join('');
+  return `<div class="page"><h2>Days</h2><p class="note">Every survey day stored on this iPad.</p>
+    ${list.length?`<div class="tablewrap"><table><thead><tr><th>Date</th><th>Location</th><th>Records</th><th>Animals</th><th>Not backed up</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`:'<p class="note">No days recorded yet.</p>'}
+    <div class="btns" style="margin-top:16px"><button class="btn primary" data-act="newDay">Start a new day</button></div></div>`;
+}
+
+function listHTML(){
+  if(!S.location)return emptyState('Choose a location to see its records.','header','Open header');
+  const recs=dayRecs().slice().reverse();
+  const rows=recs.map(r=>`<tr><td>${fmtTime(r.time)}</td><td>${esc(r.site)}</td><td>${r.mesh==='ALL'?'All':r.mesh}</td>
+    <td>${r.empty?'<i>Empty net</i>':esc(r.species)}</td><td>${r.length!==''&&r.length!=null?r.length+' mm '+r.measure:(r.empty?'':'—')}</td><td>${r.count}</td>
+    <td>${r.empty?'':sexOf(r.sex).label}</td><td>${esc(r.geneticId||'')}</td>
+    <td><button class="mini" data-act="edit" data-val="${r.id}">Edit</button> <button class="mini del" data-act="del" data-val="${r.id}">Delete</button></td></tr>`).join('');
+  return `<div class="page"><h2>Full list</h2><p class="note">${fmtDate(S.date)} · ${esc(S.location)} · ${recs.length} records, ${fishCount(recs)} animals. Newest first.</p>
+    ${recs.length?`<div class="tablewrap"><table><thead><tr><th>Time</th><th>Site</th><th>Mesh</th><th>Species</th><th>Size</th><th>Count</th><th>Sex</th><th>Genetic ID</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`:'<p class="note">Nothing recorded yet for this day.</p>'}</div>`;
+}
+
+function exportHTML(){
+  const unbacked=S.records.filter(r=>!r.exported).length;
+  return `<div class="page"><h2>Export</h2>
+    <p class="note">${S.records.length} records stored, ${unbacked} not backed up. Each export makes two CSV files: catch and environment. Sharing or downloading marks the records as backed up.</p>
+    <div class="btns">
+      <button class="btn primary" data-act="exp" data-val="share-day" ${S.location?'':'disabled'}>Email this day</button>
+      <button class="btn" data-act="exp" data-val="share-all">Email all days</button>
+      <button class="btn" data-act="exp" data-val="dl-all">Download all days</button>
+    </div></div>`;
+}
+
+function setupHTML(){
+  return `<div class="page"><h2>Sites</h2><p class="note">Enter site codes for each location, separated by commas, in fishing order.</p>
+    ${Object.entries(BIOREGIONS).map(([b,locs])=>`<div class="region"><h3>${esc(b)}</h3>${locs.flatMap(l=>hasAreas(l)?AREAS[l].map(a=>[l+'|'+a,l+' · '+a]):[[l,l]]).map(([k,lab])=>`<label class="siteline"><span>${esc(lab)}</span><input class="inp" data-sites="${esc(k)}" value="${esc(sitesFor(k).join(', '))}" autocapitalize="characters" autocomplete="off"></label>`).join('')}</div>`).join('')}
+  </div>
+  <div class="page" style="margin-top:14px"><h2>Clear this iPad</h2><p class="note">Removes every record, environment entry and note. Export first.</p>
+    <button class="btn danger" data-act="wipe">Delete all data</button></div>`;
+}
+
+/* ===== Modals ===== */
+function openModal(html){const m=$('modal');m.innerHTML=`<div class="sheet" role="dialog" aria-modal="true">${html}</div>`;m.classList.remove('hidden');const f=m.querySelector('input,textarea');if(f)setTimeout(()=>f.focus(),50);}
+function closeModal(){$('modal').classList.add('hidden');$('modal').innerHTML='';}
+const mBtns = (saveAct,extra='') => `<div class="mbtns ${extra?'three':''}">${extra}<button data-act="close">Cancel</button><button class="save" data-act="${saveAct}">Save</button></div>`;
+
+function envModal(){
+  const site=currentSite(), v=S.env[siteKey(site)]||{};
+  const cell=(id,unit)=>`<div class="unitin"><input class="inp ${envIssue(id,v[id])?'warn':''}" id="env-${id}" inputmode="decimal" value="${esc(v[id])}"><span>${unit}</span></div>`;
+  openModal(`<h3>Environment</h3><p class="sub">${esc(site)} · applies to the whole site</p>
+    <div class="envtbl"><div></div><div class="hd">TOP</div><div class="hd">BOTTOM</div>
+    ${ENV_ROWS.map(([k,l,u])=>`<div class="rl">${l}</div>${cell(k+'_top',u)}${cell(k+'_bottom',u)}`).join('')}</div><div id="mwarn"></div>${mBtns('envSave')}`);
+}
+let otherGroup='fish';
+function otherModal(){
+  otherGroup='fish';
+  openModal(`<h3>Other species</h3><p class="sub">Adds a tab for ${esc(S.location)}. The measurement follows the group.</p>
+    <input class="inp" id="other-name" autocomplete="off" placeholder="Species name">
+    <div class="lbl" style="margin-top:16px">Group</div>
+    <div class="g2" id="group-btns">${Object.entries(GROUPS).map(([k,v])=>`<button class="opt moult ${k==='fish'?'on':''}" data-act="group" data-val="${k}">${v.label} · ${MEASURES[v.m]}</button>`).join('')}</div>${mBtns('otherSave')}`);
+}
+function speciesModal(){
+  const shown=shownSpecies().map(s=>s.name);
+  openModal(`<h3>Species tabs</h3><p class="sub">${esc(S.location)} · tap a species to show or hide its tab (up to 15; empty slots show as SP1, SP2…). Change these whenever the location or season changes.</p>
+    <div class="spgrid">${allSpecies().map(s=>`<button class="opt pick ${shown.includes(s.name)?'on':''}" data-act="spToggle" data-val="${esc(s.name)}">${esc(s.name)}<small>${GROUPS[s.g].label} · ${GROUPS[s.g].m}</small></button>`).join('')}</div>
+    <div class="btns" style="margin-top:14px"><button class="btn" data-act="spAll">Show all</button><button class="btn" data-act="spNone">Hide all</button><button class="btn" data-act="other">Add a species</button></div>
+    <div class="mbtns one"><button class="save" data-act="close">Done</button></div>`);
+}
+function editModal(id){
+  const r=S.records.find(x=>x.id===id);if(!r){toast('No record to edit');return;}
+  const sel=(id2,opts,val)=>`<select id="${id2}">${opts.map(([v,l])=>`<option value="${esc(v)}"${String(v)===String(val)?' selected':''}>${esc(l)}</option>`).join('')}</select>`;
+  openModal(`<h3>Edit record</h3><p class="sub">${esc(r.site)} · ${meshLabel(r.mesh)} · ${fmtTime(r.time)}</p>
+    <div class="form">
+      <label class="field">Species${sel('ed-species',allSpecies().map(s=>[s.name,s.name]).concat(r.species&&!allSpecies().some(s=>s.name===r.species)?[[r.species,r.species]]:[]).concat(r.empty?[['','Empty net']]:[]),r.species)}</label>
+      <label class="field">Mesh${sel('ed-mesh',MESHES.map(m=>[m,meshLabel(m)]),r.mesh)}</label>
+      <label class="field">Length (mm)<input id="ed-length" inputmode="decimal" value="${esc(r.length)}"></label>
+      <label class="field">Count<input id="ed-count" inputmode="numeric" value="${esc(r.count)}"></label>
+      <label class="field">Sex and maturity${sel('ed-sex',SEX.map(s=>[s.id,s.label]),r.sex)}</label>
+      <label class="field">Egg stage${sel('ed-egg',[['',''],['1','Stage 1'],['2','Stage 2'],['3','Stage 3']],r.egg)}</label>
+      <label class="field">Moult${sel('ed-moult',[['',''],['H','Hard'],['S','Soft']],r.moult)}</label>
+      <label class="field">Genetic ID<input id="ed-gen" value="${esc(r.geneticId)}"></label>
+      <label class="field" style="grid-column:1/-1">Notes<textarea id="ed-notes" rows="2">${esc(r.notes)}</textarea></label>
+    </div><div id="mwarn"></div>${mBtns('editSave','<button class="del" data-act="editDelete">Delete</button>').replace('data-act="editSave"',`data-act="editSave" data-val="${r.id}"`).replace('data-act="editDelete"',`data-act="editDelete" data-val="${r.id}"`)}`);
+}
+
+/* ===== Data entry actions ===== */
+function newRecord(extra){
+  const site=currentSite(),mesh=currentMesh(),crab=isCrab(S.species),pos=S.positions[posKey(site,mesh)];
+  const r=Object.assign({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),date:S.date,bioregion:S.bioregion,location:S.location,site,mesh,
+    species:S.species,measure:measureOf(S.species),length:'',count:1,sex:S.attr.sex,egg:crab?S.attr.egg:'',moult:crab?S.attr.moult:'',
+    netType:S.netType,area:S.area||'',geneticId:'',notes:'',empty:false,lat:pos?pos.lat:'',lon:pos?pos.lon:'',time:new Date().toISOString(),exported:false},extra);
+  S.records.push(r);
+  S.pad='';S.countMode=false;S.count=1;
+  if(S.settings.defaultOn){S.attr={sex:S.settings.defaults.sex,egg:'',moult:S.settings.defaults.moult};}
+  render();
+  const d=$('display');if(d){d.classList.remove('flash');void d.offsetWidth;d.classList.add('flash');}
+}
+function checkAnimal({species,length,sex,egg}){
+  const out=[], crab=isCrab(species);
+  if(length!==''&&length!=null&&!isNaN(length)){
+    if(length<LIMITS.minLength)out.push(`${length} mm is under ${LIMITS.minLength} mm. No animal should be this small.`);
+    if(crab&&(length<LIMITS.crab.min||length>LIMITS.crab.max))out.push(`Crab carapace width of ${length} mm is outside ${LIMITS.crab.min}–${LIMITS.crab.max} mm.`);
+    const mx=LIMITS.speciesMax[species];if(mx&&length>mx)out.push(`${esc(species)} over ${mx} mm (${length} mm entered).`);
+    if(length>LIMITS.maxLength)out.push(`${length} mm is over ${LIMITS.maxLength} mm.`);
+  }
+  if(crab&&sex==='M'&&egg)out.push('A male crab can’t be mature or carry eggs.');
+  return out;
+}
+function envIssue(id,val){
+  const [k,side]=id.split('_'),L=ENV_LIMITS[k],v=parseFloat(val);
+  if(!L||val===''||val==null||isNaN(v))return '';
+  const where=side==='top'?'top':'bottom';
+  if(L.max!=null&&v>L.max)return `${L.label} (${where}) ${v} ${L.u} is over ${L.max} ${L.u}.`;
+  if(L.min!=null&&v<L.min)return `${L.label} (${where}) ${v} ${L.u} is under ${L.min} ${L.u}.`;
+  return '';
+}
+let pendingFn=null;
+function warnModal(title,issues,goLabel,fn,stayLabel='Go back'){
+  pendingFn=fn||null;
+  openModal(`<h3>${title}</h3><p class="sub">Check before carrying on.</p><ul class="warnlist">${issues.map(i=>`<li>${i}</li>`).join('')}</ul>
+    <div class="mbtns">${fn?`<button data-act="close">${stayLabel}</button><button class="save warnbtn" data-act="warnGo">${goLabel}</button>`:`<button class="save" data-act="close" style="grid-column:1/-1">OK</button>`}</div>`);
+}
+function padBlocked(){
+  if(!S.pad)return false;
+  warnModal('Catch not entered',[`${S.pad} ${S.countMode?'fish':'mm'} is on the display but hasn’t been entered. Press ENTER to record it, or Clear to discard it, before changing site or mesh.`]);return true;
+}
+function goSite(t){
+  const list=sitesFor(curKey()),site=list[t];
+  if(site===undefined||padBlocked())return;
+  const n=S.records.filter(r=>r.date===S.date&&r.location===S.location&&r.site===site).length,env=!!S.env[siteKey(site)];
+  if(n||env){warnModal(`${esc(site)} already has data`,[`${n} record${n===1?'':'s'}${env?' and environmental readings':''} already entered at ${esc(site)} today.`,'Only go back if you need to add to or fix this site.'],`Go to ${esc(site)}`,()=>{S.siteIdx=t;render();},`Stay at ${esc(currentSite())}`);return;}
+  S.siteIdx=t;render();
+}
+function guardNav(fn){
+  if(S.pad){warnModal('Catch not entered',[`${S.pad} ${S.countMode?'fish':'mm'} is on the display but hasn’t been entered. Press ENTER to record it, or Clear to discard it, before changing site or mesh.`]);return;}
+  fn();render();
+}
+function showModalWarn(btn,issues){
+  if(!issues.length||btn.dataset.force)return false;
+  $('mwarn').innerHTML=`<ul class="warnlist">${issues.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+  btn.textContent='Save anyway';btn.dataset.force='1';btn.classList.add('warnbtn');return true;
+}
+function enter(){
+  if(!currentSite())return;
+  if(!S.species){toast('Choose a species first');return;}
+  const v=parseFloat(S.pad);
+  if(!S.pad||!(v>0)){toast(S.countMode?'Enter a count':'Enter a length, or tap Unknown size');return;}
+  if(S.countMode){newRecord({length:'',count:Math.round(v),sex:'U',egg:'',moult:''});toast(`${Math.round(v)} ${S.records.at(-1).species} counted`);}
+  else{const go=()=>newRecord({length:v,count:S.count});
+    const issues=checkAnimal({species:S.species,length:v,sex:S.attr.sex,egg:S.attr.egg});
+    if(issues.length)warnModal('Check this entry',issues,'Enter anyway',go);else go();}
+}
+function padKey(k){
+  if(k==='back')S.pad=S.pad.slice(0,-1);
+  else if(k==='clear')S.pad='';
+  else if(k==='.'){if(S.countMode||S.pad.includes('.'))return;S.pad=(S.pad||'0')+'.';}
+  else if(S.pad.length<6){S.pad=S.pad==='0'?k:S.pad+k;}
+  const n=$('num');if(n)n.innerHTML=(S.pad||'0')+`<small>${S.countMode?'fish':'mm'}</small>`;
+  const c=$('code');
+  if(c&&S.species){
+    if(S.countMode)c.textContent=`COUNT ${S.pad||0}`;
+    else c.textContent=`${sexOf(S.attr.sex).code}${S.pad} ${isCrab(S.species)?S.attr.moult:measureOf(S.species)}`;
+  }
+}
+function markPosition(){
+  if(!navigator.geolocation){S.gps='off';render();toast('GPS is not available on this device');return;}
+  if(!currentSite()){toast('Choose a site first');return;}
+  toast('Getting position…');
+  navigator.geolocation.getCurrentPosition(p=>{
+    S.positions[posKey(currentSite(),currentMesh())]={lat:p.coords.latitude.toFixed(6),lon:p.coords.longitude.toFixed(6),acc:Math.round(p.coords.accuracy),time:new Date().toISOString()};
+    S.gps='ok';render();toast(`Position marked (±${Math.round(p.coords.accuracy)} m)`);
+  },err=>{S.gps=err.code===1?'blocked':'off';render();toast(err.code===1?'GPS blocked. Allow location for this app in Settings.':'Could not get a GPS fix');},
+  {enableHighAccuracy:true,timeout:20000,maximumAge:0});
+}
+
+/* ===== Export ===== */
+const csvCell=v=>{v=v==null?'':String(v);return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
+const toCSV=(head,rows)=>[head.join(',')].concat(rows.map(r=>r.map(csvCell).join(','))).join('\r\n');
+function catchCSV(recs){
+  return toCSV(['Date','Bioregion','Location','Estuary_area','Net_type','Site','Mesh_mm','Species','Measurement','Length_mm','Count','Sex_maturity','Egg_stage','Moult','Genetic_ID','Empty_net','Latitude','Longitude','Notes','Recorded_at'],
+    recs.map(r=>[r.date,r.bioregion,r.location,r.area||'',r.netType||'',r.site,r.mesh,r.species,r.empty?'':r.measure,r.length,r.count,r.empty?'':sexOf(r.sex).label,r.egg,r.moult,r.geneticId,r.empty?'Y':'',r.lat,r.lon,r.notes,r.time]));
+}
+function envCSV(filter){
+  const keys=Object.keys(S.env).filter(filter).sort();
+  const head=['Date','Bioregion','Location','Estuary_area','Site'];ENV_ROWS.forEach(([k,,u])=>{head.push(`${k}_top_${u.replace('°','')}`,`${k}_bottom_${u.replace('°','')}`);});
+  return toCSV(head,keys.map(k=>{const [d,l,s]=k.split('|');const e=S.env[k]||{};const bio=Object.keys(BIOREGIONS).find(b=>BIOREGIONS[b].includes(l))||'';
+    const row=[d,bio,l,areaOfSite(l,s),s];ENV_ROWS.forEach(([id])=>row.push(e[id+'_top'],e[id+'_bottom']));return row;}));
+}
+function buildExport(scope){
+  const day=scope==='day', recs=day?dayRecs():S.records;
+  const base=day?`gillnet_${S.date}_${S.location.replace(/[^A-Za-z0-9]+/g,'-')}`:`gillnet_all_${today()}`;
+  const filter=k=>!day||k.startsWith(S.date+'|'+S.location+'|');
+  return {recs,subject:day?`Gill net data ${fmtDate(S.date)} ${S.location}`:`Gill net data, all days to ${fmtDate(today())}`,
+    files:[new File([catchCSV(recs)],base+'_catch.csv',{type:'text/csv'}),new File([envCSV(filter)],base+'_environment.csv',{type:'text/csv'})]};
+}
+function download(f){const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1500);}
+async function doExport(mode){
+  const [how,scope]=mode.split('-');const x=buildExport(scope);
+  const mark=()=>{x.recs.forEach(r=>r.exported=true);render();};
+  if(how==='share'){
+    if(navigator.canShare&&navigator.canShare({files:x.files})){
+      try{await navigator.share({files:x.files,title:x.subject,text:x.subject});mark();toast('Shared');return;}
+      catch(e){if(e.name==='AbortError')return;}
+    }
+    x.files.forEach(download);mark();
+    setTimeout(()=>{location.href='mailto:?subject='+encodeURIComponent(x.subject)+'&body='+encodeURIComponent('Gill net catch and environment CSV files attached.');},900);
+    toast('Files downloaded. Attach them to the email.');return;
+  }
+  x.files.forEach(download);mark();toast('CSV files downloaded');
+}
+
+/* ===== Events ===== */
+document.addEventListener('click',e=>{
+  if(e.target.id==='modal'){closeModal();return;}
+  const b=e.target.closest('[data-act]');if(!b||b.disabled)return;
+  const a=b.dataset.act,v=b.dataset.val;
+  switch(a){
+    case 'tab':S.tab=v;break;
+    case 'theme':S.settings.theme=S.settings.theme==='dark'?'light':'dark';break;
+    case 'hand':S.settings.left=!S.settings.left;break;
+    case 'gps':if(S.tab==='entry'&&currentSite()){markPosition();return;}toast('Use Mark position on the data entry screen');return;
+    case 'sitePrev':goSite(S.siteIdx-1);return;
+    case 'siteNext':goSite(S.siteIdx+1);return;
+    case 'meshDown':guardNav(()=>{if(S.meshIdx>0)S.meshIdx--;});return;
+    case 'meshUp':guardNav(()=>{if(S.meshIdx<MESHES.length-1)S.meshIdx++;});return;
+    case 'warnGo':{const f=pendingFn;pendingFn=null;closeModal();if(f)f();return;}
+    case 'sp':S.species=v;if(!isCrab(v))S.attr.egg='';break;
+    case 'other':otherModal();return;
+    case 'group':otherGroup=v;document.querySelectorAll('#group-btns .opt').forEach(x=>x.classList.toggle('on',x.dataset.val===v));return;
+    case 'speciesEdit':speciesModal();return;
+    case 'spToggle':{const l=shownList();const i=l.indexOf(v);if(i>=0)l.splice(i,1);else{if(l.length>=MAX_TABS){toast('All 15 tabs are in use. Hide one first.');return;}l.push(v);}render();speciesModal();return;}
+    case 'spAll':S.speciesShown[S.location]=allSpecies().map(s=>s.name).slice(0,MAX_TABS);render();speciesModal();return;
+    case 'spNone':S.speciesShown[S.location]=[];render();speciesModal();return;
+    case 'otherSave':{const n=($('other-name').value||'').trim();if(!n){toast('Type a species name');return;}
+      const ex=allSpecies().find(s=>s.name.toLowerCase()===n.toLowerCase());
+      if(!ex)S.extraSpecies.push({name:n,g:otherGroup});const nm=ex?ex.name:n;const l=shownList();if(!l.includes(nm)){if(l.length<MAX_TABS)l.push(nm);else toast('Added to the list. Hide a tab to show it.');}S.species=nm;closeModal();break;}
+    case 'key':padKey(v);return;
+    case 'back':case 'clear':padKey(a);return;
+    case 'enter':enter();return;
+    case 'unknown':if(!S.species){toast('Choose a species first');return;}newRecord({length:'',count:S.count});toast('Recorded with unknown size');return;
+    case 'countUp':S.count++;break;
+    case 'countDown':if(S.count>1)S.count--;break;
+    case 'countMode':S.countMode=!S.countMode;S.pad='';break;
+    case 'empty':if(confirm(`Record ${meshLabel(currentMesh())} at ${currentSite()} as an empty net?`)){
+      const keep=S.species;S.species='';newRecord({species:'',measure:'',count:0,sex:'',egg:'',moult:'',empty:true});S.species=keep;render();toast('Empty net recorded');}return;
+    case 'sex':if(isCrab(S.species)&&S.attr.egg&&v!=='FM'){
+        warnModal('Egg stage is set',[v==='M'?'A male crab can’t be mature or carry eggs.':'A crab with eggs is a mature female.','Changing sex will clear the egg stage.'],'Change and clear eggs',()=>{S.attr.sex=v;S.attr.egg='';render();});return;}
+      S.attr.sex=v;if(v!=='FM')S.attr.egg='';break;
+    case 'egg':S.attr.egg=S.attr.egg===v?'':v;if(S.attr.egg)S.attr.sex='FM';break;
+    case 'moult':S.attr.moult=v;break;
+    case 'defToggle':S.settings.defaultOn=!S.settings.defaultOn;break;
+    case 'setDefault':S.settings.defaults={sex:S.attr.sex,moult:S.attr.moult||'H'};S.settings.defaultOn=true;toast('Default saved');break;
+    case 'mark':markPosition();return;
+    case 'env':envModal();return;
+    case 'envSave':{const k=siteKey(currentSite()),o={};ENV_ROWS.forEach(([id])=>['_top','_bottom'].forEach(s=>{const val=$('env-'+id+s).value.trim();if(val)o[id+s]=val;}));
+      if(showModalWarn(b,Object.entries(o).map(([id,val])=>envIssue(id,val)).filter(Boolean)))return;
+      if(Object.keys(o).length)S.env[k]=o;else delete S.env[k];closeModal();toast('Environment saved');break;}
+    case 'editLast':{const recs=dayRecs();if(!recs.length){toast('Nothing recorded yet today');return;}editModal(recs[recs.length-1].id);return;}
+    case 'edit':editModal(v);return;
+    case 'editSave':{const r=S.records.find(x=>x.id===v);if(!r)break;
+      const sp=$('ed-species').value,L0=$('ed-length').value.trim();let sx=sp?$('ed-sex').value:'';const eg=$('ed-egg').value;
+      if(isCrab(sp)&&eg&&(sx==='FI'||sx==='U')){sx='FM';$('ed-sex').value='FM';}
+      if(showModalWarn(b,checkAnimal({species:sp,length:L0===''?'':parseFloat(L0),sex:sx,egg:eg})))return;
+      r.species=sp;r.empty=!sp;r.measure=sp?measureOf(sp):'';r.mesh=$('ed-mesh').value;
+      const L=$('ed-length').value.trim();r.length=L===''?'':parseFloat(L);r.count=parseInt($('ed-count').value,10)||0;
+      r.sex=sx;r.egg=$('ed-egg').value;r.moult=$('ed-moult').value;
+      r.geneticId=$('ed-gen').value.trim();r.notes=$('ed-notes').value.trim();r.exported=false;closeModal();toast('Record updated');break;}
+    case 'editDelete':case 'del':if(!confirm('Delete this record?'))return;S.records=S.records.filter(r=>r.id!==v);closeModal();break;
+    case 'close':closeModal();return;
+    case 'openDay':{const [d,l,bio]=v.split('|');S.date=d;S.location=l;S.bioregion=bio;S.siteIdx=0;S.area=(S.records.filter(r=>r.date===d&&r.location===l).at(-1)||{}).area||'';S.tab='entry';break;}
+    case 'newDay':S.date=today();S.siteIdx=0;S.meshIdx=0;S.tab='header';break;
+    case 'exp':doExport(v);return;
+    case 'wipe':if(confirm('Delete every record on this iPad? This cannot be undone.')&&confirm('Are you sure? Export first if you need this data.')){
+      const keep={sites:S.sites,settings:S.settings,bioregion:S.bioregion,location:S.location};S=Object.assign(fresh(),keep);S.tab='setup';toast('All data deleted');}break;
+  }
+  render();
+});
+document.addEventListener('input',e=>{
+  if(!e.target.closest('#modal'))return;
+  if(e.target.id&&e.target.id.startsWith('env-'))e.target.classList.toggle('warn',!!envIssue(e.target.id.slice(4),e.target.value));
+  const sb=document.querySelector('#modal .save[data-force]');
+  if(sb){delete sb.dataset.force;sb.textContent='Save';sb.classList.remove('warnbtn');$('mwarn').innerHTML='';}
+});
+document.addEventListener('change',e=>{
+  if(e.target.closest('#modal')&&e.target.tagName==='SELECT')e.target.dispatchEvent(new Event('input',{bubbles:true}));
+  const h=e.target.dataset.h;
+  if(h){if(h==='date')S.date=e.target.value||today();
+    if(h==='bioregion'){S.bioregion=e.target.value;S.location='';S.area='';S.siteIdx=0;}
+    if(h==='location'){S.location=e.target.value;S.area='';S.siteIdx=0;}
+    if(h==='area'){S.area=e.target.value;S.siteIdx=0;}
+    if(h==='netType')S.netType=e.target.value;
+    render();return;}
+  const l=e.target.dataset.sites;
+  if(l!==undefined){S.sites[l]=e.target.value.split(/[,\n]/).map(s=>s.trim().toUpperCase()).filter(Boolean);persist();renderChips();toast('Sites saved');}
+});
+document.addEventListener('keydown',e=>{
+  if(!$('modal').classList.contains('hidden')){if(e.key==='Escape')closeModal();return;}
+  if(S.tab!=='entry'||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+  if(/^[0-9.]$/.test(e.key))padKey(e.key);
+  else if(e.key==='Backspace'){e.preventDefault();padKey('back');}
+  else if(e.key==='Enter'){e.preventDefault();enter();}
+});
+
+load();render();
+</script>
+<script>
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+if(navigator.storage&&navigator.storage.persist){navigator.storage.persist().catch(()=>{});}
+</script>
+</body>
+</html>
