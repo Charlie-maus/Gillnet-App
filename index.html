@@ -192,6 +192,24 @@ td .mini.del{color:var(--red);border-color:var(--red)}
 .form.hdr input,.form.hdr select{font-size:24px;min-height:70px;padding:14px 16px;border-radius:14px}
 .hdr-go{min-height:70px;font-size:22px;padding:0 28px}
 
+/* Landscape: keypad and buttons on the right, species and display on the left */
+@media (orientation:landscape) and (min-aspect-ratio:5/4){
+  main{max-width:none}
+  .egrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);column-gap:16px;align-content:start;
+    grid-template-areas:"navs work" "species work" "search work" "entry work" "actions actions" "run run"}
+  .egrid>.navs{grid-area:navs}.egrid>.species{grid-area:species}.egrid>.spsearch{grid-area:search}
+  .egrid>.entry{grid-area:entry}.egrid>.work{grid-area:work;margin-top:0;align-self:start}
+  .egrid>.actions{grid-area:actions}.egrid>.runline{grid-area:run}
+  .egrid .work{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)}
+  .form.hdr{grid-template-columns:1fr 1fr;max-width:none;column-gap:24px}
+}
+
+/* Fit to screen */
+#app{transform-origin:top left}
+#app.scrolltab{display:flex;flex-direction:column;height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+#app.scrolltab main{flex:1;min-height:0;overflow:auto;width:100%;-webkit-overflow-scrolling:touch}
+html.fitted,html.fitted body{overflow:hidden}
+
 /* Modal */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
 .modal.hidden{display:none}
@@ -213,7 +231,7 @@ td .mini.del{color:var(--red);border-color:var(--red)}
 .toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
 .toast.show{opacity:1}
 
-@media (max-width:760px){
+@media (max-width:560px){
   .species{grid-template-columns:repeat(3,1fr)}
   .actions{grid-template-columns:repeat(2,1fr)}
   .entry,.entry.left{grid-template-columns:1fr 1fr}
@@ -226,11 +244,13 @@ td .mini.del{color:var(--red);border-color:var(--red)}
 </style>
 </head>
 <body>
-<header class="appbar">
+<div id="app">
+<header class="appbar" id="appbar">
   <div class="row1"><div class="brand">ESTUARINE GILLNET APP</div><nav id="tabs"></nav></div>
   <div class="row2"><div class="title" id="title"></div><div class="chips" id="chips"></div></div>
 </header>
 <main id="main"></main>
+</div>
 <div class="modal hidden" id="modal"></div>
 <div class="toast" id="toast"></div>
 
@@ -366,7 +386,37 @@ function render(){
   renderChips();
   const m=$('main');
   m.innerHTML={days:daysHTML,header:headerHTML,entry:entryHTML,list:listHTML,export:exportHTML,setup:setupHTML}[S.tab]();
+  fit();
 }
+/* Scale the screen so each page fits the device without scrolling.
+   Data entry, Header and Export are scaled to fit; list pages keep the top bar fixed and scroll inside. */
+const FIT_TABS=['entry','header','export'];
+function fit(){
+  const app=$('app'),root=document.documentElement;if(!app)return;
+  const cs=getComputedStyle(root);
+  const avail=window.innerHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
+  if(!FIT_TABS.includes(S.tab)){app.style.zoom=1;app.classList.add('scrolltab');root.classList.remove('fitted');return;}
+  app.classList.remove('scrolltab');app.style.zoom=1;
+  const maxS=Math.min(1.25,window.innerWidth/760);
+  let z=Math.min(maxS,avail/app.scrollHeight);
+  for(let i=0;i<4;i++){
+    app.style.zoom=z;
+    const h=app.getBoundingClientRect().height;
+    if(h<=avail+1)break;
+    z=z*avail/h;
+  }
+  z=Math.max(.35,Math.min(maxS,z));app.style.zoom=z;
+  root.classList.toggle('fitted',app.getBoundingClientRect().height<=avail+1);
+}
+let fitTimer;
+function refit(){
+  const a=document.activeElement;
+  if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return; // keyboard open: don't rescale while typing
+  clearTimeout(fitTimer);fitTimer=setTimeout(fit,120);
+}
+window.addEventListener('resize',refit);
+window.addEventListener('orientationchange',()=>setTimeout(fit,300));
+document.addEventListener('focusout',()=>setTimeout(refit,300));
 function renderChips(){
   const unbacked=S.records.filter(r=>!r.exported).length;
   const gps={ok:['green','GPS OK'],blocked:['red','GPS blocked'],off:['red','GPS unavailable'],idle:['','GPS']}[S.gps];
@@ -415,7 +465,7 @@ function entryHTML(){
   const item=r=>r.empty?'Empty net':`${esc(r.species)} ${r.length!==''&&r.length!=null?r.length:'?'}${r.count>1?' ×'+r.count:''}`;
   const recentHTML=`<section class="runline"><span class="lbl">${all.length} today</span><span class="items">${recent.length?recent.map(item).join(', '):'Entries will appear here, newest first'}</span></section>`;
 
-  return `
+  return `<div class="egrid">
   <section class="navs">
     <div class="nav"><button class="navbtn" data-act="sitePrev" aria-label="Previous site" ${S.siteIdx===0?'disabled':''}>${icon('left')}</button>
       <div class="navlbl"><small>Site ${S.siteIdx+1} of ${sites.length}</small><b>${esc(site)}</b></div>
@@ -456,7 +506,7 @@ function entryHTML(){
     <button class="tile" data-act="tab" data-val="list">Full list<small>all records</small></button>
     <button class="tile" data-act="speciesEdit">Species tabs<small>show, hide, add</small></button>
   </section>
-  ${recentHTML}`;
+  ${recentHTML}</div>`;
 }
 
 function headerHTML(){
