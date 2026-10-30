@@ -137,6 +137,14 @@ main{padding:16px 18px 30px;max-width:1100px;margin:0 auto}
 .inp.warn,.unitin input.warn{border:2px solid var(--red);background:var(--red-bg)}
 .mbtns .save.warnbtn{background:var(--orange);border-color:var(--orange);color:#1E0C00}
 
+.spsearch{margin-top:9px;position:relative}
+.spsearch .inp{min-height:52px;font-size:18px}
+#sp-results{display:flex;flex-wrap:wrap;gap:8px}
+#sp-results:not(:empty){margin-top:8px}
+.res{min-height:56px;border-radius:12px;border:1.5px solid var(--cyan);background:var(--panel);padding:6px 14px;text-align:left;font-weight:700}
+.res small{display:block;font-weight:500;font-size:13px;color:var(--muted)}
+.res i{font-weight:500}
+
 /* Action tiles */
 .actions{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:20px}
 .tile{min-height:78px;border-radius:14px;border:1.5px solid var(--tile-line);background:var(--tile);font-weight:700;font-size:19px;line-height:1.2;padding:6px}
@@ -180,6 +188,7 @@ td .mini.del{color:var(--red);border-color:var(--red)}
 
 .form.hdr{grid-template-columns:1fr;gap:18px;max-width:640px}
 .form.hdr .field{font-size:18px}
+.pair{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px}
 .form.hdr input,.form.hdr select{font-size:24px;min-height:70px;padding:14px 16px;border-radius:14px}
 .hdr-go{min-height:70px;font-size:22px;padding:0 28px}
 
@@ -238,6 +247,46 @@ const DEFAULT_SITES = {
   'Walpole-Nornalup Inlet|Frankland River':['FR1G','FR2G','FR3G','FR4G']
 };
 const NET_TYPES = ['150 m multimesh gillnet'];
+const RECORDERS = ['Person 1','Person 2','Person 3'];
+/* Extra species offered by "Search species", per location. m overrides the group's measurement. Check and edit this list. */
+const LOCAL_SPECIES = {
+  'Walpole-Nornalup Inlet': [
+    {name:'Western Australian salmon',sci:'Arripis truttaceus',g:'fish'},
+    {name:'Sea mullet',sci:'Mugil cephalus',g:'fish'},
+    {name:'Yelloweye mullet',sci:'Aldrichetta forsteri',g:'fish'},
+    {name:'Sand mullet',sci:'Myxus elongatus',g:'fish'},
+    {name:'Mulloway',sci:'Argyrosomus japonicus',g:'fish'},
+    {name:'Pink snapper',sci:'Chrysophrys auratus',g:'fish'},
+    {name:'Tarwhine',sci:'Rhabdosargus sarba',g:'fish'},
+    {name:'Silver trevally',sci:'Pseudocaranx georgianus',g:'fish'},
+    {name:'Skipjack trevally',sci:'Pseudocaranx wrighti',g:'fish'},
+    {name:'Yellowtail scad',sci:'Trachurus novaezelandiae',g:'fish'},
+    {name:'Southern school whiting',sci:'Sillago bassensis',g:'fish'},
+    {name:'Southern sea garfish',sci:'Hyporhamphus melanochir',g:'fish'},
+    {name:'River garfish',sci:'Hyporhamphus regularis',g:'fish'},
+    {name:'Southern bluespotted flathead',sci:'Platycephalus speculator',g:'fish'},
+    {name:'Long-snouted flounder',sci:'Ammotretis rostratus',g:'fish'},
+    {name:'Small-toothed flounder',sci:'Pseudorhombus jenynsii',g:'fish'},
+    {name:'Greenback flounder',sci:'Rhombosolea tapirina',g:'fish'},
+    {name:'Western striped grunter',sci:'Pelates octolineatus',g:'fish'},
+    {name:'Sea trumpeter',sci:'Pelsartia humeralis',g:'fish'},
+    {name:'Luderick',sci:'Girella tricuspidata',g:'fish'},
+    {name:'Zebrafish',sci:'Girella zebra',g:'fish'},
+    {name:'Old wife',sci:'Enoplosus armatus',g:'fish'},
+    {name:'Dusky morwong',sci:'Dactylophora nigricans',g:'fish'},
+    {name:'Bridled leatherjacket',sci:'Acanthaluteres spilomelanurus',g:'fish'},
+    {name:'Six-spined leatherjacket',sci:'Meuschenia freycineti',g:'fish'},
+    {name:'Smooth toadfish',sci:'Tetractenos glaber',g:'fish'},
+    {name:'Prickly toadfish',sci:'Contusus brevicaudus',g:'fish'},
+    {name:'Banded toadfish',sci:'Torquigener pleurogramma',g:'fish'},
+    {name:'Bronze whaler',sci:'Carcharhinus brachyurus',g:'shark'},
+    {name:'Port Jackson shark',sci:'Heterodontus portusjacksoni',g:'shark'},
+    {name:'Smooth stingray',sci:'Bathytoshia brevicaudata',g:'ray'},
+    {name:'Black stingray',sci:'Bathytoshia lata',g:'ray'},
+    {name:'Western shovelnose ray',sci:'Aptychotrema vincentiana',g:'ray',m:'TL'},
+    {name:'Southern fiddler ray',sci:'Trygonorrhina dumerilii',g:'ray',m:'TL'}
+  ]
+};
 const MESHES = ['25','50','75','100','125','150','ALL'];
 const GROUPS = {fish:{label:'Fish',m:'TL'},shark:{label:'Shark',m:'TL'},ray:{label:'Ray',m:'DW'},crab:{label:'Crab',m:'CW'}};
 const SPECIES = [
@@ -269,7 +318,7 @@ const fmtTime = iso => new Date(iso).toLocaleTimeString([], {hour:'2-digit',minu
 
 function fresh(){
   const dark=true;
-  return {tab:'header',date:today(),bioregion:'',location:'',area:'',netType:NET_TYPES[0],siteIdx:0,meshIdx:0,species:'',pad:'',countMode:false,
+  return {tab:'header',date:today(),bioregion:'',location:'',area:'',recorder1:'',recorder2:'',soak:'',netType:NET_TYPES[0],siteIdx:0,meshIdx:0,species:'',pad:'',countMode:false,
     attr:{sex:'U',egg:'',moult:'H'},count:1,speciesShown:{},records:[],env:{},notes:{},positions:{},
     sites:clone(DEFAULT_SITES),extraSpecies:[],gps:'idle',
     settings:{theme:dark?'dark':'light',left:false,defaultOn:true,defaults:{sex:'U',moult:'H'}}};
@@ -293,8 +342,10 @@ function currentSite(){if(hasAreas(S.location)&&!S.area)return '';const s=sitesF
 const currentMesh = () => MESHES[S.meshIdx] || MESHES[0];
 const meshLabel = m => m==='ALL'?'All meshes':m+' mm';
 const allSpecies = () => SPECIES.concat(S.extraSpecies);
-const groupOf = name => (allSpecies().find(s=>s.name===name)||{g:'fish'}).g;
-const measureOf = name => GROUPS[groupOf(name)].m;
+const findSp = name => allSpecies().find(s=>s.name===name);
+const groupOf = name => (findSp(name)||{g:'fish'}).g;
+const measureOf = name => {const sp=findSp(name);return (sp&&sp.m)||GROUPS[groupOf(name)].m;};
+function searchPool(){const l=LOCAL_SPECIES[S.location]||Object.values(LOCAL_SPECIES).flat();return l.concat(S.extraSpecies.filter(x=>!l.some(y=>y.name===x.name)));}
 const isCrab = name => groupOf(name)==='crab';
 function shownSpecies(){const l=S.speciesShown[S.location];return l?allSpecies().filter(s=>l.includes(s.name)):SPECIES.slice();}
 function shownList(){if(!S.speciesShown[S.location])S.speciesShown[S.location]=SPECIES.map(s=>s.name);return S.speciesShown[S.location];}
@@ -374,6 +425,7 @@ function entryHTML(){
       <button class="navbtn" data-act="meshUp" aria-label="Next mesh size" ${S.meshIdx>=MESHES.length-1?'disabled':''}>${icon('up')}</button></div>
   </section>
   <section class="species">${spBtns}</section>
+  <section class="spsearch"><input class="inp" id="sp-search" type="search" autocomplete="off" placeholder="Search other species${LOCAL_SPECIES[S.location]?' caught in '+esc(S.location):''}…"><div id="sp-results"></div></section>
   <section class="entry${left}">
     <button class="emptybtn" data-act="empty">Empty<br>net</button>
     <div class="display ${S.countMode?'count':''}" id="display">
@@ -417,7 +469,9 @@ function headerHTML(){
       <label class="field">Estuary area<select data-h="area" ${hasAreas(S.location)?'':'disabled'}>${hasAreas(S.location)
         ?`<option value="">Choose…</option>${AREAS[S.location].map(a=>`<option${a===S.area?' selected':''}>${esc(a)}</option>`).join('')}`
         :`<option value="">${S.location?'Whole estuary':'Choose a location first'}</option>`}</select></label>
-      <label class="field">Net type<select data-h="netType">${NET_TYPES.map(n=>`<option${n===S.netType?' selected':''}>${esc(n)}</option>`).join('')}</select></label>
+      <div class="pair"><label class="field">Net type<select data-h="netType">${NET_TYPES.map(n=>`<option${n===S.netType?' selected':''}>${esc(n)}</option>`).join('')}</select></label>
+        <label class="field">Soak time (hours)<input data-h="soak" inputmode="decimal" placeholder="e.g. 2.5" value="${esc(S.soak)}"></label></div>
+      ${['recorder1','recorder2'].map((k,i)=>`<label class="field">Recorder ${i+1}<select data-h="${k}"><option value="">Choose…</option>${RECORDERS.map(n=>`<option${n===S[k]?' selected':''}>${esc(n)}</option>`).join('')}</select></label>`).join('')}
     </div>
     <div class="btns"><button class="btn primary hdr-go" data-act="tab" data-val="entry" ${S.location&&(!hasAreas(S.location)||S.area)?'':'disabled'}>Go to data entry</button></div></div>`;
 }
@@ -486,7 +540,7 @@ function otherModal(){
 function speciesModal(){
   const shown=shownSpecies().map(s=>s.name);
   openModal(`<h3>Species tabs</h3><p class="sub">${esc(S.location)} · tap a species to show or hide its tab (up to 15; empty slots show as SP1, SP2…). Change these whenever the location or season changes.</p>
-    <div class="spgrid">${allSpecies().map(s=>`<button class="opt pick ${shown.includes(s.name)?'on':''}" data-act="spToggle" data-val="${esc(s.name)}">${esc(s.name)}<small>${GROUPS[s.g].label} · ${GROUPS[s.g].m}</small></button>`).join('')}</div>
+    <div class="spgrid">${allSpecies().map(s=>`<button class="opt pick ${shown.includes(s.name)?'on':''}" data-act="spToggle" data-val="${esc(s.name)}">${esc(s.name)}<small>${GROUPS[s.g].label} · ${s.m||GROUPS[s.g].m}</small></button>`).join('')}</div>
     <div class="btns" style="margin-top:14px"><button class="btn" data-act="spAll">Show all</button><button class="btn" data-act="spNone">Hide all</button><button class="btn" data-act="other">Add a species</button></div>
     <div class="mbtns one"><button class="save" data-act="close">Done</button></div>`);
 }
@@ -512,7 +566,7 @@ function newRecord(extra){
   const site=currentSite(),mesh=currentMesh(),crab=isCrab(S.species),pos=S.positions[posKey(site,mesh)];
   const r=Object.assign({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),date:S.date,bioregion:S.bioregion,location:S.location,site,mesh,
     species:S.species,measure:measureOf(S.species),length:'',count:1,sex:S.attr.sex,egg:crab?S.attr.egg:'',moult:crab?S.attr.moult:'',
-    netType:S.netType,area:S.area||'',geneticId:'',notes:'',empty:false,lat:pos?pos.lat:'',lon:pos?pos.lon:'',time:new Date().toISOString(),exported:false},extra);
+    netType:S.netType,soak:S.soak,recorder1:S.recorder1,recorder2:S.recorder2,area:S.area||'',geneticId:'',notes:'',empty:false,lat:pos?pos.lat:'',lon:pos?pos.lon:'',time:new Date().toISOString(),exported:false},extra);
   S.records.push(r);
   S.pad='';S.countMode=false;S.count=1;
   if(S.settings.defaultOn){S.attr={sex:S.settings.defaults.sex,egg:'',moult:S.settings.defaults.moult};}
@@ -601,8 +655,8 @@ function markPosition(){
 const csvCell=v=>{v=v==null?'':String(v);return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
 const toCSV=(head,rows)=>[head.join(',')].concat(rows.map(r=>r.map(csvCell).join(','))).join('\r\n');
 function catchCSV(recs){
-  return toCSV(['Date','Bioregion','Location','Estuary_area','Net_type','Site','Mesh_mm','Species','Measurement','Length_mm','Count','Sex_maturity','Egg_stage','Moult','Genetic_ID','Empty_net','Latitude','Longitude','Notes','Recorded_at'],
-    recs.map(r=>[r.date,r.bioregion,r.location,r.area||'',r.netType||'',r.site,r.mesh,r.species,r.empty?'':r.measure,r.length,r.count,r.empty?'':sexOf(r.sex).label,r.egg,r.moult,r.geneticId,r.empty?'Y':'',r.lat,r.lon,r.notes,r.time]));
+  return toCSV(['Date','Bioregion','Location','Estuary_area','Net_type','Soak_time_h','Recorder_1','Recorder_2','Site','Mesh_mm','Species','Measurement','Length_mm','Count','Sex_maturity','Egg_stage','Moult','Genetic_ID','Empty_net','Latitude','Longitude','Notes','Recorded_at'],
+    recs.map(r=>[r.date,r.bioregion,r.location,r.area||'',r.netType||'',r.soak||'',r.recorder1||'',r.recorder2||'',r.site,r.mesh,r.species,r.empty?'':r.measure,r.length,r.count,r.empty?'':sexOf(r.sex).label,r.egg,r.moult,r.geneticId,r.empty?'Y':'',r.lat,r.lon,r.notes,r.time]));
 }
 function envCSV(filter){
   const keys=Object.keys(S.env).filter(filter).sort();
@@ -648,8 +702,12 @@ document.addEventListener('click',e=>{
     case 'meshDown':guardNav(()=>{if(S.meshIdx>0)S.meshIdx--;});return;
     case 'meshUp':guardNav(()=>{if(S.meshIdx<MESHES.length-1)S.meshIdx++;});return;
     case 'warnGo':{const f=pendingFn;pendingFn=null;closeModal();if(f)f();return;}
+    case 'spPick':{const x=searchPool().find(y=>y.name===v);if(!x)return;
+      if(!allSpecies().some(y=>y.name===x.name))S.extraSpecies.push({name:x.name,g:x.g,...(x.m?{m:x.m}:{}),...(x.sci?{sci:x.sci}:{})});
+      const l=shownList();if(!l.includes(x.name)){if(l.length<MAX_TABS)l.push(x.name);else toast('All 15 tabs are in use, so it’s selected without a tab.');}
+      S.species=x.name;if(!isCrab(x.name))S.attr.egg='';break;}
     case 'sp':S.species=v;if(!isCrab(v))S.attr.egg='';break;
-    case 'other':otherModal();return;
+    case 'other':{const q=$('sp-search')?$('sp-search').value.trim():'';otherModal();if(q&&$('other-name'))$('other-name').value=q;return;}
     case 'group':otherGroup=v;document.querySelectorAll('#group-btns .opt').forEach(x=>x.classList.toggle('on',x.dataset.val===v));return;
     case 'speciesEdit':speciesModal();return;
     case 'spToggle':{const l=shownList();const i=l.indexOf(v);if(i>=0)l.splice(i,1);else{if(l.length>=MAX_TABS){toast('All 15 tabs are in use. Hide one first.');return;}l.push(v);}render();speciesModal();return;}
@@ -699,7 +757,16 @@ document.addEventListener('click',e=>{
   }
   render();
 });
+function renderSearch(q){
+  const box=$('sp-results');if(!box)return;q=(q||'').trim().toLowerCase();
+  if(q.length<2){box.innerHTML='';return;}
+  const shown=shownSpecies().map(x=>x.name);
+  const hits=searchPool().filter(x=>!shown.includes(x.name)&&(x.name.toLowerCase().includes(q)||(x.sci||'').toLowerCase().includes(q))).slice(0,8);
+  box.innerHTML=hits.length?hits.map(x=>`<button class="res" data-act="spPick" data-val="${esc(x.name)}">${esc(x.name)}<small>${x.sci?`<i>${esc(x.sci)}</i> · `:''}${x.m||GROUPS[x.g].m}</small></button>`).join('')
+    :`<button class="res" data-act="other">No match. Add “${esc(q)}” as a new species</button>`;
+}
 document.addEventListener('input',e=>{
+  if(e.target.id==='sp-search'){renderSearch(e.target.value);return;}
   if(!e.target.closest('#modal'))return;
   if(e.target.id&&e.target.id.startsWith('env-'))e.target.classList.toggle('warn',!!envIssue(e.target.id.slice(4),e.target.value));
   const sb=document.querySelector('#modal .save[data-force]');
@@ -713,6 +780,8 @@ document.addEventListener('change',e=>{
     if(h==='location'){S.location=e.target.value;S.area='';S.siteIdx=0;}
     if(h==='area'){S.area=e.target.value;S.siteIdx=0;}
     if(h==='netType')S.netType=e.target.value;
+    if(h==='recorder1'||h==='recorder2')S[h]=e.target.value;
+    if(h==='soak'){S.soak=e.target.value.trim();persist();return;}
     render();return;}
   const l=e.target.dataset.sites;
   if(l!==undefined){S.sites[l]=e.target.value.split(/[,\n]/).map(s=>s.trim().toUpperCase()).filter(Boolean);persist();renderChips();toast('Sites saved');}
