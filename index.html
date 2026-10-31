@@ -139,6 +139,13 @@ main{padding:16px 18px 30px;max-width:1100px;margin:0 auto}
 
 .spsearch{margin-top:9px;position:relative}
 .spsearch .inp{min-height:52px;font-size:18px}
+.srow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;align-items:stretch}
+.srow .inp{grid-column:span 4;min-height:60px}
+.sp.otherbtn{border-style:dashed;border-color:var(--cyan)}
+.sp.otherbtn small{display:block;font-size:12px;font-weight:600;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sheet.wide{width:min(1100px,100%)}
+.opgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px;margin-top:12px}
+.opgrid .sp small{display:block;font-size:12px;font-weight:500;opacity:.7;margin-top:2px}
 #sp-results{display:flex;flex-wrap:wrap;gap:8px}
 #sp-results:not(:empty){margin-top:8px}
 .res{min-height:56px;border-radius:12px;border:1.5px solid var(--cyan);background:var(--panel);padding:6px 14px;text-align:left;font-weight:700}
@@ -266,56 +273,50 @@ const DEFAULT_SITES = {
   'Walpole-Nornalup Inlet|Nornalup Inlet':['NI1G','NI2G','NI3G','NI4G','NI5G','NI6G','NI7G','NI8G'],
   'Walpole-Nornalup Inlet|Frankland River':['FR1G','FR2G','FR3G','FR4G']
 };
-const NET_TYPES = ['150 m multimesh gillnet'];
+const NET_TYPES = ['160 m multimesh gillnet'];
 const RECORDERS = ['Person 1','Person 2','Person 3'];
 /* Extra species offered by "Search species", per location. m overrides the group's measurement. Check and edit this list. */
 const LOCAL_SPECIES = {
   'Walpole-Nornalup Inlet': [
-    {name:'Western Australian salmon',sci:'Arripis truttaceus',g:'fish'},
-    {name:'Sea mullet',sci:'Mugil cephalus',g:'fish'},
-    {name:'Yelloweye mullet',sci:'Aldrichetta forsteri',g:'fish'},
-    {name:'Sand mullet',sci:'Myxus elongatus',g:'fish'},
-    {name:'Mulloway',sci:'Argyrosomus japonicus',g:'fish'},
-    {name:'Pink snapper',sci:'Chrysophrys auratus',g:'fish'},
-    {name:'Tarwhine',sci:'Rhabdosargus sarba',g:'fish'},
-    {name:'Silver trevally',sci:'Pseudocaranx georgianus',g:'fish'},
     {name:'Skipjack trevally',sci:'Pseudocaranx wrighti',g:'fish'},
-    {name:'Yellowtail scad',sci:'Trachurus novaezelandiae',g:'fish'},
-    {name:'Southern school whiting',sci:'Sillago bassensis',g:'fish'},
-    {name:'Southern sea garfish',sci:'Hyporhamphus melanochir',g:'fish'},
-    {name:'River garfish',sci:'Hyporhamphus regularis',g:'fish'},
-    {name:'Southern bluespotted flathead',sci:'Platycephalus speculator',g:'fish'},
-    {name:'Long-snouted flounder',sci:'Ammotretis rostratus',g:'fish'},
-    {name:'Small-toothed flounder',sci:'Pseudorhombus jenynsii',g:'fish'},
-    {name:'Greenback flounder',sci:'Rhombosolea tapirina',g:'fish'},
-    {name:'Western striped grunter',sci:'Pelates octolineatus',g:'fish'},
+    {name:'Eight-line trumpeter',sci:'Pelates octolineatus',g:'fish'},
     {name:'Sea trumpeter',sci:'Pelsartia humeralis',g:'fish'},
-    {name:'Luderick',sci:'Girella tricuspidata',g:'fish'},
-    {name:'Zebrafish',sci:'Girella zebra',g:'fish'},
+    {name:'Weeping toadfish',sci:'Torquigener pleurogramma',g:'fish'},
+    {name:'Anchovy',sci:'Engraulis australis',g:'fish'},
+    {name:'Smooth ray',sci:'Bathytoshia brevicaudata',g:'ray'},
+    {name:'Pink snapper',sci:'Chrysophrys auratus',g:'fish'},
+    {name:'Mulloway',sci:'Argyrosomus japonicus',g:'fish'},
+    {name:'Bull shark',sci:'Carcharhinus leucas',g:'shark'},
     {name:'Old wife',sci:'Enoplosus armatus',g:'fish'},
-    {name:'Dusky morwong',sci:'Dactylophora nigricans',g:'fish'},
-    {name:'Bridled leatherjacket',sci:'Acanthaluteres spilomelanurus',g:'fish'},
-    {name:'Six-spined leatherjacket',sci:'Meuschenia freycineti',g:'fish'},
-    {name:'Smooth toadfish',sci:'Tetractenos glaber',g:'fish'},
-    {name:'Prickly toadfish',sci:'Contusus brevicaudus',g:'fish'},
-    {name:'Banded toadfish',sci:'Torquigener pleurogramma',g:'fish'},
-    {name:'Bronze whaler',sci:'Carcharhinus brachyurus',g:'shark'},
-    {name:'Port Jackson shark',sci:'Heterodontus portusjacksoni',g:'shark'},
-    {name:'Smooth stingray',sci:'Bathytoshia brevicaudata',g:'ray'},
-    {name:'Black stingray',sci:'Bathytoshia lata',g:'ray'},
-    {name:'Western shovelnose ray',sci:'Aptychotrema vincentiana',g:'ray',m:'TL'},
-    {name:'Southern fiddler ray',sci:'Trygonorrhina dumerilii',g:'ray',m:'TL'}
+    {name:'Western Australian salmon',sci:'Arripis truttaceus',g:'fish'},
+    {name:'Longsnout flounder',sci:'Ammotretis rostratus',g:'fish'},
+    {name:'Trumpeter whiting',sci:'Sillago maculata',g:'fish'},
+    {name:'Shovelnose ray',sci:'Aptychotrema vincentiana',g:'ray',m:'TL'},
+    {name:'Fiddler ray',sci:'Trygonorrhina dumerilii',g:'ray',m:'TL'},
+    {name:'Giant herring',sci:'Elops machnata',g:'fish'},
+    {name:'Yellowtail scad',sci:'Trachurus novaezelandiae',g:'fish'},
+    {name:'Tarwhine',sci:'Rhabdosargus sarba',g:'fish'}
   ]
 };
-const MESHES = ['25','50','75','100','125','150','ALL'];
+const MESHES = ['35','51','63','76','89','102','115','127','ALL'];
 const GROUPS = {fish:{label:'Fish',m:'TL'},shark:{label:'Shark',m:'TL'},ray:{label:'Ray',m:'DW'},crab:{label:'Crab',m:'CW'}};
 const SPECIES = [
-  {name:'Black bream',g:'fish'},{name:'Yellowfin whiting',g:'fish'},{name:'Sand whiting',g:'fish'},
-  {name:'King George whiting',g:'fish'},{name:'Eagle ray',g:'ray'},{name:'Blue swimmer crab',g:'crab'},
-  {name:'Cobbler',g:'fish'},{name:'Gummy shark',g:'shark'},{name:'Herring',g:'fish'},{name:'Tailor',g:'fish'},
-  {name:'Flathead',g:'fish'},{name:'Flounder',g:'fish'}
+  {name:'Black bream',g:'fish'},
+  {name:'Sea mullet',sci:'Mugil cephalus',g:'fish'},
+  {name:'Yelloweye mullet',sci:'Aldrichetta forsteri',g:'fish'},
+  {name:'King George whiting',g:'fish'},
+  {name:'Herring',g:'fish'},
+  {name:'Gummy shark',g:'shark'},
+  {name:'Blue swimmer crab',g:'crab'},
+  {name:'Yellowfin whiting',g:'fish'},
+  {name:'Cobbler',g:'fish'},
+  {name:'Eagle ray',g:'ray'},
+  {name:'Tailor',g:'fish'},
+  {name:'Elongate flounder',sci:'Ammotretis elongatus',g:'fish'},
+  {name:'Small-toothed flounder',sci:'Pseudorhombus jenynsii',g:'fish'},
+  {name:'Bluespotted flathead',sci:'Platycephalus speculator',g:'fish'}
 ];
-const MAX_TABS = 15;
+const MAX_TABS = 14; // the 15th slot is the Other species tab
 const MEASURES = {TL:'Total length',FL:'Fork length',CW:'Carapace width',DW:'Disc width'};
 const SEX = [
   {id:'M',label:'Male',cls:'male',code:'M'},{id:'FM',label:'Female (mature)',cls:'fem',code:'F'},
@@ -323,7 +324,14 @@ const SEX = [
 ];
 const ENV_ROWS = [['depth','Depth (m)','m'],['temp','Temperature (°C)','°C'],['sal','Salinity (ppt)','ppt'],['do','Dissolved oxygen (ppm)','ppm']];
 /* Fail-safe limits: edit these to change the warnings */
-const LIMITS = {minLength:10, maxLength:3000, crab:{min:30,max:230}, speciesMax:{'Black bream':550}};
+const LIMITS = {minLength:20, maxLength:3000, crab:{min:30,max:230},
+  /* Per-species size warnings in mm (min and/or max) */
+  species:{
+    'Black bream':{max:550},
+    'King George whiting':{max:700},
+    'Cobbler':{max:1300},
+    'Gummy shark':{min:400,max:2000}
+  }};
 const ENV_LIMITS = {depth:{max:10,label:'Depth',u:'m'}, sal:{max:60,label:'Salinity',u:'ppt'}, temp:{min:10,max:30,label:'Temperature',u:'°C'}, do:{min:1.5,max:10,label:'Dissolved oxygen',u:'ppm'}};
 const TABS = [['days','Days'],['header','Header'],['entry','Data entry'],['list','Full list'],['export','Export'],['setup','Setup']];
 
@@ -349,7 +357,19 @@ function load(){
   try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);const st=Object.assign(S.settings,d.settings||{});Object.assign(S,d);S.settings=st;}}catch(e){}
   S.pad='';S.countMode=false;S.count=1;
   Object.keys(DEFAULT_SITES).forEach(k=>{if(!S.sites[k])S.sites[k]=DEFAULT_SITES[k].slice();});
-  S.extraSpecies=(S.extraSpecies||[]).map(x=>x.g?x:{name:x.name,g:x.m==='CW'?'crab':x.m==='DW'?'ray':'fish'});
+  S.extraSpecies=(S.extraSpecies||[]).map(x=>x.g?x:{name:x.name,g:x.m==='CW'?'crab':x.m==='DW'?'ray':'fish'}).filter(x=>!SPECIES.some(b=>b.name===x.name));
+  if(!NET_TYPES.includes(S.netType))S.netType=NET_TYPES[0];
+  if(S.meshIdx>=MESHES.length)S.meshIdx=0;
+  if(!S.v12){Object.values(S.speciesShown||{}).forEach(l=>{const i=l.indexOf('Tarwhine');if(i>=0)l.splice(i,1);while(l.length>MAX_TABS)l.pop();});S.v12=true;}
+  if(!S.speciesRef)S.speciesRef={};
+  if(!S.v11){S.extraSpecies=(S.extraSpecies||[]).filter(x=>!x.sci);S.v11=true;}
+  if(!S.v7){Object.values(S.speciesShown||{}).forEach(l=>{const i=l.indexOf('Sand whiting');if(i>=0)l.splice(i,1);
+    ['Yelloweye mullet','Sea mullet'].forEach(n=>{if(!l.includes(n)&&l.length<15)l.push(n);});});
+    S.extraSpecies=(S.extraSpecies||[]).filter(x=>!['Yelloweye mullet','Sea mullet'].includes(x.name));S.v7=true;}
+  if(!S.addedV6){Object.values(S.speciesShown||{}).forEach(l=>{if(!l.includes('Tarwhine')&&l.length<15)l.push('Tarwhine');});S.addedV6=true;}
+  if(!S.removedV5){Object.values(S.speciesShown||{}).forEach(l=>['Flathead','Flounder'].forEach(n=>{const i=l.indexOf(n);if(i>=0)l.splice(i,1);}));S.removedV5=true;}
+  if(!S.addedV4){const NEW=['Elongate flounder','Small-toothed flounder','Bluespotted flathead'];
+    Object.values(S.speciesShown||{}).forEach(l=>NEW.forEach(n=>{if(!l.includes(n)&&l.length<15)l.push(n);}));S.addedV4=true;}
 }
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(S));savedOK=true;}catch(e){savedOK=false;}}
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),1800);}
@@ -364,7 +384,10 @@ const meshLabel = m => m==='ALL'?'All meshes':m+' mm';
 const allSpecies = () => SPECIES.concat(S.extraSpecies);
 const findSp = name => allSpecies().find(s=>s.name===name);
 const groupOf = name => (findSp(name)||{g:'fish'}).g;
-const measureOf = name => {const sp=findSp(name);return (sp&&sp.m)||GROUPS[groupOf(name)].m;};
+/* Measurement rules: Blue swimmer crab = CW, Eagle ray and Smooth ray = DW, everything else = TL */
+const MEASURE_RULES = {'Blue swimmer crab':'CW','Eagle ray':'DW','Smooth ray':'DW'};
+const SEX_REQUIRED = ['Blue swimmer crab'];
+const measureOf = name => MEASURE_RULES[name]||'TL';
 function searchPool(){const l=LOCAL_SPECIES[S.location]||Object.values(LOCAL_SPECIES).flat();return l.concat(S.extraSpecies.filter(x=>!l.some(y=>y.name===x.name)));}
 const isCrab = name => groupOf(name)==='crab';
 function shownSpecies(){const l=S.speciesShown[S.location];return l?allSpecies().filter(s=>l.includes(s.name)):SPECIES.slice();}
@@ -442,8 +465,10 @@ function entryHTML(){
 
   const tabs=shownSpecies().slice(0,MAX_TABS).map(s=>({name:s.name,ph:false}));
   for(let i=1;tabs.length<MAX_TABS;i++)tabs.push({name:'SP'+i,ph:true});
+  const otherSel=!!S.species&&!shownSpecies().some(x=>x.name===S.species)&&!/^SP\d+$/.test(S.species);
   const spBtns=tabs.map(s=>{const n=fishCount(here.filter(r=>r.species===s.name));
-    return `<button class="sp ${s.ph?'ph':''} ${S.species===s.name?'on':''}" data-act="sp" data-val="${esc(s.name)}">${esc(s.name)}${n?`<span class="n">${n}</span>`:''}</button>`;}).join('');
+    return `<button class="sp ${s.ph?'ph':''} ${S.species===s.name?'on':''}" data-act="sp" data-val="${esc(s.name)}">${esc(s.name)}${n?`<span class="n">${n}</span>`:''}</button>`;}).join('')
+    +`<button class="sp otherbtn ${otherSel?'on':''}" data-act="otherPage">Additional species<small>${otherSel?esc(S.species):'more ›'}</small></button>`;
 
   const num=S.pad||'0';
   let code,sub;
@@ -475,7 +500,6 @@ function entryHTML(){
       <button class="navbtn" data-act="meshUp" aria-label="Next mesh size" ${S.meshIdx>=MESHES.length-1?'disabled':''}>${icon('up')}</button></div>
   </section>
   <section class="species">${spBtns}</section>
-  <section class="spsearch"><input class="inp" id="sp-search" type="search" autocomplete="off" placeholder="Search other species${LOCAL_SPECIES[S.location]?' caught in '+esc(S.location):''}…"><div id="sp-results"></div></section>
   <section class="entry${left}">
     <button class="emptybtn" data-act="empty">Empty<br>net</button>
     <div class="display ${S.countMode?'count':''}" id="display">
@@ -559,10 +583,20 @@ function exportHTML(){
     </div></div>`;
 }
 
+function refHTML(){
+  const n=Object.keys(S.speciesRef).length;
+  const names=allKnownNames(),missing=names.filter(x=>!S.speciesRef[normName(x)]);
+  return `<div class="page" style="margin-top:14px"><h2>Species codes</h2>
+    <p class="note">Import a CSV with each species’ common name, scientific name, species code and CAAB code. Exports then fill these in on every catch row by matching the common name. Capitals, spaces and hyphens don’t matter.</p>
+    <div class="btns"><label class="btn primary" style="display:inline-flex;align-items:center">Import species CSV<input type="file" id="ref-file" accept=".csv,text/csv,text/plain" style="display:none"></label>
+      <button class="btn" data-act="refTemplate">Download template</button>${n?'<button class="btn danger" data-act="refClear">Clear codes</button>':''}</div>
+    <p class="note" style="margin:14px 0 0">${n?`${n} species loaded. `:'No species codes loaded yet. '}${n&&missing.length?`No codes yet for: ${missing.map(esc).join(', ')}.`:n?'Every species in the app has a match.':''}</p></div>`;
+}
 function setupHTML(){
   return `<div class="page"><h2>Sites</h2><p class="note">Enter site codes for each location, separated by commas, in fishing order.</p>
     ${Object.entries(BIOREGIONS).map(([b,locs])=>`<div class="region"><h3>${esc(b)}</h3>${locs.flatMap(l=>hasAreas(l)?AREAS[l].map(a=>[l+'|'+a,l+' · '+a]):[[l,l]]).map(([k,lab])=>`<label class="siteline"><span>${esc(lab)}</span><input class="inp" data-sites="${esc(k)}" value="${esc(sitesFor(k).join(', '))}" autocapitalize="characters" autocomplete="off"></label>`).join('')}</div>`).join('')}
   </div>
+  ${refHTML()}
   <div class="page" style="margin-top:14px"><h2>Clear this iPad</h2><p class="note">Removes every record, environment entry and note. Export first.</p>
     <button class="btn danger" data-act="wipe">Delete all data</button></div>`;
 }
@@ -582,15 +616,26 @@ function envModal(){
 let otherGroup='fish';
 function otherModal(){
   otherGroup='fish';
-  openModal(`<h3>Other species</h3><p class="sub">Adds a tab for ${esc(S.location)}. The measurement follows the group.</p>
+  openModal(`<h3>Add a new species</h3><p class="sub">Adds a tab for ${esc(S.location)}. New species are measured as total length (TL).</p>
     <input class="inp" id="other-name" autocomplete="off" placeholder="Species name">
     <div class="lbl" style="margin-top:16px">Group</div>
-    <div class="g2" id="group-btns">${Object.entries(GROUPS).map(([k,v])=>`<button class="opt moult ${k==='fish'?'on':''}" data-act="group" data-val="${k}">${v.label} · ${MEASURES[v.m]}</button>`).join('')}</div>${mBtns('otherSave')}`);
+    <div class="g2" id="group-btns">${Object.entries(GROUPS).map(([k,v])=>`<button class="opt moult ${k==='fish'?'on':''}" data-act="group" data-val="${k}">${v.label}</button>`).join('')}</div>${mBtns('otherSave')}`);
+}
+function otherPageModal(){
+  const shown=shownSpecies().map(x=>x.name);
+  const pool=searchPool().filter(x=>!shown.includes(x.name));
+  openModal(`<h3>Additional species</h3><p class="sub">${esc(S.location)} · tap a species to record it, or search by common or scientific name</p>
+    <input class="inp" id="op-search" type="search" autocomplete="off" placeholder="Search species…">
+    <div id="op-none" style="display:none;margin-top:12px"><button class="btn primary" data-act="other" id="op-add">Add as a new species</button></div>
+    <div class="opgrid">${pool.map(x=>`<button class="sp ${S.species===x.name?'on':''}" data-act="spPick" data-val="${esc(x.name)}" data-find="${esc((x.name+' '+(x.sci||'')).toLowerCase())}">${esc(x.name)}<small>${GROUPS[x.g].label} · ${measureOf(x.name)}</small></button>`).join('')}</div>
+    <div class="mbtns"><button data-act="close">Back to data entry</button><button class="save" data-act="other">Add a new species</button></div>`);
+  $('modal').querySelector('.sheet').classList.add('wide');
+  setTimeout(()=>{const f=$('op-search');if(f)f.blur();},80);
 }
 function speciesModal(){
   const shown=shownSpecies().map(s=>s.name);
   openModal(`<h3>Species tabs</h3><p class="sub">${esc(S.location)} · tap a species to show or hide its tab (up to 15; empty slots show as SP1, SP2…). Change these whenever the location or season changes.</p>
-    <div class="spgrid">${allSpecies().map(s=>`<button class="opt pick ${shown.includes(s.name)?'on':''}" data-act="spToggle" data-val="${esc(s.name)}">${esc(s.name)}<small>${GROUPS[s.g].label} · ${s.m||GROUPS[s.g].m}</small></button>`).join('')}</div>
+    <div class="spgrid">${allSpecies().map(s=>`<button class="opt pick ${shown.includes(s.name)?'on':''}" data-act="spToggle" data-val="${esc(s.name)}">${esc(s.name)}<small>${GROUPS[s.g].label} · ${measureOf(s.name)}</small></button>`).join('')}</div>
     <div class="btns" style="margin-top:14px"><button class="btn" data-act="spAll">Show all</button><button class="btn" data-act="spNone">Hide all</button><button class="btn" data-act="other">Add a species</button></div>
     <div class="mbtns one"><button class="save" data-act="close">Done</button></div>`);
 }
@@ -626,10 +671,11 @@ function newRecord(extra){
 function checkAnimal({species,length,sex,egg}){
   const out=[], crab=isCrab(species);
   if(length!==''&&length!=null&&!isNaN(length)){
-    if(length<LIMITS.minLength)out.push(`${length} mm is under ${LIMITS.minLength} mm. No animal should be this small.`);
-    if(crab&&(length<LIMITS.crab.min||length>LIMITS.crab.max))out.push(`Crab carapace width of ${length} mm is outside ${LIMITS.crab.min}–${LIMITS.crab.max} mm.`);
-    const mx=LIMITS.speciesMax[species];if(mx&&length>mx)out.push(`${esc(species)} over ${mx} mm (${length} mm entered).`);
-    if(length>LIMITS.maxLength)out.push(`${length} mm is over ${LIMITS.maxLength} mm.`);
+    const lim=LIMITS.species[species]||{};
+    const bad=length<LIMITS.minLength||length>LIMITS.maxLength
+      ||(crab&&(length<LIMITS.crab.min||length>LIMITS.crab.max))
+      ||(lim.max!=null&&length>lim.max)||(lim.min!=null&&length<lim.min);
+    if(bad)out.push(`Are you sure the animal is ${length} mm?`);
   }
   if(crab&&sex==='M'&&egg)out.push('A male crab can’t be mature or carry eggs.');
   return out;
@@ -674,7 +720,9 @@ function enter(){
   const v=parseFloat(S.pad);
   if(!S.pad||!(v>0)){toast(S.countMode?'Enter a count':'Enter a length, or tap Unknown size');return;}
   if(S.countMode){newRecord({length:'',count:Math.round(v),sex:'U',egg:'',moult:''});toast(`${Math.round(v)} ${S.records.at(-1).species} counted`);}
-  else{const go=()=>newRecord({length:v,count:S.count});
+  else{
+    if(SEX_REQUIRED.includes(S.species)&&(!S.attr.sex||S.attr.sex==='U')){warnModal('Sex required',[`Choose a sex for ${esc(S.species)} before entering a measurement.`,'Tap Unknown size instead if the crab isn’t measured.']);return;}
+    const go=()=>newRecord({length:v,count:S.count});
     const issues=checkAnimal({species:S.species,length:v,sex:S.attr.sex,egg:S.attr.egg});
     if(issues.length)warnModal('Check this entry',issues,'Enter anyway',go);else go();}
 }
@@ -703,16 +751,47 @@ function markPosition(){
 
 /* ===== Export ===== */
 const csvCell=v=>{v=v==null?'':String(v);return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
-const toCSV=(head,rows)=>[head.join(',')].concat(rows.map(r=>r.map(csvCell).join(','))).join('\r\n');
+const toCSV=(head,rows,na)=>[head.join(',')].concat(rows.map(r=>r.map(v=>csvCell(na&&(v==null||v==='')?'NA':v)).join(','))).join('\r\n');
+const normName = t => String(t||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+function refFor(name){
+  const r=S.speciesRef[normName(name)]||{};
+  const sp=findSp(name)||Object.values(LOCAL_SPECIES).flat().find(x=>x.name===name)||{};
+  return {sci:r.sci||sp.sci||'',code:r.code||'',caab:r.caab||''};
+}
+function parseCSV(text){
+  const rows=[];let row=[],f='',q=false;
+  for(let i=0;i<text.length;i++){const c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){f+='"';i++;}else q=false;}else f+=c;}
+    else if(c==='"')q=true;
+    else if(c===','){row.push(f);f='';}
+    else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;row.push(f);rows.push(row);row=[];f='';}
+    else f+=c;}
+  if(f!==''||row.length){row.push(f);rows.push(row);}
+  return rows.map(r=>r.map(x=>x.trim())).filter(r=>r.some(Boolean));
+}
+function importRef(text){
+  const rows=parseCSV(text.replace(/^\uFEFF/,''));if(!rows.length)return 0;
+  const h=rows[0].map(x=>x.toLowerCase());
+  let ci=h.findIndex(x=>x.includes('common')),si=h.findIndex(x=>x.includes('scien')||x.includes('latin')),
+      ai=h.findIndex(x=>x.includes('caab')),di=h.findIndex(x=>x.includes('code')&&!x.includes('caab'));
+  let body=rows.slice(1);
+  if(ci<0&&si<0&&ai<0){ci=0;si=1;di=2;ai=3;body=rows;}
+  if(ci<0)ci=0;
+  const ref={};
+  body.forEach(r=>{const n=r[ci];if(!n)return;ref[normName(n)]={name:n,sci:si>=0?r[si]||'':'',code:di>=0?r[di]||'':'',caab:ai>=0?r[ai]||'':''};});
+  S.speciesRef=ref;return Object.keys(ref).length;
+}
+function allKnownNames(){const n=[];SPECIES.concat(Object.values(LOCAL_SPECIES).flat(),S.extraSpecies).forEach(x=>{if(!n.includes(x.name))n.push(x.name);});return n;}
+function templateCSV(){return toCSV(['Common_name','Scientific_name','Species_code','CAAB_code'],allKnownNames().map(n=>{const r=refFor(n);return [n,r.sci,r.code,r.caab];}));}
 function catchCSV(recs){
-  return toCSV(['Date','Bioregion','Location','Estuary_area','Net_type','Soak_time_h','Recorder_1','Recorder_2','Site','Mesh_mm','Species','Measurement','Length_mm','Count','Sex_maturity','Egg_stage','Moult','Genetic_ID','Empty_net','Latitude','Longitude','Notes','Recorded_at'],
-    recs.map(r=>[r.date,r.bioregion,r.location,r.area||'',r.netType||'',r.soak||'',r.recorder1||'',r.recorder2||'',r.site,r.mesh,r.species,r.empty?'':r.measure,r.length,r.count,r.empty?'':sexOf(r.sex).label,r.egg,r.moult,r.geneticId,r.empty?'Y':'',r.lat,r.lon,r.notes,r.time]));
+  return toCSV(['Date','Bioregion','Location','Estuary_area','Net_type','Soak_time_h','Recorder_1','Recorder_2','Site','Mesh_mm','Species','Scientific_name','Species_code','CAAB_code','CW_mm','DW_mm','TL_mm','Count','Sex_maturity','Egg_stage','Moult','Genetic_ID','Empty_net','Latitude','Longitude','Notes','Recorded_at'],
+    recs.map(r=>[r.date,r.bioregion,r.location,r.area||'',r.netType||'',r.soak||'',r.recorder1||'',r.recorder2||'',r.site,r.mesh,r.species,...(r.empty||!r.species?['','','']:(x=>[x.sci,x.code,x.caab])(refFor(r.species))),...['CW','DW','TL'].map(k=>!r.empty&&r.length!==''&&r.length!=null&&r.measure===k?r.length:''),r.count,r.empty||!r.sex||r.sex==='U'?'':sexOf(r.sex).label,r.egg,r.moult,r.geneticId,r.empty?'Y':'N',r.lat,r.lon,r.notes,r.time]),true);
 }
 function envCSV(filter){
   const keys=Object.keys(S.env).filter(filter).sort();
   const head=['Date','Bioregion','Location','Estuary_area','Site'];ENV_ROWS.forEach(([k,,u])=>{head.push(`${k}_top_${u.replace('°','')}`,`${k}_bottom_${u.replace('°','')}`);});
   return toCSV(head,keys.map(k=>{const [d,l,s]=k.split('|');const e=S.env[k]||{};const bio=Object.keys(BIOREGIONS).find(b=>BIOREGIONS[b].includes(l))||'';
-    const row=[d,bio,l,areaOfSite(l,s),s];ENV_ROWS.forEach(([id])=>row.push(e[id+'_top'],e[id+'_bottom']));return row;}));
+    const row=[d,bio,l,areaOfSite(l,s),s];ENV_ROWS.forEach(([id])=>row.push(e[id+'_top'],e[id+'_bottom']));return row;}),true);
 }
 function buildExport(scope){
   const day=scope==='day', recs=day?dayRecs():S.records;
@@ -752,15 +831,17 @@ document.addEventListener('click',e=>{
     case 'meshDown':guardNav(()=>{if(S.meshIdx>0)S.meshIdx--;});return;
     case 'meshUp':guardNav(()=>{if(S.meshIdx<MESHES.length-1)S.meshIdx++;});return;
     case 'warnGo':{const f=pendingFn;pendingFn=null;closeModal();if(f)f();return;}
+    case 'otherPage':otherPageModal();return;
+    case 'refTemplate':download(new File([templateCSV()],'gillnet_species_codes_template.csv',{type:'text/csv'}));toast('Template downloaded');return;
+    case 'refClear':if(!confirm('Remove all imported species codes?'))return;S.speciesRef={};break;
     case 'spPick':{const x=searchPool().find(y=>y.name===v);if(!x)return;
       if(!allSpecies().some(y=>y.name===x.name))S.extraSpecies.push({name:x.name,g:x.g,...(x.m?{m:x.m}:{}),...(x.sci?{sci:x.sci}:{})});
-      const l=shownList();if(!l.includes(x.name)){if(l.length<MAX_TABS)l.push(x.name);else toast('All 15 tabs are in use, so it’s selected without a tab.');}
-      S.species=x.name;if(!isCrab(x.name))S.attr.egg='';break;}
+      S.species=x.name;if(!isCrab(x.name))S.attr.egg='';closeModal();break;}
     case 'sp':S.species=v;if(!isCrab(v))S.attr.egg='';break;
-    case 'other':{const q=$('sp-search')?$('sp-search').value.trim():'';otherModal();if(q&&$('other-name'))$('other-name').value=q;return;}
+    case 'other':{const q=$('op-search')?$('op-search').value.trim():'';otherModal();if(q&&$('other-name'))$('other-name').value=q;return;}
     case 'group':otherGroup=v;document.querySelectorAll('#group-btns .opt').forEach(x=>x.classList.toggle('on',x.dataset.val===v));return;
     case 'speciesEdit':speciesModal();return;
-    case 'spToggle':{const l=shownList();const i=l.indexOf(v);if(i>=0)l.splice(i,1);else{if(l.length>=MAX_TABS){toast('All 15 tabs are in use. Hide one first.');return;}l.push(v);}render();speciesModal();return;}
+    case 'spToggle':{const l=shownList();const i=l.indexOf(v);if(i>=0)l.splice(i,1);else{if(l.length>=MAX_TABS){toast('All 14 tabs are in use. Hide one first.');return;}l.push(v);}render();speciesModal();return;}
     case 'spAll':S.speciesShown[S.location]=allSpecies().map(s=>s.name).slice(0,MAX_TABS);render();speciesModal();return;
     case 'spNone':S.speciesShown[S.location]=[];render();speciesModal();return;
     case 'otherSave':{const n=($('other-name').value||'').trim();if(!n){toast('Type a species name');return;}
@@ -792,6 +873,7 @@ document.addEventListener('click',e=>{
     case 'editSave':{const r=S.records.find(x=>x.id===v);if(!r)break;
       const sp=$('ed-species').value,L0=$('ed-length').value.trim();let sx=sp?$('ed-sex').value:'';const eg=$('ed-egg').value;
       if(isCrab(sp)&&eg&&(sx==='FI'||sx==='U')){sx='FM';$('ed-sex').value='FM';}
+      if(SEX_REQUIRED.includes(sp)&&L0!==''&&(!sx||sx==='U')){$('mwarn').innerHTML=`<ul class="warnlist"><li>Choose a sex for ${esc(sp)}. It’s required when a measurement is recorded.</li></ul>`;return;}
       if(showModalWarn(b,checkAnimal({species:sp,length:L0===''?'':parseFloat(L0),sex:sx,egg:eg})))return;
       r.species=sp;r.empty=!sp;r.measure=sp?measureOf(sp):'';r.mesh=$('ed-mesh').value;
       const L=$('ed-length').value.trim();r.length=L===''?'':parseFloat(L);r.count=parseInt($('ed-count').value,10)||0;
@@ -812,17 +894,22 @@ function renderSearch(q){
   if(q.length<2){box.innerHTML='';return;}
   const shown=shownSpecies().map(x=>x.name);
   const hits=searchPool().filter(x=>!shown.includes(x.name)&&(x.name.toLowerCase().includes(q)||(x.sci||'').toLowerCase().includes(q))).slice(0,8);
-  box.innerHTML=hits.length?hits.map(x=>`<button class="res" data-act="spPick" data-val="${esc(x.name)}">${esc(x.name)}<small>${x.sci?`<i>${esc(x.sci)}</i> · `:''}${x.m||GROUPS[x.g].m}</small></button>`).join('')
+  box.innerHTML=hits.length?hits.map(x=>`<button class="res" data-act="spPick" data-val="${esc(x.name)}">${esc(x.name)}<small>${x.sci?`<i>${esc(x.sci)}</i> · `:''}${measureOf(x.name)}</small></button>`).join('')
     :`<button class="res" data-act="other">No match. Add “${esc(q)}” as a new species</button>`;
 }
 document.addEventListener('input',e=>{
   if(e.target.id==='sp-search'){renderSearch(e.target.value);return;}
+  if(e.target.id==='op-search'){const q=e.target.value.trim().toLowerCase();let n=0;
+    document.querySelectorAll('.opgrid .sp').forEach(b=>{const ok=!q||b.dataset.find.includes(q);b.style.display=ok?'':'none';if(ok)n++;});
+    $('op-none').style.display=n?'none':'';$('op-add').textContent=`Add “${e.target.value.trim()}” as a new species`;return;}
   if(!e.target.closest('#modal'))return;
   if(e.target.id&&e.target.id.startsWith('env-'))e.target.classList.toggle('warn',!!envIssue(e.target.id.slice(4),e.target.value));
   const sb=document.querySelector('#modal .save[data-force]');
   if(sb){delete sb.dataset.force;sb.textContent='Save';sb.classList.remove('warnbtn');$('mwarn').innerHTML='';}
 });
 document.addEventListener('change',e=>{
+  if(e.target.id==='ref-file'){const f=e.target.files&&e.target.files[0];if(!f)return;const rd=new FileReader();
+    rd.onload=()=>{const n=importRef(String(rd.result));render();toast(n?`${n} species codes imported`:'No species found in that file');};rd.readAsText(f);return;}
   if(e.target.closest('#modal')&&e.target.tagName==='SELECT')e.target.dispatchEvent(new Event('input',{bubbles:true}));
   const h=e.target.dataset.h;
   if(h){if(h==='date')S.date=e.target.value||today();
