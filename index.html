@@ -152,6 +152,12 @@ main{padding:16px 18px 30px;max-width:1100px;margin:0 auto}
 .res small{display:block;font-weight:500;font-size:13px;color:var(--muted)}
 .res i{font-weight:500}
 
+.opt.locked{opacity:.35}
+
+.emptybtn small{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-top:4px}
+.emptybtn.on{background:var(--yellow);border-color:var(--yellow);color:#231F00}
+.emptybtn.on small{color:#231F00}
+
 /* Action tiles */
 .actions{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:20px}
 .tile{min-height:78px;border-radius:14px;border:1.5px solid var(--tile-line);background:var(--tile);font-weight:700;font-size:19px;line-height:1.2;padding:6px}
@@ -387,6 +393,7 @@ const groupOf = name => (findSp(name)||{g:'fish'}).g;
 /* Measurement rules: Blue swimmer crab = CW, Eagle ray and Smooth ray = DW, everything else = TL */
 const MEASURE_RULES = {'Blue swimmer crab':'CW','Eagle ray':'DW','Smooth ray':'DW'};
 const SEX_REQUIRED = ['Blue swimmer crab'];
+const EGG_SPECIES = 'Blue swimmer crab'; // egg stages can only be recorded for this species
 const measureOf = name => MEASURE_RULES[name]||'TL';
 function searchPool(){const l=LOCAL_SPECIES[S.location]||Object.values(LOCAL_SPECIES).flat();return l.concat(S.extraSpecies.filter(x=>!l.some(y=>y.name===x.name)));}
 const isCrab = name => groupOf(name)==='crab';
@@ -478,8 +485,9 @@ function entryHTML(){
     sub=[esc(S.species),MEASURES[m],sexOf(a.sex).label.replace(' sex',''),crab?(a.moult==='H'?'Hard':'Soft'):'',a.egg&&crab?'Egg stage '+a.egg:''].filter(Boolean).join(' · ');}
 
   const sexBtns=SEX.map(s=>`<button class="opt ${s.cls} ${a.sex===s.id?'on':''}" data-act="sex" data-val="${s.id}">${s.label}</button>`).join('');
-  const crabBlock=crab?`<div class="lbl">Egg stage · sets female + mature</div><div class="g3">${[1,2,3].map(i=>`<button class="opt e${i} ${a.egg==String(i)?'on':''}" data-act="egg" data-val="${i}"><span class="dot"></span>Stage ${i}</button>`).join('')}</div>
-    <div class="lbl">Moult</div><div class="g2"><button class="opt moult ${a.moult==='H'?'on':''}" data-act="moult" data-val="H">Hard</button><button class="opt moult ${a.moult==='S'?'on':''}" data-act="moult" data-val="S">Soft</button></div>`:'';
+  const eggOK=S.species===EGG_SPECIES;
+  const crabBlock=`<div class="lbl">Egg stage · ${eggOK?'sets female + mature':esc(EGG_SPECIES)+' only'}</div><div class="g3">${[1,2,3].map(i=>`<button class="opt e${i} ${eggOK&&a.egg==String(i)?'on':''} ${eggOK?'':'locked'}" data-act="egg" data-val="${i}" aria-disabled="${!eggOK}"><span class="dot"></span>Stage ${i}</button>`).join('')}</div>`
+    +(crab?`<div class="lbl">Moult</div><div class="g2"><button class="opt moult ${a.moult==='H'?'on':''}" data-act="moult" data-val="H">Hard</button><button class="opt moult ${a.moult==='S'?'on':''}" data-act="moult" data-val="S">Soft</button></div>`:'');
   const d=S.settings.defaults;
   const defText=`Default ${S.settings.defaultOn?'on':'off'} · ${sexOf(d.sex).label}${crab?' + '+(d.moult==='H'?'Hard':'Soft'):''}`;
 
@@ -487,7 +495,7 @@ function entryHTML(){
   const envDone=env&&ENV_ROWS.some(([k])=>env[k+'_top']||env[k+'_bottom']);
 
   const all=dayRecs(), recent=all.slice(-15).reverse();
-  const item=r=>r.empty?'Empty net':`${esc(r.species)} ${r.length!==''&&r.length!=null?r.length:'?'}${r.count>1?' ×'+r.count:''}`;
+  const item=r=>r.empty?`${meshLabel(r.mesh)} empty`:`${esc(r.species)} ${r.length!==''&&r.length!=null?r.length:'?'}${r.count>1?' ×'+r.count:''}`;
   const recentHTML=`<section class="runline"><span class="lbl">${all.length} today</span><span class="items">${recent.length?recent.map(item).join(', '):'Entries will appear here, newest first'}</span></section>`;
 
   return `<div class="egrid">
@@ -496,12 +504,12 @@ function entryHTML(){
       <div class="navlbl"><small>Site ${S.siteIdx+1} of ${sites.length}</small><b>${esc(site)}</b></div>
       <button class="navbtn" data-act="siteNext" aria-label="Next site" ${S.siteIdx>=sites.length-1?'disabled':''}>${icon('right')}</button></div>
     <div class="nav"><button class="navbtn" data-act="meshDown" aria-label="Previous mesh size" ${S.meshIdx===0?'disabled':''}>${icon('down')}</button>
-      <div class="navlbl"><small>Mesh ${S.meshIdx+1} of ${MESHES.length} · ${fishCount(here)} caught</small><b>${meshLabel(mesh)}</b></div>
+      <div class="navlbl"><small>Mesh ${S.meshIdx+1} of ${MESHES.length} · ${here.some(r=>r.empty)?'empty net':fishCount(here)+' caught'}</small><b>${meshLabel(mesh)}</b></div>
       <button class="navbtn" data-act="meshUp" aria-label="Next mesh size" ${S.meshIdx>=MESHES.length-1?'disabled':''}>${icon('up')}</button></div>
   </section>
   <section class="species">${spBtns}</section>
   <section class="entry${left}">
-    <button class="emptybtn" data-act="empty">Empty<br>net</button>
+    <button class="emptybtn ${here.some(r=>r.empty)?'on':''}" data-act="empty">Empty<br>net</button>
     <div class="display ${S.countMode?'count':''}" id="display">
       <div class="num" id="num">${num}<small>${S.countMode?'fish':'mm'}</small></div>
       <div class="sum"><b id="code">${code}</b><span>${sub}</span></div>
@@ -658,9 +666,11 @@ function editModal(id){
 
 /* ===== Data entry actions ===== */
 function newRecord(extra){
+  if(!(extra&&extra.empty)){const site=currentSite(),mesh=currentMesh(),em=meshRecs(site,mesh).find(r=>r.empty);
+    if(em){S.records=S.records.filter(r=>r!==em);toast(`Empty mark removed from ${meshLabel(mesh)}`);}}
   const site=currentSite(),mesh=currentMesh(),crab=isCrab(S.species),pos=S.positions[posKey(site,mesh)];
   const r=Object.assign({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),date:S.date,bioregion:S.bioregion,location:S.location,site,mesh,
-    species:S.species,measure:measureOf(S.species),length:'',count:1,sex:S.attr.sex,egg:crab?S.attr.egg:'',moult:crab?S.attr.moult:'',
+    species:S.species,measure:measureOf(S.species),length:'',count:1,sex:S.attr.sex,egg:S.species===EGG_SPECIES?S.attr.egg:'',moult:crab?S.attr.moult:'',
     netType:S.netType,soak:S.soak,recorder1:S.recorder1,recorder2:S.recorder2,area:S.area||'',geneticId:'',notes:'',empty:false,lat:pos?pos.lat:'',lon:pos?pos.lon:'',time:new Date().toISOString(),exported:false},extra);
   S.records.push(r);
   S.pad='';S.countMode=false;S.count=1;
@@ -697,6 +707,21 @@ function warnModal(title,issues,goLabel,fn,stayLabel='Go back'){
 function padBlocked(){
   if(!S.pad)return false;
   warnModal('Catch not entered',[`${S.pad} ${S.countMode?'fish':'mm'} is on the display but hasn’t been entered. Press ENTER to record it, or Clear to discard it, before changing site or mesh.`]);return true;
+}
+const meshRecs=(site,mesh)=>S.records.filter(r=>r.date===S.date&&r.location===S.location&&r.site===site&&r.mesh===mesh);
+function goMesh(t){
+  const mesh=MESHES[t];if(mesh===undefined||padBlocked())return;
+  if(meshRecs(currentSite(),mesh).length){
+    warnModal('Catch already entered',[`You have already entered catch at ${mesh==='ALL'?'All mesh sizes':mesh+' mm mesh size'}. Are you sure you want to continue?`],'Continue',()=>{S.meshIdx=t;render();},`Stay at ${meshLabel(currentMesh())}`);return;}
+  S.meshIdx=t;render();
+}
+function markEmpty(){
+  const site=currentSite(),mesh=currentMesh(),recs=meshRecs(site,mesh);if(!site||padBlocked())return;
+  const empty=recs.find(r=>r.empty);
+  if(empty){warnModal('Already marked empty',[`${meshLabel(mesh)} at ${esc(site)} is marked as an empty net.`],'Remove empty mark',()=>{S.records=S.records.filter(r=>r!==empty);render();toast('Empty mark removed');});return;}
+  if(recs.length){warnModal('Catch already entered',[`${meshLabel(mesh)} at ${esc(site)} already has ${fishCount(recs)} animal${fishCount(recs)===1?'':'s'} entered, so it can’t be marked empty.`]);return;}
+  warnModal('Empty net',[`Record the ${meshLabel(mesh)} panel at ${esc(site)} as empty (no catch)?`],'Mark empty',()=>{
+    const keep=S.species;S.species='';newRecord({species:'',measure:'',count:0,sex:'',egg:'',moult:'',empty:true});S.species=keep;render();toast(`${meshLabel(mesh)} marked empty`);},'Cancel');
 }
 function goSite(t){
   const list=sitesFor(curKey()),site=list[t];
@@ -828,8 +853,8 @@ document.addEventListener('click',e=>{
     case 'gps':if(S.tab==='entry'&&currentSite()){markPosition();return;}toast('Use Mark position on the data entry screen');return;
     case 'sitePrev':goSite(S.siteIdx-1);return;
     case 'siteNext':goSite(S.siteIdx+1);return;
-    case 'meshDown':guardNav(()=>{if(S.meshIdx>0)S.meshIdx--;});return;
-    case 'meshUp':guardNav(()=>{if(S.meshIdx<MESHES.length-1)S.meshIdx++;});return;
+    case 'meshDown':goMesh(S.meshIdx-1);return;
+    case 'meshUp':goMesh(S.meshIdx+1);return;
     case 'warnGo':{const f=pendingFn;pendingFn=null;closeModal();if(f)f();return;}
     case 'otherPage':otherPageModal();return;
     case 'refTemplate':download(new File([templateCSV()],'gillnet_species_codes_template.csv',{type:'text/csv'}));toast('Template downloaded');return;
@@ -854,12 +879,12 @@ document.addEventListener('click',e=>{
     case 'countUp':S.count++;break;
     case 'countDown':if(S.count>1)S.count--;break;
     case 'countMode':S.countMode=!S.countMode;S.pad='';break;
-    case 'empty':if(confirm(`Record ${meshLabel(currentMesh())} at ${currentSite()} as an empty net?`)){
-      const keep=S.species;S.species='';newRecord({species:'',measure:'',count:0,sex:'',egg:'',moult:'',empty:true});S.species=keep;render();toast('Empty net recorded');}return;
+    case 'empty':markEmpty();return;
     case 'sex':if(isCrab(S.species)&&S.attr.egg&&v!=='FM'){
         warnModal('Egg stage is set',[v==='M'?'A male crab can’t be mature or carry eggs.':'A crab with eggs is a mature female.','Changing sex will clear the egg stage.'],'Change and clear eggs',()=>{S.attr.sex=v;S.attr.egg='';render();});return;}
       S.attr.sex=v;if(v!=='FM')S.attr.egg='';break;
-    case 'egg':S.attr.egg=S.attr.egg===v?'':v;if(S.attr.egg)S.attr.sex='FM';break;
+    case 'egg':if(S.species!==EGG_SPECIES){warnModal('Egg stage not allowed',[`Egg stages can only be recorded for ${esc(EGG_SPECIES)}.`]);return;}
+      S.attr.egg=S.attr.egg===v?'':v;if(S.attr.egg)S.attr.sex='FM';break;
     case 'moult':S.attr.moult=v;break;
     case 'defToggle':S.settings.defaultOn=!S.settings.defaultOn;break;
     case 'setDefault':S.settings.defaults={sex:S.attr.sex,moult:S.attr.moult||'H'};S.settings.defaultOn=true;toast('Default saved');break;
@@ -873,6 +898,7 @@ document.addEventListener('click',e=>{
     case 'editSave':{const r=S.records.find(x=>x.id===v);if(!r)break;
       const sp=$('ed-species').value,L0=$('ed-length').value.trim();let sx=sp?$('ed-sex').value:'';const eg=$('ed-egg').value;
       if(isCrab(sp)&&eg&&(sx==='FI'||sx==='U')){sx='FM';$('ed-sex').value='FM';}
+      if(eg&&sp!==EGG_SPECIES){$('mwarn').innerHTML=`<ul class="warnlist"><li>Egg stages can only be recorded for ${esc(EGG_SPECIES)}. Clear the egg stage first.</li></ul>`;return;}
       if(SEX_REQUIRED.includes(sp)&&L0!==''&&(!sx||sx==='U')){$('mwarn').innerHTML=`<ul class="warnlist"><li>Choose a sex for ${esc(sp)}. It’s required when a measurement is recorded.</li></ul>`;return;}
       if(showModalWarn(b,checkAnimal({species:sp,length:L0===''?'':parseFloat(L0),sex:sx,egg:eg})))return;
       r.species=sp;r.empty=!sp;r.measure=sp?measureOf(sp):'';r.mesh=$('ed-mesh').value;
