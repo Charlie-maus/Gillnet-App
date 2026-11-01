@@ -1,7 +1,7 @@
 // Offline cache for the Estuarine Gillnet App.
 // Bump VERSION whenever you upload a changed index.html so tablets pick up the update.
-const VERSION = 'gillnet-v20';
-const FILES = ['./','./index.html','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/icon-maskable-512.png','./icons/apple-touch-icon.png'];
+const VERSION = 'gillnet-v21';
+const FILES = ['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png','./apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
