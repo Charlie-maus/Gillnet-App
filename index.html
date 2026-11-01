@@ -158,6 +158,19 @@ main{padding:16px 18px 30px;max-width:1100px;margin:0 auto}
 .emptybtn.on{background:var(--yellow);border-color:var(--yellow);color:#231F00}
 .emptybtn.on small{color:#231F00}
 
+.appbar{position:relative}
+.row1{padding-right:62px}
+.lockbtn{position:absolute;top:14px;right:18px;width:50px;height:50px;border-radius:12px;border:1px solid var(--line);background:var(--panel);display:grid;place-items:center}
+.lockbtn svg,.lockicon svg{width:26px;height:26px}
+.lockscreen{position:fixed;inset:0;z-index:50;background:rgba(5,10,13,.55);display:flex;align-items:center;justify-content:center;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.lockscreen.hidden{display:none}
+.lockicon{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:18px;width:50px;height:50px;border-radius:12px;background:var(--yellow);color:#231F00;display:grid;place-items:center}
+.holdbtn{position:relative;overflow:hidden;width:min(420px,80vw);min-height:130px;border-radius:24px;border:3px solid var(--yellow);background:var(--panel);color:var(--ink);font-weight:800;font-size:26px;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.holdbtn .fill{position:absolute;inset:0 auto 0 0;width:0;background:var(--yellow);opacity:.35}
+.holdbtn.holding .fill{width:100%;transition:width 2s linear}
+.holdbtn .txt,.holdbtn small{position:relative;display:block}
+.holdbtn small{font-size:15px;font-weight:500;color:var(--muted);margin-top:6px}
+
 /* Action tiles */
 .actions{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:20px}
 .tile{min-height:78px;border-radius:14px;border:1.5px solid var(--tile-line);background:var(--tile);font-weight:700;font-size:19px;line-height:1.2;padding:6px}
@@ -259,12 +272,16 @@ html.fitted,html.fitted body{overflow:hidden}
 <body>
 <div id="app">
 <header class="appbar" id="appbar">
-  <div class="row1"><div class="brand">ESTUARINE GILLNET APP</div><nav id="tabs"></nav></div>
+  <div class="row1"><div class="brand">ESTUARINE GILLNET APP</div><nav id="tabs"></nav><button class="lockbtn" id="lockbtn" data-act="lock" aria-label="Lock screen"></button></div>
   <div class="row2"><div class="title" id="title"></div><div class="chips" id="chips"></div></div>
 </header>
 <main id="main"></main>
 </div>
 <div class="modal hidden" id="modal"></div>
+<div class="lockscreen hidden" id="lockscreen" aria-hidden="true">
+  <div class="lockicon" id="lockicon"></div>
+  <button class="holdbtn" id="holdbtn"><span class="fill"></span><span class="txt">Hold to Unlock Screen</span><small>press and hold for 2 seconds</small></button>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -667,7 +684,8 @@ function editModal(id){
 /* ===== Data entry actions ===== */
 function newRecord(extra){
   if(!(extra&&extra.empty)){const site=currentSite(),mesh=currentMesh(),em=meshRecs(site,mesh).find(r=>r.empty);
-    if(em){S.records=S.records.filter(r=>r!==em);toast(`Empty mark removed from ${meshLabel(mesh)}`);}}
+    if(em)S.records=S.records.filter(r=>r!==em);}
+  emptyOK=false;
   const site=currentSite(),mesh=currentMesh(),crab=isCrab(S.species),pos=S.positions[posKey(site,mesh)];
   const r=Object.assign({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),date:S.date,bioregion:S.bioregion,location:S.location,site,mesh,
     species:S.species,measure:measureOf(S.species),length:'',count:1,sex:S.attr.sex,egg:S.species===EGG_SPECIES?S.attr.egg:'',moult:crab?S.attr.moult:'',
@@ -710,6 +728,7 @@ function padBlocked(){
 }
 const meshRecs=(site,mesh)=>S.records.filter(r=>r.date===S.date&&r.location===S.location&&r.site===site&&r.mesh===mesh);
 function goMesh(t){
+  emptyOK=false;
   const mesh=MESHES[t];if(mesh===undefined||padBlocked())return;
   if(meshRecs(currentSite(),mesh).length){
     warnModal('Catch already entered',[`You have already entered catch at ${mesh==='ALL'?'All mesh sizes':mesh+' mm mesh size'}. Are you sure you want to continue?`],'Continue',()=>{S.meshIdx=t;render();},`Stay at ${meshLabel(currentMesh())}`);return;}
@@ -719,11 +738,13 @@ function markEmpty(){
   const site=currentSite(),mesh=currentMesh(),recs=meshRecs(site,mesh);if(!site||padBlocked())return;
   const empty=recs.find(r=>r.empty);
   if(empty){warnModal('Already marked empty',[`${meshLabel(mesh)} at ${esc(site)} is marked as an empty net.`],'Remove empty mark',()=>{S.records=S.records.filter(r=>r!==empty);render();toast('Empty mark removed');});return;}
-  if(recs.length){warnModal('Catch already entered',[`${meshLabel(mesh)} at ${esc(site)} already has ${fishCount(recs)} animal${fishCount(recs)===1?'':'s'} entered, so it can’t be marked empty.`]);return;}
+  if(recs.length){const n=fishCount(recs);warnModal('Catch already entered',[`You have already entered catch at ${mesh==='ALL'?'All mesh sizes':mesh+' mm mesh size'}. Are you sure you want to select Empty Net?`,`This deletes the ${n} animal${n===1?'':'s'} entered at ${meshLabel(mesh)} on ${esc(site)}.`],'Yes, select Empty Net',()=>{
+      S.records=S.records.filter(r=>!recs.includes(r));const keep=S.species;S.species='';newRecord({species:'',measure:'',count:0,sex:'',egg:'',moult:'',empty:true});S.species=keep;render();toast(`${meshLabel(mesh)} marked empty`);},'No');return;}
   warnModal('Empty net',[`Record the ${meshLabel(mesh)} panel at ${esc(site)} as empty (no catch)?`],'Mark empty',()=>{
     const keep=S.species;S.species='';newRecord({species:'',measure:'',count:0,sex:'',egg:'',moult:'',empty:true});S.species=keep;render();toast(`${meshLabel(mesh)} marked empty`);},'Cancel');
 }
 function goSite(t){
+  emptyOK=false;
   const list=sitesFor(curKey()),site=list[t];
   if(site===undefined||padBlocked())return;
   const n=S.records.filter(r=>r.date===S.date&&r.location===S.location&&r.site===site).length,env=!!S.env[siteKey(site)];
@@ -739,11 +760,29 @@ function showModalWarn(btn,issues){
   $('mwarn').innerHTML=`<ul class="warnlist">${issues.map(i=>`<li>${i}</li>`).join('')}</ul>`;
   btn.textContent='Save anyway';btn.dataset.force='1';btn.classList.add('warnbtn');return true;
 }
+const LOCK_ICONS={
+  open:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.6-1.7"/></svg>',
+  shut:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>'};
+let locked=false,holdTimer=null;
+function setLock(on){
+  locked=on;$('lockscreen').classList.toggle('hidden',!on);$('lockbtn').innerHTML=LOCK_ICONS.open;$('lockicon').innerHTML=LOCK_ICONS.shut;
+  if(on){if(document.activeElement)document.activeElement.blur();const r=$('lockbtn').getBoundingClientRect(),ic=$('lockicon').style;ic.top=r.top+'px';ic.left=r.left+'px';ic.right='auto';ic.width=r.width+'px';ic.height=r.height+'px';}
+}
+function holdStart(e){e.preventDefault();const h=$('holdbtn');h.classList.add('holding');clearTimeout(holdTimer);holdTimer=setTimeout(()=>{h.classList.remove('holding');setLock(false);toast('Screen unlocked');},2000);}
+function holdEnd(){clearTimeout(holdTimer);$('holdbtn').classList.remove('holding');}
+let emptyOK=false;
+const meshIsEmpty=()=>meshRecs(currentSite(),currentMesh()).some(r=>r.empty);
+function confirmEmpty(retry){
+  if(!meshIsEmpty()||emptyOK)return false;
+  warnModal('Empty Net selected',['You have selected Empty Net. Are you sure you want to enter catch?',`Entering catch removes the Empty Net record for ${meshLabel(currentMesh())}.`],'Yes, enter catch',()=>{emptyOK=true;retry();},'No');
+  return true;
+}
 function enter(){
   if(!currentSite())return;
   if(!S.species){toast('Choose a species first');return;}
   const v=parseFloat(S.pad);
   if(!S.pad||!(v>0)){toast(S.countMode?'Enter a count':'Enter a length, or tap Unknown size');return;}
+  if(confirmEmpty(enter))return;
   if(S.countMode){newRecord({length:'',count:Math.round(v),sex:'U',egg:'',moult:''});toast(`${Math.round(v)} ${S.records.at(-1).species} counted`);}
   else{
     if(SEX_REQUIRED.includes(S.species)&&(!S.attr.sex||S.attr.sex==='U')){warnModal('Sex required',[`Choose a sex for ${esc(S.species)} before entering a measurement.`,'Tap Unknown size instead if the crab isn’t measured.']);return;}
@@ -843,6 +882,7 @@ async function doExport(mode){
 
 /* ===== Events ===== */
 document.addEventListener('click',e=>{
+  if(locked)return;
   if(e.target.id==='modal'){closeModal();return;}
   const b=e.target.closest('[data-act]');if(!b||b.disabled)return;
   const a=b.dataset.act,v=b.dataset.val;
@@ -856,6 +896,7 @@ document.addEventListener('click',e=>{
     case 'meshDown':goMesh(S.meshIdx-1);return;
     case 'meshUp':goMesh(S.meshIdx+1);return;
     case 'warnGo':{const f=pendingFn;pendingFn=null;closeModal();if(f)f();return;}
+    case 'lock':setLock(true);return;
     case 'otherPage':otherPageModal();return;
     case 'refTemplate':download(new File([templateCSV()],'gillnet_species_codes_template.csv',{type:'text/csv'}));toast('Template downloaded');return;
     case 'refClear':if(!confirm('Remove all imported species codes?'))return;S.speciesRef={};break;
@@ -875,7 +916,7 @@ document.addEventListener('click',e=>{
     case 'key':padKey(v);return;
     case 'back':case 'clear':padKey(a);return;
     case 'enter':enter();return;
-    case 'unknown':if(!S.species){toast('Choose a species first');return;}newRecord({length:'',count:S.count});toast('Recorded with unknown size');return;
+    case 'unknown':if(!S.species){toast('Choose a species first');return;}if(confirmEmpty(()=>b.click()))return;newRecord({length:'',count:S.count});toast('Recorded with unknown size');return;
     case 'countUp':S.count++;break;
     case 'countDown':if(S.count>1)S.count--;break;
     case 'countMode':S.countMode=!S.countMode;S.pad='';break;
@@ -950,6 +991,7 @@ document.addEventListener('change',e=>{
   if(l!==undefined){S.sites[l]=e.target.value.split(/[,\n]/).map(s=>s.trim().toUpperCase()).filter(Boolean);persist();renderChips();toast('Sites saved');}
 });
 document.addEventListener('keydown',e=>{
+  if(locked){e.preventDefault();return;}
   if(!$('modal').classList.contains('hidden')){if(e.key==='Escape')closeModal();return;}
   if(S.tab!=='entry'||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
   if(/^[0-9.]$/.test(e.key))padKey(e.key);
@@ -957,7 +999,9 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='Enter'){e.preventDefault();enter();}
 });
 
-load();render();
+load();render();setLock(false);
+(()=>{const h=$('holdbtn');['pointerdown'].forEach(t=>h.addEventListener(t,holdStart));['pointerup','pointerleave','pointercancel'].forEach(t=>h.addEventListener(t,holdEnd));
+  $('lockscreen').addEventListener('contextmenu',e=>e.preventDefault());})();
 </script>
 <script>
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
