@@ -44,8 +44,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .appbar{padding:14px 18px 12px;border-bottom:1px solid var(--line)}
 .row1{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .brand{font-family:var(--cond);font-weight:700;font-size:28px;color:var(--cyan);letter-spacing:.02em;margin-right:auto}
-#tabs{display:flex;gap:8px;flex-wrap:wrap}
-#tabs button{min-height:48px;padding:0 12px;font-size:16px;border-radius:12px;border:1px solid var(--line);background:var(--panel);font-weight:600}
+#tabs{display:flex;gap:6px;flex-wrap:wrap}
+#tabs button{min-height:48px;padding:0 10px;font-size:15px;border-radius:12px;border:1px solid var(--line);background:var(--panel);font-weight:600}
 #tabs button.on{background:var(--cyan);color:var(--cyan-ink);border-color:var(--cyan)}
 .row2{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
 .title b{font-family:var(--cond);font-size:23px;display:block}
@@ -171,6 +171,14 @@ main{padding:16px 18px 30px;max-width:1100px;margin:0 auto}
 .holdbtn .txt,.holdbtn small{position:relative;display:block}
 .holdbtn small{font-size:15px;font-weight:500;color:var(--muted);margin-top:6px}
 
+.surveys{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+.surveybtn{min-height:min(420px,45vh);border-radius:22px;border:2px solid var(--line);background:var(--bg);font-family:var(--cond);font-size:40px;font-weight:800;letter-spacing:.02em;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.surveybtn .num{width:56px;height:56px;border-radius:50%;background:var(--cyan);color:var(--cyan-ink);display:grid;place-items:center;font-size:28px}
+.surveybtn small{font-family:var(--sans);font-size:16px;font-weight:600;color:var(--muted)}
+.surveybtn.on{border-color:var(--cyan);background:var(--tile)}
+.linkbtn{border:0;background:none;color:var(--cyan);font-weight:700;padding:0 0 0 6px;text-decoration:underline}
+@media (max-width:560px){.surveys{grid-template-columns:1fr}.surveybtn{min-height:160px}}
+
 /* Action tiles */
 .actions{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:20px}
 .tile{min-height:78px;border-radius:14px;border:1.5px solid var(--tile-line);background:var(--tile);font-weight:700;font-size:19px;line-height:1.2;padding:6px}
@@ -236,6 +244,67 @@ td .mini.del{color:var(--red);border-color:var(--red)}
 #app.scrolltab main{flex:1;min-height:0;overflow:auto;width:100%;-webkit-overflow-scrolling:touch}
 html.fitted,html.fitted body{overflow:hidden}
 
+.dtfield{gap:8px}
+.dtmode{display:grid;grid-template-columns:1fr 1fr;border:1.5px solid var(--line);border-radius:14px;overflow:hidden}
+.dtmode button{min-height:56px;border:0;background:var(--panel);color:var(--muted);font-weight:700;font-size:18px;letter-spacing:0;text-transform:none;font-family:var(--sans)}
+.dtmode button.on{background:var(--cyan);color:var(--cyan-ink)}
+.pair.dt{grid-template-columns:1fr 1fr}
+.pair.dt input:disabled{opacity:.7}
+.dtnote{font-family:var(--sans);font-size:14px;letter-spacing:0;text-transform:none;color:var(--muted)}
+
+.siteheads{margin-top:22px;max-width:640px}
+.sh{display:grid;grid-template-columns:90px 1fr auto;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;background:var(--bg)}
+.sh b{font-family:var(--cond);font-size:22px}
+.sh span{color:var(--muted);font-size:15px}
+.sh em{font-style:normal;font-weight:700;font-size:14px}
+.sh.done em{color:var(--green)}
+.sh.cur{border:2px solid var(--cyan);background:var(--tile)}
+.sh.cur em{color:var(--cyan)}
+
+.carried{max-width:640px;margin:0 0 16px;padding:12px 14px;border-radius:12px;background:var(--green-bg);border:1.5px solid var(--green);font-size:15px}
+
+.sitedd{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:70px;padding:0 16px;border-radius:14px;border:1px solid var(--line);background:var(--bg);text-align:left;text-transform:none;letter-spacing:0;font-family:var(--sans);font-size:24px;color:var(--ink)}
+.sitedd i{font-style:normal;color:var(--muted);font-size:18px}
+.sitedd.open{border:2px solid var(--cyan)}
+.siteopts{margin-top:4px;border:1px solid var(--line);border-radius:14px;background:var(--bg);overflow:hidden}
+.opt2{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:58px;padding:0 16px;border:0;border-bottom:1px solid var(--line);background:transparent;font-family:var(--sans);font-size:22px;color:var(--ink);text-transform:none;letter-spacing:0;text-align:left}
+.opt2:last-child{border-bottom:0}
+.opt2.sel{background:var(--tile)}
+.opt2 em{font-style:normal;font-size:14px;font-weight:700;color:var(--green)}
+
+.trio{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+
+.envhdr{max-width:640px;margin:4px 0 18px}
+.envhdr .envtbl{background:var(--bg)}
+#henv-warn:not(:empty){margin-top:10px}
+
+.pair.two{grid-template-columns:1fr 1fr}
+.pair.sitepair{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:start}
+
+.subnav{padding:10px 14px}
+.subwrap{flex:1;text-align:center}
+.subwrap small{display:block;font-family:var(--cond);font-size:14px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.subbtns{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.subbtns button{min-height:48px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);font-weight:800;font-size:20px}
+.subbtns button.on{background:var(--yellow);border-color:var(--yellow);color:#231F00}
+.subwrap span{display:block;font-size:13px;color:var(--muted);margin-top:6px}
+.subwrap span b{color:var(--ink)}
+
+.labgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.labgrid .opt{font-size:16px;min-height:54px}
+.tile.labtile{border-color:var(--yellow)}
+
+.sitefixed{padding:9px 9px 9px 16px}
+.smallbtn{min-height:66px;padding:0 14px;border-radius:12px;border:1.5px solid var(--tile-line);background:var(--tile);font-weight:700;font-size:15px;line-height:1.15}
+.actions{grid-template-columns:repeat(auto-fit,minmax(0,1fr))}
+
+.svtabs{display:grid;grid-template-columns:repeat(3,1fr);border:1.5px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.svtabs button{min-height:54px;border:0;background:var(--panel);color:var(--muted);font-weight:700}
+.svtabs button.on{background:var(--cyan);color:var(--cyan-ink)}
+
+.sitenote{max-width:640px;margin:-4px 0 4px;padding:12px 14px;border-radius:12px;background:var(--tile);border:1px solid var(--tile-line);font-size:15px;line-height:1.4}
+.sitenote b{display:block;font-family:var(--cond);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+
 /* Modal */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
 .modal.hidden{display:none}
@@ -290,13 +359,41 @@ const BIOREGIONS = {
   'West Coast': ['Swan-Canning Estuary','Peel-Harvey Estuary','Hardy Inlet'],
   'South Coast': ['Walpole-Nornalup Inlet','Oyster Harbour','Beaufort Inlet','Stokes Inlet']
 };
-const AREAS = {'Walpole-Nornalup Inlet':['Walpole Inlet','Nornalup Inlet','Frankland River']};
-const DEFAULT_SITES = {
-  'Walpole-Nornalup Inlet|Walpole Inlet':['WI1G','WI2G','WI3G','WI4G'],
-  'Walpole-Nornalup Inlet|Nornalup Inlet':['NI1G','NI2G','NI3G','NI4G','NI5G','NI6G','NI7G','NI8G'],
-  'Walpole-Nornalup Inlet|Frankland River':['FR1G','FR2G','FR3G','FR4G']
-};
+/* Site list imported from walpole-nornalup_sites.xlsx. estuary "Walpole" = location below; region = estuary area. */
+const SITE_META = [{"estuary": "Walpole", "type": "gill", "code": "FR0G", "region": "Frankland River", "region2": "river", "lat": -34.987891, "lon": 116.821193, "notes": "upstream of the boatsheds at nornlaup. Start net on coords and set upstream (along northern bank). Mind the snags."}, {"estuary": "Walpole", "type": "gill", "code": "FR1G", "region": "Frankland River", "region2": "river", "lat": -34.996856, "lon": 116.811264, "notes": "stretch of river just downstream of Frankland River highway bridge. Set net 100m downstream along the northern bank."}, {"estuary": "Walpole", "type": "gill", "code": "FR2G", "region": "Frankland River", "region2": "river", "lat": -35.003973, "lon": 116.784669, "notes": "set net along bank, watch for the snags."}, {"estuary": "Walpole", "type": "gill", "code": "FR3G", "region": "Frankland River", "region2": "river", "lat": -35.001217, "lon": 116.76754, "notes": "first bend in the river. Start net just downstream of bend, heading towards nornalup inlet. Set along northern bank."}, {"estuary": "Walpole", "type": "gill", "code": "LN2G", "region": "Nornalup Inlet", "region2": "basin", "lat": -35.012311, "lon": 116.736252, "notes": "Set net approx 2-3m deep, running along drop off."}, {"estuary": "Walpole", "type": "gill", "code": "MN1G", "region": "Nornalup Inlet", "region2": "basin", "lat": -34.994791, "lon": 116.732158, "notes": "Start net on coords. Set running N/NW (approx along edge of drop off)."}, {"estuary": "Walpole", "type": "gill", "code": "MN2G", "region": "Nornalup Inlet", "region2": "basin", "lat": -35.00005, "lon": 116.745942, "notes": "set approx 2-3 m deep, running along edge of bank. (net running approx NW-SW)."}, {"estuary": "Walpole", "type": "gill", "code": "MN3G", "region": "Nornalup Inlet", "region2": "basin", "lat": -35.007797, "lon": 116.712873, "notes": "set in c. 3m depth, net running N-S, approx paralell to bank of island."}, {"estuary": "Walpole", "type": "gill", "code": "WI1G", "region": "Walpole Inlet", "region2": "basin", "lat": -34.98027, "lon": 116.721164, "notes": "Set approx. west-east"}, {"estuary": "Walpole", "type": "gill", "code": "WI2G", "region": "Walpole Inlet", "region2": "basin", "lat": -34.986801, "lon": 116.72365, "notes": "Set approx parallel to bank."}, {"estuary": "Walpole", "type": "gill", "code": "WI3G", "region": "Walpole Inlet", "region2": "basin", "lat": -34.983599, "lon": 116.732918, "notes": "Set running approx East-West."}, {"estuary": "Walpole", "type": "gill", "code": "WI4G", "region": "Walpole Inlet", "region2": "basin", "lat": -34.983725, "lon": 116.721443, "notes": "Set approx. south-north"}, {"estuary": "Walpole", "type": "seine", "code": "DR1S", "region": "Deep River", "region2": "river", "lat": -35.004464, "lon": 116.66604, "notes": "no beach. seine onto the reeds. Pull boat into bushes just downstream of the y bend and seine downstream of boat."}, {"estuary": "Walpole", "type": "seine", "code": "DR2S", "region": "Deep River", "region2": "river", "lat": -35.004159, "lon": 116.689898, "notes": "no beach. seine onto the reeds."}, {"estuary": "Walpole", "type": "seine", "code": "DR3S", "region": "Deep River", "region2": "river", "lat": -35.003031, "lon": 116.698469, "notes": "small beach just upstream of  sandy boat ramp."}, {"estuary": "Walpole", "type": "seine", "code": "DR4S", "region": "Deep River", "region2": "river", "lat": -35.007546, "lon": 116.702805, "notes": "no beach, pull boat up under paperbark tree and seine downstream of boat."}, {"estuary": "Walpole", "type": "seine", "code": "FR2S", "region": "Frankland River", "region2": "river", "lat": -34.998459, "lon": 116.811824, "notes": "no beach, pull boat up in the reeds of the northern side of the point, seine on the mud flats."}, {"estuary": "Walpole", "type": "seine", "code": "FR3S", "region": "Frankland River", "region2": "river", "lat": -35.002814, "lon": 116.8006, "notes": "small beach and jetty. Pull boat up on jetty, seine the beach."}, {"estuary": "Walpole", "type": "seine", "code": "FR4S", "region": "Frankland River", "region2": "river", "lat": -35.003142, "lon": 116.787871, "notes": "opposite a port channel mark. Possibly a small bank on low tide, no bank on hightide."}, {"estuary": "Walpole", "type": "seine", "code": "FR5S", "region": "Frankland River", "region2": "river", "lat": -35.00046, "lon": 116.763014, "notes": "small sand flat. No beach, seine into bushes."}, {"estuary": "Walpole", "type": "seine", "code": "LN2S", "region": "Nornalup Inlet", "region2": "basin", "lat": -35.01453, "lon": 116.739244, "notes": "May be a small beach vissible, if not seine into bushes or circle seine. Shallow sand flats with lots of algae."}, {"estuary": "Walpole", "type": "seine", "code": "LN3S", "region": "Nornalup Inlet", "region2": "basin", "lat": -35.021106, "lon": 116.73015, "notes": "Circle seine on shallow sand/seagrass flats."}, {"estuary": "Walpole", "type": "seine", "code": "MN1S", "region": "Nornalup Inlet", "region2": "basin", "lat": -34.990585, "lon": 116.733498, "notes": "Coalmine beach. Seine near cliffs. Careful of rocks with boat prop when driving in."}, {"estuary": "Walpole", "type": "seine", "code": "MN3S", "region": "Nornalup Inlet", "region2": "basin", "lat": -35.004511, "lon": 116.748864, "notes": "Shallow flats on SE side of Nornalup inlet. Circle seine or seine in bushes if no beach present (may be flooded)."}, {"estuary": "Walpole", "type": "seine", "code": "MN4S", "region": "Nornalup Inlet", "region2": "basin", "lat": -34.997848, "lon": 116.711006, "notes": "Big sandy beach. Seine near the trees on the western end of beach."}, {"estuary": "Walpole", "type": "seine", "code": "MN6S", "region": "Nornalup Inlet", "region2": "basin", "lat": -35.009071, "lon": 116.704434, "notes": "Small beach next to one of the enterances to the deep river."}, {"estuary": "Walpole", "type": "seine", "code": "WI1S", "region": "Walpole Inlet", "region2": "basin", "lat": -34.979304, "lon": 116.718312, "notes": "Narrow sandy beach (although may be flooded)."}, {"estuary": "Walpole", "type": "seine", "code": "WI2S", "region": "Walpole Inlet", "region2": "basin", "lat": -34.981702, "lon": 116.725163, "notes": "Sandy spit which is usually exposed. Seine on spit (water drops off deep to north of spit)."}, {"estuary": "Walpole", "type": "seine", "code": "WI3S", "region": "Walpole Inlet", "region2": "basin", "lat": -34.984843, "lon": 116.736776, "notes": "Small creek. Seine just to north of creek mouth. No beach, pull into bushes."}, {"estuary": "Walpole", "type": "seine", "code": "WI4S", "region": "Walpole Inlet", "region2": "basin", "lat": -34.986098, "lon": 116.7199, "notes": "No beach. Small grass bank which is clear from bushes where you can haul the seine. Watch out for rocks/fence posts with the boat prop/net."}];
+const META_LOCATION = {'Walpole':'Walpole-Nornalup Inlet'};
+const META_PREFIX = {gill:'',seine:'seine::',line:'line::'};
+const SURVEY_OF_TYPE = {gill:'Gillnet',seine:'Seine Net',line:'Line'};
+const siteMeta = code => SITE_META.find(m=>m.code===code)||null;
+const AREAS = {'Walpole-Nornalup Inlet':['Walpole Inlet','Nornalup Inlet','Frankland River','Deep River']};
+const DEFAULT_SITES = {};
+SITE_META.forEach(m=>{const k=META_PREFIX[m.type]+META_LOCATION[m.estuary]+'|'+m.region;(DEFAULT_SITES[k]=DEFAULT_SITES[k]||[]).push(m.code);});
 const NET_TYPES = ['160 m multimesh gillnet'];
+/* Survey types. Seine net options are placeholders until confirmed. */
+/* Gear list: type, code, name (shown in the dropdown), description (exported) */
+const GEAR = [
+  {type:'seine',code:'B03',name:'seine - 41',desc:'BEACH SEINE, 41 METRE'},
+  {type:'seine',code:'B08',name:'seine - 21',desc:'BEACH SEINE, 21METRE'},
+  {type:'seine',code:'B10',name:'seine - 61',desc:'BEACH SEINE, 61 METRE'},
+  {type:'gill',code:'GN26',name:'gill - multi',desc:'GILL NET with 8x20m panel of 35, 51, 63, 76, 89, 102, 115 and 127 mm'},
+  {type:'gill',code:'GN27',name:'gill - single mesh',desc:'GILL NET comprised of only one mesh size'},
+  {type:'line',code:'R00',name:'line',desc:'ROD AND LINE UNSPECIFIED'}
+];
+const gearOf = code => GEAR.find(g=>g.code===code)||{};
+const SURVEYS = {
+  gillnet:{label:'Gillnet',gear:'gill',nets:[],soak:true},
+  seine:{label:'Seine Net',gear:'seine',nets:[],soak:false},
+  line:{label:'Line',gear:'line',nets:[],soak:false}
+};
+/* A site counts as sampled when it has catch or environmental data entered for this date, location and survey */
+const siteDone = site => S.records.some(r=>r.date===S.date&&r.location===S.location&&r.site===site&&(r.survey||'Gillnet')===surveyOf().label)||!!S.env[siteKey(site)];
+/* Each site header keeps its own time and comments */
+function saveSiteHeader(){const site=sitesFor(curKey())[S.siteIdx];if(!site)return;S.hdr=S.hdr||{};S.hdr[siteKey(site)]={time:S.time,comments:S.comments||''};}
+function loadSiteHeader(i,fresh){S.siteIdx=i;const site=sitesFor(curKey())[i];const h=(S.hdr||{})[siteKey(site)];
+  if(h&&!fresh){S.time=h.time;S.comments=h.comments;}else{S.time=nowTime();S.comments='';}}
+function switchSite(i,carried){saveSiteHeader();const from=sitesFor(curKey())[S.siteIdx];loadSiteHeader(i,false);S.carriedFrom=carried?from:'';}
+const MESH_OPTIONS = ['Multi-mesh']; // header mesh-size choices; more can be added
+const SITE_CODES = {}; // filled from the site list CSV (site name → site code)
 const RECORDERS = ['Person 1','Person 2','Person 3'];
 /* Extra species offered by "Search species", per location. m overrides the group's measurement. Check and edit this list. */
 const LOCAL_SPECIES = {
@@ -356,7 +453,7 @@ const LIMITS = {minLength:20, maxLength:3000, crab:{min:30,max:230},
     'Gummy shark':{min:400,max:2000}
   }};
 const ENV_LIMITS = {depth:{max:10,label:'Depth',u:'m'}, sal:{max:60,label:'Salinity',u:'ppt'}, temp:{min:10,max:30,label:'Temperature',u:'°C'}, do:{min:1.5,max:10,label:'Dissolved oxygen',u:'ppm'}};
-const TABS = [['days','Days'],['header','Header'],['entry','Data entry'],['list','Full list'],['export','Export'],['setup','Setup']];
+const TABS = [['days','Days'],['survey','Survey'],['header','Header'],['entry','Data entry'],['list','Full list'],['export','Export'],['setup','Setup']];
 
 /* ===== State ===== */
 const KEY = 'gillnet-app-v2';
@@ -369,7 +466,7 @@ const fmtTime = iso => new Date(iso).toLocaleTimeString([], {hour:'2-digit',minu
 
 function fresh(){
   const dark=true;
-  return {tab:'header',date:today(),bioregion:'',location:'',area:'',recorder1:'',recorder2:'',soak:'',netType:NET_TYPES[0],siteIdx:0,meshIdx:0,species:'',pad:'',countMode:false,
+  return {tab:'survey',survey:'gillnet',date:today(),bioregion:'',location:'',area:'',recorder1:'',recorder2:'',soak:'',netType:NET_TYPES[0],siteIdx:0,meshIdx:0,species:'',pad:'',countMode:false,
     attr:{sex:'U',egg:'',moult:'H'},count:1,speciesShown:{},records:[],env:{},notes:{},positions:{},
     sites:clone(DEFAULT_SITES),extraSpecies:[],gps:'idle',
     settings:{theme:dark?'dark':'light',left:false,defaultOn:true,defaults:{sex:'U',moult:'H'}}};
@@ -379,12 +476,13 @@ function load(){
   S=fresh();
   try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);const st=Object.assign(S.settings,d.settings||{});Object.assign(S,d);S.settings=st;}}catch(e){}
   S.pad='';S.countMode=false;S.count=1;
-  Object.keys(DEFAULT_SITES).forEach(k=>{if(!S.sites[k])S.sites[k]=DEFAULT_SITES[k].slice();});
+  if(S.siteMetaV!==1){Object.keys(DEFAULT_SITES).forEach(k=>{S.sites[k]=DEFAULT_SITES[k].slice();});S.siteMetaV=1;} // load the Walpole site list once; Setup edits are kept after that
   S.extraSpecies=(S.extraSpecies||[]).map(x=>x.g?x:{name:x.name,g:x.m==='CW'?'crab':x.m==='DW'?'ray':'fish'}).filter(x=>!SPECIES.some(b=>b.name===x.name));
   if(!NET_TYPES.includes(S.netType))S.netType=NET_TYPES[0];
   if(S.meshIdx>=MESHES.length)S.meshIdx=0;
   if(!S.v12){Object.values(S.speciesShown||{}).forEach(l=>{const i=l.indexOf('Tarwhine');if(i>=0)l.splice(i,1);while(l.length>MAX_TABS)l.pop();});S.v12=true;}
   if(!S.speciesRef)S.speciesRef={};
+  if(!S.survey)S.survey='gillnet';
   if(!S.v11){S.extraSpecies=(S.extraSpecies||[]).filter(x=>!x.sci);S.v11=true;}
   if(!S.v7){Object.values(S.speciesShown||{}).forEach(l=>{const i=l.indexOf('Sand whiting');if(i>=0)l.splice(i,1);
     ['Yelloweye mullet','Sea mullet'].forEach(n=>{if(!l.includes(n)&&l.length<15)l.push(n);});});
@@ -399,10 +497,13 @@ function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show')
 
 const sitesFor = key => S.sites[key] || [];
 const hasAreas = loc => !!AREAS[loc];
-const curKey = () => hasAreas(S.location)?S.location+'|'+S.area:S.location;
+/* Sites are kept separately for each survey type. Gillnet keeps the original keys; seine and line are prefixed. */
+const sitePrefix = sv => (!sv||sv==='gillnet')?'':sv+'::';
+const curKey = () => sitePrefix(S.survey)+(hasAreas(S.location)?S.location+'|'+S.area:S.location);
 function areaOfSite(loc,site){return (AREAS[loc]||[]).find(a=>sitesFor(loc+'|'+a).includes(site))||'';}
 function currentSite(){if(hasAreas(S.location)&&!S.area)return '';const s=sitesFor(curKey());if(!s.length)return '';if(S.siteIdx>=s.length)S.siteIdx=0;return s[S.siteIdx];}
-const currentMesh = () => MESHES[S.meshIdx] || MESHES[0];
+const singleMesh = () => S.survey==='gillnet'&&S.netType==='GN27';
+const currentMesh = () => singleMesh()?(S.meshManual||'?'):(MESHES[S.meshIdx] || MESHES[0]);
 const meshLabel = m => m==='ALL'?'All meshes':m+' mm';
 const allSpecies = () => SPECIES.concat(S.extraSpecies);
 const findSp = name => allSpecies().find(s=>s.name===name);
@@ -423,6 +524,8 @@ const posKey = (site,mesh) => `${S.date}|${S.location}|${site}|${mesh}`;
 const sexOf = id => SEX.find(s=>s.id===id)||SEX[2];
 
 /* ===== Rendering ===== */
+const nowTime=()=>{const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');};
+function stampHeader(){S.date=today();S.time=nowTime();}
 function render(){
   persist();
   document.documentElement.dataset.theme=S.settings.theme;
@@ -432,12 +535,12 @@ function render(){
     :`<b>${fmtDate(S.date)} · Set up the header</b>`;
   renderChips();
   const m=$('main');
-  m.innerHTML={days:daysHTML,header:headerHTML,entry:entryHTML,list:listHTML,export:exportHTML,setup:setupHTML}[S.tab]();
+  m.innerHTML={days:daysHTML,survey:surveyHTML,header:headerHTML,entry:entryHTML,list:listHTML,export:exportHTML,setup:setupHTML}[S.tab]();
   fit();
 }
 /* Scale the screen so each page fits the device without scrolling.
    Data entry, Header and Export are scaled to fit; list pages keep the top bar fixed and scroll inside. */
-const FIT_TABS=['entry','header','export'];
+const FIT_TABS=['entry','export','survey']; // header scrolls at full size
 function fit(){
   const app=$('app'),root=document.documentElement;if(!app)return;
   const cs=getComputedStyle(root);
@@ -512,17 +615,16 @@ function entryHTML(){
   const envDone=env&&ENV_ROWS.some(([k])=>env[k+'_top']||env[k+'_bottom']);
 
   const all=dayRecs(), recent=all.slice(-15).reverse();
-  const item=r=>r.empty?`${meshLabel(r.mesh)} empty`:`${esc(r.species)} ${r.length!==''&&r.length!=null?r.length:'?'}${r.count>1?' ×'+r.count:''}`;
+  const item=r=>r.lab?`${esc(r.species)} (${fracLabel(r.sub)}${r.count?', ~'+r.count:''}) · LAB ${esc(r.jar||'')}`:r.empty?`${meshLabel(r.mesh)} empty`:`${esc(r.species)} ${r.length!==''&&r.length!=null?r.length:'?'}${r.count>1?' ×'+r.count:''}${r.sub&&r.sub<1?` (${fracLabel(r.sub)})`:''}${r.lab?` · LAB ${esc(r.jar||'')}`:''}`;
   const recentHTML=`<section class="runline"><span class="lbl">${all.length} today</span><span class="items">${recent.length?recent.map(item).join(', '):'Entries will appear here, newest first'}</span></section>`;
 
   return `<div class="egrid">
   <section class="navs">
-    <div class="nav"><button class="navbtn" data-act="sitePrev" aria-label="Previous site" ${S.siteIdx===0?'disabled':''}>${icon('left')}</button>
-      <div class="navlbl"><small>Site ${S.siteIdx+1} of ${sites.length}</small><b>${esc(site)}</b></div>
-      <button class="navbtn" data-act="siteNext" aria-label="Next site" ${S.siteIdx>=sites.length-1?'disabled':''}>${icon('right')}</button></div>
-    <div class="nav"><button class="navbtn" data-act="meshDown" aria-label="Previous mesh size" ${S.meshIdx===0?'disabled':''}>${icon('down')}</button>
+    <div class="nav sitefixed"><div class="navlbl"><small>Site${(SITE_CODES[site]||S.siteCode)?' · '+esc(SITE_CODES[site]||S.siteCode):''}</small><b>${esc(site)}</b></div>
+      <button class="smallbtn" data-act="tab" data-val="header">New site<br>header</button></div>
+    ${S.survey==='seine'?subHTML(site):singleMesh()?`<div class="nav"><div class="navlbl"><small>Mesh · single-mesh net</small><b>${esc(meshLabel(currentMesh()))}</b></div></div>`:S.survey==='line'?`<div class="nav"><div class="navlbl"><small>Gear · ${esc(gearOf(S.netType).code||'')}</small><b>Rod and line</b></div></div>`:`<div class="nav"><button class="navbtn" data-act="meshDown" aria-label="Previous mesh size" ${S.meshIdx===0?'disabled':''}>${icon('down')}</button>
       <div class="navlbl"><small>Mesh ${S.meshIdx+1} of ${MESHES.length} · ${here.some(r=>r.empty)?'empty net':fishCount(here)+' caught'}</small><b>${meshLabel(mesh)}</b></div>
-      <button class="navbtn" data-act="meshUp" aria-label="Next mesh size" ${S.meshIdx>=MESHES.length-1?'disabled':''}>${icon('up')}</button></div>
+      <button class="navbtn" data-act="meshUp" aria-label="Next mesh size" ${S.meshIdx>=MESHES.length-1?'disabled':''}>${icon('up')}</button></div>`}
   </section>
   <section class="species">${spBtns}</section>
   <section class="entry${left}">
@@ -550,7 +652,7 @@ function entryHTML(){
   </section>
   <section class="actions">
     <button class="tile ${pos?'done':''}" data-act="mark">Mark position<small>${pos?'Marked '+fmtTime(pos.time):'GPS for this net'}</small></button>
-    <button class="tile ${envDone?'done':''}" data-act="env">Environment<small>${envDone?'Recorded':'site water quality'}</small></button>
+    ${S.survey==='seine'?`<button class="tile labtile" data-act="labSample">Lab sample<small>retained, ID later</small></button>`:''}
     <button class="tile" data-act="editLast">Edit last animal<small>incl. genetic ID</small></button>
     <button class="tile" data-act="tab" data-val="list">Full list<small>all records</small></button>
     <button class="tile" data-act="speciesEdit">Species tabs<small>show, hide, add</small></button>
@@ -558,21 +660,50 @@ function entryHTML(){
   ${recentHTML}</div>`;
 }
 
+const surveyOf=()=>SURVEYS[S.survey]||SURVEYS.gillnet;
+function surveyHTML(){
+  return `<div class="page"><h2>Survey type</h2><p class="note">Choose the survey for this day. It sets up the header for that gear.</p>
+    <div class="surveys">${Object.entries(SURVEYS).map(([k,v],i)=>`<button class="surveybtn ${S.survey===k?'on':''}" data-act="survey" data-val="${k}"><span class="num">${i+1}</span>${esc(v.label)}<small>${S.survey===k?'Selected':'Tap to choose'}</small></button>`).join('')}</div></div>`;
+}
 function headerHTML(){
-  const locs=BIOREGIONS[S.bioregion]||[];
-  return `<div class="page"><h2>Header</h2><p class="note">Applies to every record entered for this day.</p>
+  const locs=BIOREGIONS[S.bioregion]||[],sv=surveyOf();
+  return `<div class="page"><h2>${esc(sv.label)} header</h2><p class="note">Applies to every record entered at this site. <button class="linkbtn" data-act="tab" data-val="survey">Change survey type</button></p>
+    ${S.carriedFrom?`<div class="carried">New header for ${esc(sitesFor(curKey())[S.siteIdx])}. Location, estuary area, gear, soak time and recorders were copied from the ${esc(S.carriedFrom)} header. Change anything you need.</div>`:''}
     <div class="form hdr">
-      <label class="field">Date<input type="date" data-h="date" value="${S.date}"></label>
-      <label class="field">Bioregion<select data-h="bioregion"><option value="">Choose…</option>${Object.keys(BIOREGIONS).map(b=>`<option${b===S.bioregion?' selected':''}>${esc(b)}</option>`).join('')}</select></label>
-      <label class="field">Location<select data-h="location" ${S.bioregion?'':'disabled'}><option value="">${S.bioregion?'Choose…':'Choose a bioregion first'}</option>${locs.map(l=>`<option${l===S.location?' selected':''}>${esc(l)}</option>`).join('')}</select></label>
+      <div class="field dtfield">Date and time
+        <div class="pair dt"><input type="date" data-h="date" value="${S.date}"><input type="time" data-h="time" value="${S.time||''}"></div>
+        <span class="dtnote">Filled in automatically when the header is started. Change it if the data was collected at another time. <button class="linkbtn" data-act="stampNow">Use current date and time</button></span></div>
+      <label class="field">Location<select data-h="location"><option value="">Choose…</option>${Object.entries(BIOREGIONS).map(([b,ls])=>`<optgroup label="${esc(b)}">${ls.map(l=>`<option${l===S.location?' selected':''}>${esc(l)}</option>`).join('')}</optgroup>`).join('')}</select></label>
       <label class="field">Estuary area<select data-h="area" ${hasAreas(S.location)?'':'disabled'}>${hasAreas(S.location)
-        ?`<option value="">Choose…</option>${AREAS[S.location].map(a=>`<option${a===S.area?' selected':''}>${esc(a)}</option>`).join('')}`
+        ?`<option value="">Choose…</option>${(()=>{const all=AREAS[S.location],f=all.filter(a=>sitesFor(sitePrefix(S.survey)+S.location+'|'+a).length);return f.length?f:all;})().map(a=>`<option${a===S.area?' selected':''}>${esc(a)}</option>`).join('')}`
         :`<option value="">${S.location?'Whole estuary':'Choose a location first'}</option>`}</select></label>
-      <div class="pair"><label class="field">Net type<select data-h="netType">${NET_TYPES.map(n=>`<option${n===S.netType?' selected':''}>${esc(n)}</option>`).join('')}</select></label>
-        <label class="field">Soak time (hours)<input data-h="soak" inputmode="decimal" placeholder="e.g. 2.5" value="${esc(S.soak)}"></label></div>
-      ${['recorder1','recorder2'].map((k,i)=>`<label class="field">Recorder ${i+1}<select data-h="${k}"><option value="">Choose…</option>${RECORDERS.map(n=>`<option${n===S[k]?' selected':''}>${esc(n)}</option>`).join('')}</select></label>`).join('')}
+      <div class="pair sitepair">      <div class="field">Site${(()=>{const L=sitesFor(curKey());if(!L.length)return `<button class="sitedd" disabled>${!S.location||(hasAreas(S.location)&&!S.area)?'Choose an area first':'No '+esc(surveyOf().label.toLowerCase())+' sites yet'}</button><span class="dtnote">${S.location&&(!hasAreas(S.location)||S.area)?`Add them on the Setup tab under ${esc(surveyOf().label)} sites. <button class="linkbtn" data-act="tab" data-val="setup">Go to Setup</button>`:''}</span>`;
+        return `<button class="sitedd ${window.SITE_OPEN?'open':''}" data-act="siteMenu"><span>${esc(L[S.siteIdx])}</span><i>▾</i></button>
+        ${window.SITE_OPEN?`<div class="siteopts">${L.map((x,i)=>`<button class="opt2 ${i===S.siteIdx?'sel':''}" data-act="pickSite" data-val="${i}"><span>${esc(x)}</span>${siteDone(x)?'<em>✓ Done</em>':''}</button>`).join('')}</div>`:''}`;})()}</div>
+        <label class="field">Site position<input value="${(m=>m?m.lat.toFixed(5)+', '+m.lon.toFixed(5):'')(siteMeta(sitesFor(curKey())[S.siteIdx]))}" disabled style="font-size:18px"><span class="dtnote">${(m=>m?esc(m.region2)+' · from the site list':'')(siteMeta(sitesFor(curKey())[S.siteIdx]))}</span></label></div>
+      ${(m=>m&&m.notes?`<div class="sitenote"><b>Site notes</b>${esc(m.notes)}</div>`:'')(siteMeta(sitesFor(curKey())[S.siteIdx]))}
+      ${(()=>{const opts=GEAR.filter(g=>g.type===sv.gear);if(!opts.some(g=>g.code===S.netType))S.netType=opts[0].code;
+        const gearSel=`<label class="field">Gear<select data-h="netType">${opts.map(g=>`<option value="${g.code}"${g.code===S.netType?' selected':''}>${esc(g.name)}</option>`).join('')}</select></label>`;
+        if(sv.gear==='gill')return `<div class="trio">${gearSel}
+          <label class="field">Soak time (h)<input data-h="soak" inputmode="decimal" placeholder="e.g. 2.5" value="${esc(S.soak)}"></label>
+          <label class="field">Mesh size${S.netType==='GN27'?`<input data-h="meshManual" inputmode="decimal" placeholder="mm, e.g. 76" value="${esc(S.meshManual||'')}">`:'<input value="Multi-mesh" disabled>'}</label></div>`;
+        if(sv.gear==='seine')return `<div class="pair two">${gearSel}
+          <div class="field">Sample retained<div class="dtmode"><button class="${S.retained==='Y'?'on':''}" data-act="retain" data-val="Y">Yes</button><button class="${S.retained!=='Y'?'on':''}" data-act="retain" data-val="N">No</button></div></div></div>
+          ${S.retained==='Y'?`<label class="field">Sample / jar ID<input data-h="sampleId" placeholder="e.g. WNI-2026-014" value="${esc(S.sampleId||'')}"></label>`:''}`;
+        return gearSel;})()}
+      <p class="dtnote" style="margin:-6px 0 0">${esc(gearOf(S.netType).code||'')} · ${esc(gearOf(S.netType).desc||'')}</p>
+      <div class="pair two">${['recorder1','recorder2'].map((k,i)=>`<label class="field">Recorder ${i+1}<select data-h="${k}"><option value="">Choose…</option>${RECORDERS.map(n=>`<option${n===S[k]?' selected':''}>${esc(n)}</option>`).join('')}</select></label>`).join('')}</div>
     </div>
-    <div class="btns"><button class="btn primary hdr-go" data-act="tab" data-val="entry" ${S.location&&(!hasAreas(S.location)||S.area)?'':'disabled'}>Go to data entry</button></div></div>`;
+      ${(()=>{const site=sitesFor(curKey())[S.siteIdx];if(!site)return '';const v=S.env[siteKey(site)]||{};
+        const cell=(id,u)=>`<div class="unitin"><input class="inp ${envIssue(id,v[id])?'warn':''}" data-henv="${id}" inputmode="decimal" value="${esc(v[id]||'')}"><span>${u}</span></div>`;
+        const issues=Object.keys(v).map(k=>envIssue(k,v[k])).filter(Boolean);
+        return `<div class="envhdr"><div class="field">Environmental data · ${esc(site)}</div>
+          <div class="envtbl"><div></div><div class="hd">TOP</div><div class="hd">BOTTOM</div>
+          ${ENV_ROWS.map(([k,l,u])=>`<div class="rl">${l}</div>${cell(k+'_top',u)}${cell(k+'_bottom',u)}`).join('')}</div>
+          <div id="henv-warn">${issues.length?`<ul class="warnlist">${issues.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}</div></div>`;})()}
+      <label class="field" style="max-width:640px">Header comments<textarea data-h="comments" rows="3" placeholder="Site-specific notes, e.g. weed in net, strong current, net shifted">${esc(S.comments||'')}</textarea></label>
+    <div class="btns"><button class="btn primary hdr-go" data-act="tab" data-val="entry">Save header and go to data entry</button><button class="btn hdr-go" data-act="nextSite">+ New header for next site</button></div>
+</div>`;
 }
 
 function daysHTML(){
@@ -589,7 +720,7 @@ function daysHTML(){
 function listHTML(){
   if(!S.location)return emptyState('Choose a location to see its records.','header','Open header');
   const recs=dayRecs().slice().reverse();
-  const rows=recs.map(r=>`<tr><td>${fmtTime(r.time)}</td><td>${esc(r.site)}</td><td>${r.mesh==='ALL'?'All':r.mesh}</td>
+  const rows=recs.map(r=>`<tr><td>${r.ctime||fmtTime(r.time)}</td><td>${esc(r.site)}</td><td>${r.mesh==='ALL'?'All':r.mesh}</td>
     <td>${r.empty?'<i>Empty net</i>':esc(r.species)}</td><td>${r.length!==''&&r.length!=null?r.length+' mm '+r.measure:(r.empty?'':'—')}</td><td>${r.count}</td>
     <td>${r.empty?'':sexOf(r.sex).label}</td><td>${esc(r.geneticId||'')}</td>
     <td><button class="mini" data-act="edit" data-val="${r.id}">Edit</button> <button class="mini del" data-act="del" data-val="${r.id}">Delete</button></td></tr>`).join('');
@@ -618,8 +749,9 @@ function refHTML(){
     <p class="note" style="margin:14px 0 0">${n?`${n} species loaded. `:'No species codes loaded yet. '}${n&&missing.length?`No codes yet for: ${missing.map(esc).join(', ')}.`:n?'Every species in the app has a match.':''}</p></div>`;
 }
 function setupHTML(){
-  return `<div class="page"><h2>Sites</h2><p class="note">Enter site codes for each location, separated by commas, in fishing order.</p>
-    ${Object.entries(BIOREGIONS).map(([b,locs])=>`<div class="region"><h3>${esc(b)}</h3>${locs.flatMap(l=>hasAreas(l)?AREAS[l].map(a=>[l+'|'+a,l+' · '+a]):[[l,l]]).map(([k,lab])=>`<label class="siteline"><span>${esc(lab)}</span><input class="inp" data-sites="${esc(k)}" value="${esc(sitesFor(k).join(', '))}" autocapitalize="characters" autocomplete="off"></label>`).join('')}</div>`).join('')}
+  return `<div class="page"><h2>Sites</h2><p class="note">Each survey type has its own sites. Enter site codes for each location, separated by commas, in fishing order.</p>
+    <div class="svtabs">${Object.entries(SURVEYS).map(([k,v])=>`<button class="${(window.SETUP_SV||S.survey||'gillnet')===k?'on':''}" data-act="setupSv" data-val="${k}">${esc(v.label)} sites</button>`).join('')}</div>
+    ${(()=>{const sv=window.SETUP_SV||S.survey||'gillnet',pre=sitePrefix(sv);return Object.entries(BIOREGIONS).map(([b,locs])=>`<div class="region"><h3>${esc(b)}</h3>${locs.flatMap(l=>hasAreas(l)?AREAS[l].map(a=>[l+'|'+a,l+' · '+a]):[[l,l]]).map(([k,lab])=>`<label class="siteline"><span>${esc(lab)}</span><input class="inp" data-sites="${esc(pre+k)}" value="${esc(sitesFor(pre+k).join(', '))}" placeholder="${sv==='seine'?'e.g. WI1S, WI2S':sv==='line'?'e.g. WI1L':''}" autocapitalize="characters" autocomplete="off"></label>`).join('')}</div>`).join('');})()}
   </div>
   ${refHTML()}
   <div class="page" style="margin-top:14px"><h2>Clear this iPad</h2><p class="note">Removes every record, environment entry and note. Export first.</p>
@@ -682,14 +814,42 @@ function editModal(id){
 }
 
 /* ===== Data entry actions ===== */
+const SUBS=[['1','All'],['0.5','½'],['0.25','¼']];
+const LAB_GROUPS=['Atherinidae (hardyheads)','Gobiidae (gobies)','Clupeidae (sprats, herrings)','Engraulidae (anchovies)','Mixed small fish','Unidentified fish'];
+let labFrac='0.5',labGroup=LAB_GROUPS[0];
+function labModal(){
+  const n=S.records.filter(r=>r.lab&&r.date===S.date&&r.site===currentSite()).length;
+  const jar=(S.sampleId||'SAMPLE')+'-'+String.fromCharCode(65+n);
+  openModal(`<h3>Lab sample</h3><p class="sub">${esc(currentSite())} · for fish kept to identify and count in the lab. Fish measured and released are entered on the species tabs as usual.</p>
+    <div class="lbl">Group</div><div class="labgrid" id="lab-groups">${LAB_GROUPS.map(g=>`<button class="opt moult ${g===labGroup?'on':''}" data-act="labGroup" data-val="${esc(g)}">${esc(g)}</button>`).join('')}</div>
+    <div class="lbl" style="margin-top:14px">Fraction of the school kept</div>
+    <div class="subbtns" id="lab-fracs">${SUBS.map(([v,l])=>`<button class="${v===labFrac?'on':''}" data-act="labFrac" data-val="${v}">${l}</button>`).join('')}<button data-act="labFrac" data-val="0.1">Other</button></div>
+    <div class="pair two" style="margin-top:14px"><label class="field">Sample / jar ID<input class="inp" id="lab-jar" value="${esc(jar)}"></label>
+      <label class="field">Approx. number kept (optional)<input class="inp" id="lab-n" inputmode="numeric" placeholder="e.g. 600"></label></div>
+    <label class="field" style="margin-top:12px">Notes<input class="inp" id="lab-notes" placeholder="e.g. at least 3 hardyhead species, some juvenile bream"></label>
+    ${mBtns('labSave')}`);
+}
+const subKey=(site,sp)=>`${S.date}|${S.location}|${site}|${sp}`;
+const subFor=(site,sp)=>parseFloat((S.subs||{})[subKey(site,sp)]||'1');
+const fracLabel=f=>f===1?'All':f===0.5?'½':f===0.25?'¼':String(f);
+function subHTML(site){
+  const sp=S.species,f=sp?subFor(site,sp):1;
+  const recs=S.records.filter(r=>r.date===S.date&&r.location===S.location&&r.site===site&&r.species===sp&&!r.empty);
+  const n=fishCount(recs),meas=recs.filter(r=>r.length!==''&&r.length!=null).length;
+  const isOther=sp&&!SUBS.some(([v])=>parseFloat(v)===f);
+  return `<div class="nav subnav"><div class="subwrap"><small>Subsample${sp?` · ${esc(sp)}`:''}</small>
+    <div class="subbtns">${SUBS.map(([v,l])=>`<button class="${sp&&parseFloat(v)===f?'on':''}" data-act="sub" data-val="${v}" ${sp?'':'disabled'}>${l}</button>`).join('')}<button class="${isOther?'on':''}" data-act="sub" data-val="other" ${sp?'':'disabled'}>${isOther?fracLabel(f):'Other'}</button></div>
+    <span>${sp?(n?`${n} recorded (${meas} measured)${f<1?` · raised total <b>${Math.round(n/f)}</b>`:''}`:'Nothing recorded yet'):'Choose a species'}</span></div></div>`;
+}
 function newRecord(extra){
   if(!(extra&&extra.empty)){const site=currentSite(),mesh=currentMesh(),em=meshRecs(site,mesh).find(r=>r.empty);
     if(em)S.records=S.records.filter(r=>r!==em);}
   emptyOK=false;
   const site=currentSite(),mesh=currentMesh(),crab=isCrab(S.species),pos=S.positions[posKey(site,mesh)];
-  const r=Object.assign({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),date:S.date,bioregion:S.bioregion,location:S.location,site,mesh,
+  const subf=S.survey==='seine'&&S.species?subFor(currentSite(),S.species):1;
+  const r=Object.assign({sub:subf,id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),ctime:S.time||'',date:S.date,bioregion:S.bioregion,location:S.location,site,mesh,
     species:S.species,measure:measureOf(S.species),length:'',count:1,sex:S.attr.sex,egg:S.species===EGG_SPECIES?S.attr.egg:'',moult:crab?S.attr.moult:'',
-    netType:S.netType,soak:S.soak,recorder1:S.recorder1,recorder2:S.recorder2,area:S.area||'',geneticId:'',notes:'',empty:false,lat:pos?pos.lat:'',lon:pos?pos.lon:'',time:new Date().toISOString(),exported:false},extra);
+    survey:surveyOf().label,netType:S.netType,soak:S.soak,recorder1:S.recorder1,recorder2:S.recorder2,area:S.area||'',hcomments:S.comments||'',retained:S.survey==='seine'?(S.retained==='Y'?'Y':'N'):'',sampleId:S.survey==='seine'&&S.retained==='Y'?(S.sampleId||''):'',geneticId:'',notes:'',empty:false,lat:pos?pos.lat:'',lon:pos?pos.lon:'',time:new Date().toISOString(),exported:false},extra);
   S.records.push(r);
   S.pad='';S.countMode=false;S.count=1;
   if(S.settings.defaultOn){S.attr={sex:S.settings.defaults.sex,egg:'',moult:S.settings.defaults.moult};}
@@ -728,6 +888,7 @@ function padBlocked(){
 }
 const meshRecs=(site,mesh)=>S.records.filter(r=>r.date===S.date&&r.location===S.location&&r.site===site&&r.mesh===mesh);
 function goMesh(t){
+  if(singleMesh())return;
   emptyOK=false;
   const mesh=MESHES[t];if(mesh===undefined||padBlocked())return;
   if(meshRecs(currentSite(),mesh).length){
@@ -848,14 +1009,14 @@ function importRef(text){
 function allKnownNames(){const n=[];SPECIES.concat(Object.values(LOCAL_SPECIES).flat(),S.extraSpecies).forEach(x=>{if(!n.includes(x.name))n.push(x.name);});return n;}
 function templateCSV(){return toCSV(['Common_name','Scientific_name','Species_code','CAAB_code'],allKnownNames().map(n=>{const r=refFor(n);return [n,r.sci,r.code,r.caab];}));}
 function catchCSV(recs){
-  return toCSV(['Date','Bioregion','Location','Estuary_area','Net_type','Soak_time_h','Recorder_1','Recorder_2','Site','Mesh_mm','Species','Scientific_name','Species_code','CAAB_code','CW_mm','DW_mm','TL_mm','Count','Sex_maturity','Egg_stage','Moult','Genetic_ID','Empty_net','Latitude','Longitude','Notes','Recorded_at'],
-    recs.map(r=>[r.date,r.bioregion,r.location,r.area||'',r.netType||'',r.soak||'',r.recorder1||'',r.recorder2||'',r.site,r.mesh,r.species,...(r.empty||!r.species?['','','']:(x=>[x.sci,x.code,x.caab])(refFor(r.species))),...['CW','DW','TL'].map(k=>!r.empty&&r.length!==''&&r.length!=null&&r.measure===k?r.length:''),r.count,r.empty||!r.sex||r.sex==='U'?'':sexOf(r.sex).label,r.egg,r.moult,r.geneticId,r.empty?'Y':'N',r.lat,r.lon,r.notes,r.time]),true);
+  return toCSV(['Date','Time','Survey_type','Bioregion','Estuary','Location','Estuary_area','Gear_type','Gear_code','Gear_name','Gear_description','Soak_time_h','Recorder_1','Recorder_2','Site_code','Site_type','Region','Region2','Site_lat','Site_lon','Site_notes','Mesh_mm','Species','Scientific_name','Species_code','CAAB_code','CW_mm','DW_mm','TL_mm','Count','Sex_maturity','Egg_stage','Moult','Genetic_ID','Empty_net','Latitude','Longitude','Notes','Header_comments','Sample_retained','Sample_ID','Subsample_fraction','Raised_count','Lab_sample','Jar_ID','Recorded_at'],
+    recs.map(r=>[r.date,r.ctime||(r.time?fmtTime(r.time):''),r.survey||'Gillnet',r.bioregion,(siteMeta(r.site)||{}).estuary||'',r.location,r.area||'',...(g=>[g.type,g.code,g.name,g.desc])(gearOf(r.netType)),r.soak||'',r.recorder1||'',r.recorder2||'',r.site,...(m=>m?[m.type,m.region,m.region2,m.lat,m.lon,m.notes]:['','','','','',''])(siteMeta(r.site)),r.survey==='Gillnet'?r.mesh:'',r.species,...(r.empty||!r.species?['','','']:(x=>[x.sci,x.code,x.caab])(refFor(r.species))),...['CW','DW','TL'].map(k=>!r.empty&&r.length!==''&&r.length!=null&&r.measure===k?r.length:''),r.count,r.empty||!r.sex||r.sex==='U'?'':sexOf(r.sex).label,r.egg,r.moult,r.geneticId,r.empty?'Y':'N',r.lat,r.lon,r.notes,r.hcomments||'',r.retained||'',r.sampleId||'',r.survey==='Seine Net'&&!r.empty?(r.sub||1):'',r.survey==='Seine Net'&&!r.empty&&r.count!==''&&r.count!=null?Math.round(r.count/(r.sub||1)):'',r.lab?'Y':(r.survey==='Seine Net'?'N':''),r.jar||'',r.time]),true);
 }
 function envCSV(filter){
   const keys=Object.keys(S.env).filter(filter).sort();
-  const head=['Date','Bioregion','Location','Estuary_area','Site'];ENV_ROWS.forEach(([k,,u])=>{head.push(`${k}_top_${u.replace('°','')}`,`${k}_bottom_${u.replace('°','')}`);});
+  const head=['Date','Time','Bioregion','Location','Estuary_area','Site_code','Site_type','Region2','Site_lat','Site_lon'];ENV_ROWS.forEach(([k,,u])=>{head.push(`${k}_top_${u.replace('°','')}`,`${k}_bottom_${u.replace('°','')}`);});
   return toCSV(head,keys.map(k=>{const [d,l,s]=k.split('|');const e=S.env[k]||{};const bio=Object.keys(BIOREGIONS).find(b=>BIOREGIONS[b].includes(l))||'';
-    const row=[d,bio,l,areaOfSite(l,s),s];ENV_ROWS.forEach(([id])=>row.push(e[id+'_top'],e[id+'_bottom']));return row;}),true);
+    const sm=siteMeta(s)||{};const row=[d,e._time||'',bio,l,sm.region||areaOfSite(l,s),s,sm.type||'',sm.region2||'',sm.lat||'',sm.lon||''];ENV_ROWS.forEach(([id])=>row.push(e[id+'_top'],e[id+'_bottom']));return row;}),true);
 }
 function buildExport(scope){
   const day=scope==='day', recs=day?dayRecs():S.records;
@@ -887,7 +1048,7 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b||b.disabled)return;
   const a=b.dataset.act,v=b.dataset.val;
   switch(a){
-    case 'tab':S.tab=v;break;
+    case 'tab':if(v==='entry')S.carriedFrom='';S.tab=v;break;
     case 'theme':S.settings.theme=S.settings.theme==='dark'?'light':'dark';break;
     case 'hand':S.settings.left=!S.settings.left;break;
     case 'gps':if(S.tab==='entry'&&currentSite()){markPosition();return;}toast('Use Mark position on the data entry screen');return;
@@ -897,6 +1058,27 @@ document.addEventListener('click',e=>{
     case 'meshUp':goMesh(S.meshIdx+1);return;
     case 'warnGo':{const f=pendingFn;pendingFn=null;closeModal();if(f)f();return;}
     case 'lock':setLock(true);return;
+    case 'survey':if(S.survey!==v||!S.time){stampHeader();}if(S.survey!==v){S.survey=v;S.netType=(GEAR.find(g=>g.type===SURVEYS[v].gear)||{}).code;if(!SURVEYS[v].soak)S.soak='';}S.tab='header';break;
+    case 'stampNow':stampHeader();toast('Date and time updated');break;
+    case 'retain':S.retained=v;break;
+    case 'sub':{if(!S.species)return;S.subs=S.subs||{};const k=subKey(currentSite(),S.species);
+      if(v==='other'){const x=prompt('Subsample fraction kept (e.g. 0.1 for one tenth)','0.1');const f=parseFloat(x);if(!(f>0&&f<=1))return;S.subs[k]=String(f);}else S.subs[k]=v;break;}
+    case 'labSample':labModal();return;
+    case 'labGroup':labGroup=v;document.querySelectorAll('#lab-groups .opt').forEach(x=>x.classList.toggle('on',x.dataset.val===v));return;
+    case 'labFrac':labFrac=v;document.querySelectorAll('#lab-fracs button').forEach(x=>x.classList.toggle('on',x.dataset.val===v));return;
+    case 'labSave':{const n=$('lab-n').value.trim();const keep=S.species;S.species=labGroup;
+      newRecord({species:labGroup,measure:'',length:'',count:n?parseInt(n,10):'',sex:'',egg:'',moult:'',lab:true,sub:parseFloat(labFrac),jar:$('lab-jar').value.trim(),notes:$('lab-notes').value.trim()});
+      S.species=keep;closeModal();render();toast('Lab sample recorded');return;}
+    case 'setupSv':window.SETUP_SV=v;break;
+    case 'siteMenu':window.SITE_OPEN=!window.SITE_OPEN;break;
+    case 'pickSite':{const i=+v,x=sitesFor(curKey())[i];window.SITE_OPEN=false;
+      if(i===S.siteIdx)break;
+      if(siteDone(x)){render();warnModal('Site already sampled',[`Site ${esc(x)} has already been sampled. Are you sure you want to create another header for ${esc(x)}?`],`Create another header for ${esc(x)}`,()=>{switchSite(i,false);render();},'No');return;}
+      switchSite(i,false);break;}
+    case 'nextSite':{const list=sitesFor(curKey());if(!list.length)return;saveSiteHeader();const cur=list[S.siteIdx];
+      let i=list.findIndex((x,k)=>k>S.siteIdx&&!siteDone(x)&&x!==cur);if(i<0)i=list.findIndex(x=>!siteDone(x)&&x!==cur);
+      if(i<0){warnModal('All sites sampled',['Every site in this area already has data entered today. Pick a site from the Site dropdown to add another header.']);return;}
+      loadSiteHeader(i,true);S.carriedFrom=cur;window.SITE_OPEN=false;S.pad='';toast(`New header for ${list[i]}`);break;}
     case 'otherPage':otherPageModal();return;
     case 'refTemplate':download(new File([templateCSV()],'gillnet_species_codes_template.csv',{type:'text/csv'}));toast('Template downloaded');return;
     case 'refClear':if(!confirm('Remove all imported species codes?'))return;S.speciesRef={};break;
@@ -933,6 +1115,7 @@ document.addEventListener('click',e=>{
     case 'env':envModal();return;
     case 'envSave':{const k=siteKey(currentSite()),o={};ENV_ROWS.forEach(([id])=>['_top','_bottom'].forEach(s=>{const val=$('env-'+id+s).value.trim();if(val)o[id+s]=val;}));
       if(showModalWarn(b,Object.entries(o).map(([id,val])=>envIssue(id,val)).filter(Boolean)))return;
+      if(Object.keys(o).length)o._time=S.time||'';
       if(Object.keys(o).length)S.env[k]=o;else delete S.env[k];closeModal();toast('Environment saved');break;}
     case 'editLast':{const recs=dayRecs();if(!recs.length){toast('Nothing recorded yet today');return;}editModal(recs[recs.length-1].id);return;}
     case 'edit':editModal(v);return;
@@ -949,7 +1132,7 @@ document.addEventListener('click',e=>{
     case 'editDelete':case 'del':if(!confirm('Delete this record?'))return;S.records=S.records.filter(r=>r.id!==v);closeModal();break;
     case 'close':closeModal();return;
     case 'openDay':{const [d,l,bio]=v.split('|');S.date=d;S.location=l;S.bioregion=bio;S.siteIdx=0;S.area=(S.records.filter(r=>r.date===d&&r.location===l).at(-1)||{}).area||'';S.tab='entry';break;}
-    case 'newDay':S.date=today();S.siteIdx=0;S.meshIdx=0;S.tab='header';break;
+    case 'newDay':stampHeader();S.siteIdx=0;S.meshIdx=0;S.tab='survey';break;
     case 'exp':doExport(v);return;
     case 'wipe':if(confirm('Delete every record on this iPad? This cannot be undone.')&&confirm('Are you sure? Export first if you need this data.')){
       const keep={sites:S.sites,settings:S.settings,bioregion:S.bioregion,location:S.location};S=Object.assign(fresh(),keep);S.tab='setup';toast('All data deleted');}break;
@@ -965,6 +1148,12 @@ function renderSearch(q){
     :`<button class="res" data-act="other">No match. Add “${esc(q)}” as a new species</button>`;
 }
 document.addEventListener('input',e=>{
+  if(e.target.dataset.henv){const id=e.target.dataset.henv,site=sitesFor(curKey())[S.siteIdx],k=siteKey(site);S.env[k]=S.env[k]||{};
+    if(e.target.value.trim())S.env[k][id]=e.target.value.trim();else delete S.env[k][id];
+    Object.assign(S.env[k],{_date:S.date,_bioregion:S.bioregion,_location:S.location,_site:site,_time:S.time||''});
+    e.target.classList.toggle('warn',!!envIssue(id,e.target.value));
+    const iss=Object.keys(S.env[k]).filter(x=>!x.startsWith('_')).map(x=>envIssue(x,S.env[k][x])).filter(Boolean);
+    $('henv-warn').innerHTML=iss.length?`<ul class="warnlist">${iss.map(x=>`<li>${x}</li>`).join('')}</ul>`:'';persist();return;}
   if(e.target.id==='sp-search'){renderSearch(e.target.value);return;}
   if(e.target.id==='op-search'){const q=e.target.value.trim().toLowerCase();let n=0;
     document.querySelectorAll('.opgrid .sp').forEach(b=>{const ok=!q||b.dataset.find.includes(q);b.style.display=ok?'':'none';if(ok)n++;});
@@ -980,8 +1169,16 @@ document.addEventListener('change',e=>{
   if(e.target.closest('#modal')&&e.target.tagName==='SELECT')e.target.dispatchEvent(new Event('input',{bubbles:true}));
   const h=e.target.dataset.h;
   if(h){if(h==='date')S.date=e.target.value||today();
+    if(h==='time'){S.time=e.target.value;saveSiteHeader();persist();return;}
+    if(h==='meshMode'){S.meshMode=e.target.value;render();return;}
+    if(h==='meshManual'){S.meshManual=e.target.value;persist();return;}
+    if(h==='siteCode'||h==='sampleId'){S[h]=e.target.value;persist();return;}
+    if(h==='comments'){S.comments=e.target.value;saveSiteHeader();persist();return;}
     if(h==='bioregion'){S.bioregion=e.target.value;S.location='';S.area='';S.siteIdx=0;}
-    if(h==='location'){S.location=e.target.value;S.area='';S.siteIdx=0;}
+    if(h==='location'){S.location=e.target.value;S.bioregion=Object.keys(BIOREGIONS).find(b=>BIOREGIONS[b].includes(S.location))||'';S.area='';S.siteIdx=0;}
+    if(h==='site'){const i=+e.target.value,x=sitesFor(curKey())[i];
+      if(siteDone(x)){e.target.value=S.siteIdx;warnModal('Site already sampled',[`Site ${esc(x)} has already been sampled. Are you sure you want to create another header for ${esc(x)}?`],`Create another header for ${esc(x)}`,()=>{S.siteIdx=i;render();},'No');return;}
+      S.siteIdx=i;}
     if(h==='area'){S.area=e.target.value;S.siteIdx=0;}
     if(h==='netType')S.netType=e.target.value;
     if(h==='recorder1'||h==='recorder2')S[h]=e.target.value;
@@ -1000,6 +1197,7 @@ document.addEventListener('keydown',e=>{
 });
 
 load();render();setLock(false);
+if(!S.time)stampHeader(),render();
 (()=>{const h=$('holdbtn');['pointerdown'].forEach(t=>h.addEventListener(t,holdStart));['pointerup','pointerleave','pointercancel'].forEach(t=>h.addEventListener(t,holdEnd));
   $('lockscreen').addEventListener('contextmenu',e=>e.preventDefault());})();
 </script>
