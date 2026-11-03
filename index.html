@@ -402,9 +402,10 @@ const SURVEYS = {
 /* A site counts as sampled when it has catch or environmental data entered for this date, location and survey */
 const siteDone = site => S.records.some(r=>r.date===S.date&&r.location===S.location&&r.site===site&&(r.survey||'Gillnet')===surveyOf().label)||!!S.env[siteKey(site)];
 /* Each site header keeps its own time and comments */
-function saveSiteHeader(){const site=sitesFor(curKey())[S.siteIdx];if(!site)return;S.hdr=S.hdr||{};S.hdr[siteKey(site)]={time:S.time,comments:S.comments||''};}
+function soakFrom(a,b){if(!a||!b)return '';const [h1,m1]=a.split(':').map(Number),[h2,m2]=b.split(':').map(Number);let d=(h2*60+m2)-(h1*60+m1);if(d<0)d+=1440;return String(Math.round(d/60*100)/100);}
+function saveSiteHeader(){const site=sitesFor(curKey())[S.siteIdx];if(!site)return;S.hdr=S.hdr||{};S.hdr[siteKey(site)]={time:S.time,comments:S.comments||'',netIn:S.netIn||'',netOut:S.netOut||'',soak:S.soak||''};}
 function loadSiteHeader(i,fresh){S.siteIdx=i;const site=sitesFor(curKey())[i];const h=(S.hdr||{})[siteKey(site)];
-  if(h&&!fresh){S.time=h.time;S.comments=h.comments;}else{S.time=nowTime();S.comments='';}}
+  if(h&&!fresh){S.time=h.time;S.comments=h.comments;S.netIn=h.netIn||'';S.netOut=h.netOut||'';if(h.soak)S.soak=h.soak;}else{S.time=nowTime();S.comments='';S.netIn='';S.netOut='';}}
 function switchSite(i,carried){saveSiteHeader();const from=sitesFor(curKey())[S.siteIdx];loadSiteHeader(i,false);S.carriedFrom=carried?from:'';}
 const MESH_OPTIONS = ['Multi-mesh']; // header mesh-size choices; more can be added
 const SITE_CODES = {}; // filled from the site list CSV (site name → site code)
@@ -700,14 +701,18 @@ function headerHTML(){
         <label class="field">Site position<input value="${(m=>m?m.lat.toFixed(5)+', '+m.lon.toFixed(5):'')(siteMeta(sitesFor(curKey())[S.siteIdx]))}" disabled style="font-size:18px"><span class="dtnote">${(m=>m?esc(m.region2)+' · from the site list':'')(siteMeta(sitesFor(curKey())[S.siteIdx]))}</span></label></div>
       ${(()=>{const opts=GEAR.filter(g=>g.type===sv.gear);if(!opts.some(g=>g.code===S.netType))S.netType=opts[0].code;
         const gearSel=`<label class="field">Gear<select data-h="netType">${opts.map(g=>`<option value="${g.code}"${g.code===S.netType?' selected':''}>${esc(g.name)}</option>`).join('')}</select></label>`;
-        if(sv.gear==='gill')return `<div class="trio">${gearSel}
-          <label class="field">Mesh size${S.netType==='GN27'?`<input data-h="meshManual" inputmode="decimal" placeholder="mm, e.g. 76" value="${esc(S.meshManual||'')}">`:'<input value="Multi-mesh" disabled>'}</label>
-          <label class="field">Soak time (h)<input data-h="soak" inputmode="decimal" placeholder="e.g. 2.5" value="${esc(S.soak)}"></label></div>`;
+        if(sv.gear==='gill')return `<div class="pair two">${gearSel}
+          <label class="field">Mesh size${S.netType==='GN27'?`<input data-h="meshManual" inputmode="decimal" placeholder="mm, e.g. 76" value="${esc(S.meshManual||'')}">`:'<input value="Multi-mesh" disabled>'}</label></div>
+          <p class="dtnote" style="margin:-6px 0 0">${esc(gearOf(S.netType).code||'')} · ${esc(gearOf(S.netType).desc||'')}</p>
+          <div class="trio">
+          <label class="field">Time net in<input type="time" data-h="netIn" value="${esc(S.netIn||'')}"></label>
+          <label class="field">Time net out<input type="time" data-h="netOut" value="${esc(S.netOut||'')}"></label>
+          <label class="field">Soak time (h)<input data-h="soak" inputmode="decimal" placeholder="auto" value="${esc(S.soak)}"></label></div>`;
         if(sv.gear==='seine')return `<div class="pair two">${gearSel}
           <div class="field">Sample retained<div class="dtmode"><button class="${S.retained==='Y'?'on':''}" data-act="retain" data-val="Y">Yes</button><button class="${S.retained!=='Y'?'on':''}" data-act="retain" data-val="N">No</button></div></div></div>
           ${S.retained==='Y'?`<label class="field">Sample / jar ID<input data-h="sampleId" placeholder="e.g. WNI-2026-014" value="${esc(S.sampleId||'')}"></label>`:''}`;
         return gearSel;})()}
-      <p class="dtnote" style="margin:-6px 0 0">${esc(gearOf(S.netType).code||'')} · ${esc(gearOf(S.netType).desc||'')}</p>
+      ${S.survey==='gillnet'||!S.survey?'':`<p class="dtnote" style="margin:-6px 0 0">${esc(gearOf(S.netType).code||'')} · ${esc(gearOf(S.netType).desc||'')}</p>`}
       <div class="pair two">${['recorder1','recorder2'].map((k,i)=>`<label class="field">Recorder ${i+1}<select data-h="${k}"><option value="">Choose…</option>${staffList().concat(S[k]&&!staffList().includes(S[k])?[S[k]]:[]).map(n=>`<option${n===S[k]?' selected':''}>${esc(n)}</option>`).join('')}<option value="__add">+ Add new staff…</option></select></label>`).join('')}</div>
     </div>
       ${(()=>{const site=sitesFor(curKey())[S.siteIdx];if(!site)return '';const v=S.env[siteKey(site)]||{};
@@ -879,7 +884,7 @@ function newRecord(extra){
   const subf=S.survey==='seine'&&S.species?subFor(currentSite(),S.species):1;
   const r=Object.assign({sub:subf,id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),ctime:S.time||'',date:S.date,bioregion:S.bioregion,location:S.location,site,mesh,
     species:S.species,measure:measureOf(S.species),length:'',count:1,sex:S.attr.sex,egg:S.species===EGG_SPECIES?S.attr.egg:'',moult:crab?S.attr.moult:'',
-    survey:surveyOf().label,netType:S.netType,soak:S.soak,recorder1:S.recorder1,recorder2:S.recorder2,area:S.area||'',hcomments:S.comments||'',retained:S.survey==='seine'?(S.retained==='Y'?'Y':'N'):'',sampleId:S.survey==='seine'&&S.retained==='Y'?(S.sampleId||''):'',geneticId:'',notes:'',empty:false,lat:pos?pos.lat:'',lon:pos?pos.lon:'',time:new Date().toISOString(),exported:false},extra);
+    survey:surveyOf().label,netType:S.netType,soak:S.soak,netIn:S.survey==='gillnet'?(S.netIn||''):'',netOut:S.survey==='gillnet'?(S.netOut||''):'',recorder1:S.recorder1,recorder2:S.recorder2,area:S.area||'',hcomments:S.comments||'',retained:S.survey==='seine'?(S.retained==='Y'?'Y':'N'):'',sampleId:S.survey==='seine'&&S.retained==='Y'?(S.sampleId||''):'',geneticId:'',notes:'',empty:false,lat:pos?pos.lat:'',lon:pos?pos.lon:'',time:new Date().toISOString(),exported:false},extra);
   S.records.push(r);
   S.pad='';S.countMode=false;S.count=1;
   if(S.settings.defaultOn){S.attr={sex:S.settings.defaults.sex,egg:'',moult:S.settings.defaults.moult};}
@@ -1039,8 +1044,8 @@ function importRef(text){
 function allKnownNames(){const n=[];SPECIES.concat(Object.values(LOCAL_SPECIES).flat(),S.extraSpecies).forEach(x=>{if(!n.includes(x.name))n.push(x.name);});return n;}
 function templateCSV(){return toCSV(['Common_name','Scientific_name','Species_code','CAAB_code'],allKnownNames().map(n=>{const r=refFor(n);return [n,r.sci,r.code,r.caab];}));}
 function catchCSV(recs){
-  return toCSV(['Date','Time','Survey_type','Bioregion','Estuary','Location','Estuary_area','Gear_type','Gear_code','Gear_name','Gear_description','Soak_time_h','Recorder_1','Recorder_2','Site_code','Site_type','Region','Region2','Site_lat','Site_lon','Site_notes','Mesh_mm','Species','Scientific_name','Species_code','CAAB_code','CW_mm','DW_mm','TL_mm','Count','Sex_maturity','Egg_stage','Moult','Genetic_ID','Empty_net','Latitude','Longitude','Notes','Header_comments','Sample_retained','Sample_ID','Subsample_fraction','Raised_count','Lab_sample','Jar_ID','Recorded_at'],
-    recs.map(r=>[r.date,r.ctime||(r.time?fmtTime(r.time):''),r.survey||'Gillnet',r.bioregion,(siteMeta(r.site)||{}).estuary||'',r.location,r.area||'',...(g=>[g.type,g.code,g.name,g.desc])(gearOf(r.netType)),r.soak||'',r.recorder1||'',r.recorder2||'',r.site,...(m=>m?[m.type,m.region,m.region2,m.lat,m.lon,m.notes]:['','','','','',''])(siteMeta(r.site)),r.survey==='Gillnet'?r.mesh:'',r.species,...(r.empty||!r.species?['','','']:(x=>[x.sci,x.code,x.caab])(refFor(r.species))),...['CW','DW','TL'].map(k=>!r.empty&&r.length!==''&&r.length!=null&&r.measure===k?r.length:''),r.count,r.empty||!r.sex||r.sex==='U'?'':sexOf(r.sex).label,r.egg,r.moult,r.geneticId,r.empty?'Y':'N',r.lat,r.lon,r.notes,r.hcomments||'',r.retained||'',r.sampleId||'',r.survey==='Seine Net'&&!r.empty?(r.sub||1):'',r.survey==='Seine Net'&&!r.empty&&r.count!==''&&r.count!=null?Math.round(r.count/(r.sub||1)):'',r.lab?'Y':(r.survey==='Seine Net'?'N':''),r.jar||'',r.time]),true);
+  return toCSV(['Date','Time','Survey_type','Bioregion','Estuary','Location','Estuary_area','Gear_type','Gear_code','Gear_name','Gear_description','Time_net_in','Time_net_out','Soak_time_h','Recorder_1','Recorder_2','Site_code','Site_type','Region','Region2','Site_lat','Site_lon','Site_notes','Mesh_mm','Species','Scientific_name','Species_code','CAAB_code','CW_mm','DW_mm','TL_mm','Count','Sex_maturity','Egg_stage','Moult','Genetic_ID','Empty_net','Latitude','Longitude','Notes','Header_comments','Sample_retained','Sample_ID','Subsample_fraction','Raised_count','Lab_sample','Jar_ID','Recorded_at'],
+    recs.map(r=>[r.date,r.ctime||(r.time?fmtTime(r.time):''),r.survey||'Gillnet',r.bioregion,(siteMeta(r.site)||{}).estuary||'',r.location,r.area||'',...(g=>[g.type,g.code,g.name,g.desc])(gearOf(r.netType)),r.netIn||'',r.netOut||'',r.soak||'',r.recorder1||'',r.recorder2||'',r.site,...(m=>m?[m.type,m.region,m.region2,m.lat,m.lon,m.notes]:['','','','','',''])(siteMeta(r.site)),r.survey==='Gillnet'?r.mesh:'',r.species,...(r.empty||!r.species?['','','']:(x=>[x.sci,x.code,x.caab])(refFor(r.species))),...['CW','DW','TL'].map(k=>!r.empty&&r.length!==''&&r.length!=null&&r.measure===k?r.length:''),r.count,r.empty||!r.sex||r.sex==='U'?'':sexOf(r.sex).label,r.egg,r.moult,r.geneticId,r.empty?'Y':'N',r.lat,r.lon,r.notes,r.hcomments||'',r.retained||'',r.sampleId||'',r.survey==='Seine Net'&&!r.empty?(r.sub||1):'',r.survey==='Seine Net'&&!r.empty&&r.count!==''&&r.count!=null?Math.round(r.count/(r.sub||1)):'',r.lab?'Y':(r.survey==='Seine Net'?'N':''),r.jar||'',r.time]),true);
 }
 function envCSV(filter){
   const keys=Object.keys(S.env).filter(filter).sort();
@@ -1170,7 +1175,7 @@ document.addEventListener('click',e=>{
     case 'editDelete':case 'del':if(!confirm('Delete this record?'))return;S.records=S.records.filter(r=>r.id!==v);closeModal();break;
     case 'close':closeModal();return;
     case 'openDay':{const [d,l,bio]=v.split('|');S.date=d;S.location=l;S.bioregion=bio;S.siteIdx=0;S.area=(S.records.filter(r=>r.date===d&&r.location===l).at(-1)||{}).area||'';S.tab='entry';break;}
-    case 'newDay':stampHeader();S.siteIdx=0;S.meshIdx=0;S.tab='survey';break;
+    case 'newDay':stampHeader();Object.assign(S,{survey:'',bioregion:'',location:'',area:'',siteIdx:0,meshIdx:0,netType:'',soak:'',meshManual:'',recorder1:'',recorder2:'',comments:'',retained:'N',sampleId:'',netIn:'',netOut:'',carriedFrom:'',species:'',pad:''});S.tab='survey';toast('New day started');break;
     case 'exp':doExport(v);return;
     case 'wipe':if(confirm('Delete every record on this iPad? This cannot be undone.')&&confirm('Are you sure? Export first if you need this data.')){
       const keep={sites:S.sites,settings:S.settings,bioregion:S.bioregion,location:S.location};S=Object.assign(fresh(),keep);S.tab='setup';toast('All data deleted');}break;
@@ -1208,6 +1213,7 @@ document.addEventListener('change',e=>{
   const h=e.target.dataset.h;
   if(h){if(h==='date')S.date=e.target.value||today();
     if(h==='time'){S.time=e.target.value;saveSiteHeader();persist();return;}
+    if(h==='netIn'||h==='netOut'){S[h]=e.target.value;const sk=soakFrom(S.netIn,S.netOut);if(sk)S.soak=sk;saveSiteHeader();render();return;}
     if(h==='meshMode'){S.meshMode=e.target.value;render();return;}
     if(h==='meshManual'){S.meshManual=e.target.value;persist();return;}
     if(h==='siteCode'||h==='sampleId'){S[h]=e.target.value;persist();return;}
