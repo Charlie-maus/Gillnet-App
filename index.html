@@ -220,7 +220,7 @@ td .mini.del{color:var(--red);border-color:var(--red)}
 .region h3{font-family:var(--cond);font-size:20px;margin:0 0 8px}
 .siteline{display:grid;grid-template-columns:230px 1fr;gap:10px;align-items:center;margin-bottom:8px}
 
-.form.hdr{grid-template-columns:1fr;gap:18px;max-width:640px}
+.form.hdr{grid-template-columns:1fr;gap:18px;max-width:none}
 .form.hdr .field{font-size:18px}
 .pair{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px}
 .form.hdr input,.form.hdr select{font-size:24px;min-height:70px;padding:14px 16px;border-radius:14px}
@@ -252,7 +252,7 @@ html.fitted,html.fitted body{overflow:hidden}
 .pair.dt input:disabled{opacity:.7}
 .dtnote{font-family:var(--sans);font-size:14px;letter-spacing:0;text-transform:none;color:var(--muted)}
 
-.siteheads{margin-top:22px;max-width:640px}
+.siteheads{margin-top:22px;max-width:none}
 .sh{display:grid;grid-template-columns:90px 1fr auto;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;background:var(--bg)}
 .sh b{font-family:var(--cond);font-size:22px}
 .sh span{color:var(--muted);font-size:15px}
@@ -261,7 +261,7 @@ html.fitted,html.fitted body{overflow:hidden}
 .sh.cur{border:2px solid var(--cyan);background:var(--tile)}
 .sh.cur em{color:var(--cyan)}
 
-.carried{max-width:640px;margin:0 0 16px;padding:12px 14px;border-radius:12px;background:var(--green-bg);border:1.5px solid var(--green);font-size:15px}
+.carried{max-width:none;margin:0 0 16px;padding:12px 14px;border-radius:12px;background:var(--green-bg);border:1.5px solid var(--green);font-size:15px}
 
 .sitedd{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:70px;padding:0 16px;border-radius:14px;border:1px solid var(--line);background:var(--bg);text-align:left;text-transform:none;letter-spacing:0;font-family:var(--sans);font-size:24px;color:var(--ink)}
 .sitedd i{font-style:normal;color:var(--muted);font-size:18px}
@@ -274,7 +274,7 @@ html.fitted,html.fitted body{overflow:hidden}
 
 .trio{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
 
-.envhdr{max-width:640px;margin:4px 0 18px}
+.envhdr{max-width:none;margin:4px 0 18px}
 .envhdr .envtbl{background:var(--bg)}
 #henv-warn:not(:empty){margin-top:10px}
 
@@ -302,8 +302,22 @@ html.fitted,html.fitted body{overflow:hidden}
 .svtabs button{min-height:54px;border:0;background:var(--panel);color:var(--muted);font-weight:700}
 .svtabs button.on{background:var(--cyan);color:var(--cyan-ink)}
 
-.sitenote{max-width:640px;margin:-4px 0 4px;padding:12px 14px;border-radius:12px;background:var(--tile);border:1px solid var(--tile-line);font-size:15px;line-height:1.4}
+.sitenote{max-width:none;margin:-4px 0 4px;padding:12px 14px;border-radius:12px;background:var(--tile);border:1px solid var(--tile-line);font-size:15px;line-height:1.4}
 .sitenote b{display:block;font-family:var(--cond);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+
+.flabel{display:flex;align-items:center;gap:8px}
+.qbtn{width:30px;height:30px;border-radius:50%;border:2px solid var(--cyan);background:transparent;color:var(--cyan);font-weight:800;font-size:16px;line-height:1;padding:0;letter-spacing:0}
+.hdrbtns{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:none;margin-top:6px}
+.hdrbtns .btn{min-height:64px;padding:0 10px;font-size:18px}
+.svtabs.four{grid-template-columns:repeat(4,1fr);margin-bottom:14px}
+.stafflist{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.staffrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 8px 8px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font-size:18px}
+.staffadd{display:grid;grid-template-columns:1fr auto;gap:10px}
+.pager{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px}
+.pager span{color:var(--muted)}
+
+.mini{min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:transparent;font-weight:600;color:var(--ink)}
+.mini.del{color:var(--red);border-color:var(--red)}
 
 /* Modal */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
@@ -315,7 +329,7 @@ html.fitted,html.fitted body{overflow:hidden}
 .envtbl .hd{font-family:var(--cond);font-size:14px;letter-spacing:.08em;color:var(--muted)}
 .envtbl .rl{font-weight:700}
 .unitin{position:relative}
-.unitin input{padding-right:58px;text-align:right}
+.unitin input{padding-right:70px;text-align:right}
 .unitin span{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
 .mbtns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:26px}
 .mbtns.three{grid-template-columns:auto 1fr 1fr}
@@ -394,7 +408,8 @@ function loadSiteHeader(i,fresh){S.siteIdx=i;const site=sitesFor(curKey())[i];co
 function switchSite(i,carried){saveSiteHeader();const from=sitesFor(curKey())[S.siteIdx];loadSiteHeader(i,false);S.carriedFrom=carried?from:'';}
 const MESH_OPTIONS = ['Multi-mesh']; // header mesh-size choices; more can be added
 const SITE_CODES = {}; // filled from the site list CSV (site name → site code)
-const RECORDERS = ['Person 1','Person 2','Person 3'];
+const DEFAULT_STAFF = ['Daniel Yeoh','Blaine Hodgson','Marcus Newman','Amber Quinn','Chloe Bynon','Hamish Cowan'];
+const staffList = () => (S.staff&&S.staff.length?S.staff:DEFAULT_STAFF);
 /* Extra species offered by "Search species", per location. m overrides the group's measurement. Check and edit this list. */
 const LOCAL_SPECIES = {
   'Walpole-Nornalup Inlet': [
@@ -439,10 +454,12 @@ const SPECIES = [
 const MAX_TABS = 14; // the 15th slot is the Other species tab
 const MEASURES = {TL:'Total length',FL:'Fork length',CW:'Carapace width',DW:'Disc width'};
 const SEX = [
-  {id:'M',label:'Male',cls:'male',code:'M'},{id:'FM',label:'Female (mature)',cls:'fem',code:'F'},
-  {id:'U',label:'Unknown sex',cls:'unk',code:'U'},{id:'FI',label:'Female (immature)',cls:'fem',code:'Fi'}
+  {id:'M',label:'Male',cls:'male',code:'M'},{id:'FM',label:'Female (mature)',cls:'fem',code:'Fm'},
+  {id:'F',label:'Female',cls:'fem',code:'F'},{id:'FI',label:'Female (immature)',cls:'fem',code:'Fi'}
 ];
-const ENV_ROWS = [['depth','Depth (m)','m'],['temp','Temperature (°C)','°C'],['sal','Salinity (ppt)','ppt'],['do','Dissolved oxygen (ppm)','ppm']];
+/* No sex selected: exported as NA. Tap a selected sex again to clear it. */
+const NOSEX = {id:'U',label:'Sex not set',cls:'unk',code:''};
+const ENV_ROWS = [['depth','Depth (m)','m'],['temp','Temperature (°C)','°C'],['sal','Salinity (ppt)','ppt'],['do','Dissolved oxygen (mg/L)','mg/L']];
 /* Fail-safe limits: edit these to change the warnings */
 const LIMITS = {minLength:20, maxLength:3000, crab:{min:30,max:230},
   /* Per-species size warnings in mm (min and/or max) */
@@ -452,7 +469,7 @@ const LIMITS = {minLength:20, maxLength:3000, crab:{min:30,max:230},
     'Cobbler':{max:1300},
     'Gummy shark':{min:400,max:2000}
   }};
-const ENV_LIMITS = {depth:{max:10,label:'Depth',u:'m'}, sal:{max:60,label:'Salinity',u:'ppt'}, temp:{min:10,max:30,label:'Temperature',u:'°C'}, do:{min:1.5,max:10,label:'Dissolved oxygen',u:'ppm'}};
+const ENV_LIMITS = {depth:{max:10,label:'Depth',u:'m'}, sal:{max:60,label:'Salinity',u:'ppt'}, temp:{min:10,max:30,label:'Temperature',u:'°C'}, do:{min:1.5,max:10,label:'Dissolved oxygen',u:'mg/L'}};
 const TABS = [['days','Days'],['survey','Survey'],['header','Header'],['entry','Data entry'],['list','Full list'],['export','Export'],['setup','Setup']];
 
 /* ===== State ===== */
@@ -521,7 +538,7 @@ const fishCount = recs => recs.reduce((a,r)=>a+(Number(r.count)||0),0);
 const dayRecs = () => S.records.filter(r=>r.date===S.date&&r.location===S.location);
 const siteKey = site => `${S.date}|${S.location}|${site}`;
 const posKey = (site,mesh) => `${S.date}|${S.location}|${site}|${mesh}`;
-const sexOf = id => SEX.find(s=>s.id===id)||SEX[2];
+const sexOf = id => SEX.find(s=>s.id===id)||NOSEX;
 
 /* ===== Rendering ===== */
 const nowTime=()=>{const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');};
@@ -540,7 +557,7 @@ function render(){
 }
 /* Scale the screen so each page fits the device without scrolling.
    Data entry, Header and Export are scaled to fit; list pages keep the top bar fixed and scroll inside. */
-const FIT_TABS=['entry','export','survey']; // header scrolls at full size
+const FIT_TABS=['entry','export','survey','header','days','list','setup']; // every page scales to fit the screen
 function fit(){
   const app=$('app'),root=document.documentElement;if(!app)return;
   const cs=getComputedStyle(root);
@@ -602,12 +619,12 @@ function entryHTML(){
   if(!S.species){code='—';sub='Choose a species';}
   else if(S.countMode){code=`COUNT ${S.pad||0}`;sub=`${esc(S.species)} · Batch count`;}
   else{code=`${sexOf(a.sex).code}${S.pad} ${crab?a.moult:m}`;
-    sub=[esc(S.species),MEASURES[m],sexOf(a.sex).label.replace(' sex',''),crab?(a.moult==='H'?'Hard':'Soft'):'',a.egg&&crab?'Egg stage '+a.egg:''].filter(Boolean).join(' · ');}
+    sub=[esc(S.species),MEASURES[m],a.sex&&a.sex!=='U'?sexOf(a.sex).label:'',crab?(a.moult==='H'?'Hard':'Soft'):'',a.egg&&crab?'Egg stage '+a.egg:''].filter(Boolean).join(' · ');}
 
   const sexBtns=SEX.map(s=>`<button class="opt ${s.cls} ${a.sex===s.id?'on':''}" data-act="sex" data-val="${s.id}">${s.label}</button>`).join('');
   const eggOK=S.species===EGG_SPECIES;
   const crabBlock=`<div class="lbl">Egg stage · ${eggOK?'sets female + mature':esc(EGG_SPECIES)+' only'}</div><div class="g3">${[1,2,3].map(i=>`<button class="opt e${i} ${eggOK&&a.egg==String(i)?'on':''} ${eggOK?'':'locked'}" data-act="egg" data-val="${i}" aria-disabled="${!eggOK}"><span class="dot"></span>Stage ${i}</button>`).join('')}</div>`
-    +(crab?`<div class="lbl">Moult</div><div class="g2"><button class="opt moult ${a.moult==='H'?'on':''}" data-act="moult" data-val="H">Hard</button><button class="opt moult ${a.moult==='S'?'on':''}" data-act="moult" data-val="S">Soft</button></div>`:'');
+    +`<div class="lbl">Moult${crab?'':' · '+esc(EGG_SPECIES)+' only'}</div><div class="g2"><button class="opt moult ${crab&&a.moult==='H'?'on':''} ${crab?'':'locked'}" data-act="moult" data-val="H" aria-disabled="${!crab}">Hard</button><button class="opt moult ${crab&&a.moult==='S'?'on':''} ${crab?'':'locked'}" data-act="moult" data-val="S" aria-disabled="${!crab}">Soft</button></div>`; /* always shown so the layout never changes size */
   const d=S.settings.defaults;
   const defText=`Default ${S.settings.defaultOn?'on':'off'} · ${sexOf(d.sex).label}${crab?' + '+(d.moult==='H'?'Hard':'Soft'):''}`;
 
@@ -673,59 +690,64 @@ function headerHTML(){
       <div class="field dtfield">Date and time
         <div class="pair dt"><input type="date" data-h="date" value="${S.date}"><input type="time" data-h="time" value="${S.time||''}"></div>
         <span class="dtnote">Filled in automatically when the header is started. Change it if the data was collected at another time. <button class="linkbtn" data-act="stampNow">Use current date and time</button></span></div>
-      <label class="field">Location<select data-h="location"><option value="">Choose…</option>${Object.entries(BIOREGIONS).map(([b,ls])=>`<optgroup label="${esc(b)}">${ls.map(l=>`<option${l===S.location?' selected':''}>${esc(l)}</option>`).join('')}</optgroup>`).join('')}</select></label>
+      <div class="pair two"><label class="field">Location<select data-h="location"><option value="">Choose…</option>${Object.entries(BIOREGIONS).map(([b,ls])=>`<optgroup label="${esc(b)}">${ls.map(l=>`<option${l===S.location?' selected':''}>${esc(l)}</option>`).join('')}</optgroup>`).join('')}</select></label>
       <label class="field">Estuary area<select data-h="area" ${hasAreas(S.location)?'':'disabled'}>${hasAreas(S.location)
         ?`<option value="">Choose…</option>${(()=>{const all=AREAS[S.location],f=all.filter(a=>sitesFor(sitePrefix(S.survey)+S.location+'|'+a).length);return f.length?f:all;})().map(a=>`<option${a===S.area?' selected':''}>${esc(a)}</option>`).join('')}`
-        :`<option value="">${S.location?'Whole estuary':'Choose a location first'}</option>`}</select></label>
-      <div class="pair sitepair">      <div class="field">Site${(()=>{const L=sitesFor(curKey());if(!L.length)return `<button class="sitedd" disabled>${!S.location||(hasAreas(S.location)&&!S.area)?'Choose an area first':'No '+esc(surveyOf().label.toLowerCase())+' sites yet'}</button><span class="dtnote">${S.location&&(!hasAreas(S.location)||S.area)?`Add them on the Setup tab under ${esc(surveyOf().label)} sites. <button class="linkbtn" data-act="tab" data-val="setup">Go to Setup</button>`:''}</span>`;
+        :`<option value="">${S.location?'Whole estuary':'Choose a location first'}</option>`}</select></label></div>
+      <div class="pair sitepair">      <div class="field"><span class="flabel">Site${(m=>m&&m.notes?'<button class="qbtn" data-act="siteInfo" aria-label="Site notes">?</button>':'')(siteMeta(sitesFor(curKey())[S.siteIdx]))}</span>${(()=>{const L=sitesFor(curKey());if(!L.length)return `<button class="sitedd" disabled>${!S.location||(hasAreas(S.location)&&!S.area)?'Choose an area first':'No '+esc(surveyOf().label.toLowerCase())+' sites yet'}</button><span class="dtnote">${S.location&&(!hasAreas(S.location)||S.area)?`Add them on the Setup tab under ${esc(surveyOf().label)} sites. <button class="linkbtn" data-act="tab" data-val="setup">Go to Setup</button>`:''}</span>`;
         return `<button class="sitedd ${window.SITE_OPEN?'open':''}" data-act="siteMenu"><span>${esc(L[S.siteIdx])}</span><i>▾</i></button>
         ${window.SITE_OPEN?`<div class="siteopts">${L.map((x,i)=>`<button class="opt2 ${i===S.siteIdx?'sel':''}" data-act="pickSite" data-val="${i}"><span>${esc(x)}</span>${siteDone(x)?'<em>✓ Done</em>':''}</button>`).join('')}</div>`:''}`;})()}</div>
         <label class="field">Site position<input value="${(m=>m?m.lat.toFixed(5)+', '+m.lon.toFixed(5):'')(siteMeta(sitesFor(curKey())[S.siteIdx]))}" disabled style="font-size:18px"><span class="dtnote">${(m=>m?esc(m.region2)+' · from the site list':'')(siteMeta(sitesFor(curKey())[S.siteIdx]))}</span></label></div>
-      ${(m=>m&&m.notes?`<div class="sitenote"><b>Site notes</b>${esc(m.notes)}</div>`:'')(siteMeta(sitesFor(curKey())[S.siteIdx]))}
       ${(()=>{const opts=GEAR.filter(g=>g.type===sv.gear);if(!opts.some(g=>g.code===S.netType))S.netType=opts[0].code;
         const gearSel=`<label class="field">Gear<select data-h="netType">${opts.map(g=>`<option value="${g.code}"${g.code===S.netType?' selected':''}>${esc(g.name)}</option>`).join('')}</select></label>`;
         if(sv.gear==='gill')return `<div class="trio">${gearSel}
-          <label class="field">Soak time (h)<input data-h="soak" inputmode="decimal" placeholder="e.g. 2.5" value="${esc(S.soak)}"></label>
-          <label class="field">Mesh size${S.netType==='GN27'?`<input data-h="meshManual" inputmode="decimal" placeholder="mm, e.g. 76" value="${esc(S.meshManual||'')}">`:'<input value="Multi-mesh" disabled>'}</label></div>`;
+          <label class="field">Mesh size${S.netType==='GN27'?`<input data-h="meshManual" inputmode="decimal" placeholder="mm, e.g. 76" value="${esc(S.meshManual||'')}">`:'<input value="Multi-mesh" disabled>'}</label>
+          <label class="field">Soak time (h)<input data-h="soak" inputmode="decimal" placeholder="e.g. 2.5" value="${esc(S.soak)}"></label></div>`;
         if(sv.gear==='seine')return `<div class="pair two">${gearSel}
           <div class="field">Sample retained<div class="dtmode"><button class="${S.retained==='Y'?'on':''}" data-act="retain" data-val="Y">Yes</button><button class="${S.retained!=='Y'?'on':''}" data-act="retain" data-val="N">No</button></div></div></div>
           ${S.retained==='Y'?`<label class="field">Sample / jar ID<input data-h="sampleId" placeholder="e.g. WNI-2026-014" value="${esc(S.sampleId||'')}"></label>`:''}`;
         return gearSel;})()}
       <p class="dtnote" style="margin:-6px 0 0">${esc(gearOf(S.netType).code||'')} · ${esc(gearOf(S.netType).desc||'')}</p>
-      <div class="pair two">${['recorder1','recorder2'].map((k,i)=>`<label class="field">Recorder ${i+1}<select data-h="${k}"><option value="">Choose…</option>${RECORDERS.map(n=>`<option${n===S[k]?' selected':''}>${esc(n)}</option>`).join('')}</select></label>`).join('')}</div>
+      <div class="pair two">${['recorder1','recorder2'].map((k,i)=>`<label class="field">Recorder ${i+1}<select data-h="${k}"><option value="">Choose…</option>${staffList().concat(S[k]&&!staffList().includes(S[k])?[S[k]]:[]).map(n=>`<option${n===S[k]?' selected':''}>${esc(n)}</option>`).join('')}<option value="__add">+ Add new staff…</option></select></label>`).join('')}</div>
     </div>
       ${(()=>{const site=sitesFor(curKey())[S.siteIdx];if(!site)return '';const v=S.env[siteKey(site)]||{};
-        const cell=(id,u)=>`<div class="unitin"><input class="inp ${envIssue(id,v[id])?'warn':''}" data-henv="${id}" inputmode="decimal" value="${esc(v[id]||'')}"><span>${u}</span></div>`;
+        const n=ENV_ROWS.length;
+        const cell=(id,u,row,col,last)=>`<div class="unitin" style="grid-row:${row};grid-column:${col}"><input class="inp ${envIssue(id,v[id])?'warn':''}" data-henv="${id}" inputmode="decimal" enterkeyhint="${last?'done':'next'}" value="${esc(v[id]||'')}"><span>${u}</span></div>`;
         const issues=Object.keys(v).map(k=>envIssue(k,v[k])).filter(Boolean);
         return `<div class="envhdr"><div class="field">Environmental data · ${esc(site)}</div>
           <div class="envtbl"><div></div><div class="hd">TOP</div><div class="hd">BOTTOM</div>
-          ${ENV_ROWS.map(([k,l,u])=>`<div class="rl">${l}</div>${cell(k+'_top',u)}${cell(k+'_bottom',u)}`).join('')}</div>
+          ${ENV_ROWS.map(([k,l],i)=>`<div class="rl" style="grid-row:${i+2};grid-column:1">${l}</div>`).join('')}
+          ${ENV_ROWS.map(([k,,u],i)=>cell(k+'_top',u,i+2,2,false)).join('')}
+          ${ENV_ROWS.map(([k,,u],i)=>cell(k+'_bottom',u,i+2,3,i===n-1)).join('')}</div>
           <div id="henv-warn">${issues.length?`<ul class="warnlist">${issues.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}</div></div>`;})()}
-      <label class="field" style="max-width:640px">Header comments<textarea data-h="comments" rows="3" placeholder="Site-specific notes, e.g. weed in net, strong current, net shifted">${esc(S.comments||'')}</textarea></label>
-    <div class="btns"><button class="btn primary hdr-go" data-act="tab" data-val="entry">Save header and go to data entry</button><button class="btn hdr-go" data-act="nextSite">+ New header for next site</button></div>
+      <label class="field" style="max-width:none">Header comments<textarea data-h="comments" rows="3" placeholder="Site-specific notes, e.g. weed in net, strong current, net shifted">${esc(S.comments||'')}</textarea></label>
+    <div class="hdrbtns"><button class="btn primary hdr-go" data-act="tab" data-val="entry">Save header and go to data entry</button><button class="btn hdr-go" data-act="nextSite">+ New header for next site</button></div>
 </div>`;
 }
 
+function pager(act,pg,pages){return pages>1?`<div class="pager"><button class="btn" data-act="${act}" data-val="${pg-1}" ${pg<=0?'disabled':''}>‹ Newer</button><span>Page ${pg+1} of ${pages}</span><button class="btn" data-act="${act}" data-val="${pg+1}" ${pg>=pages-1?'disabled':''}>Older ›</button></div>`:'';}
 function daysHTML(){
   const groups={};
   S.records.forEach(r=>{const k=r.date+'|'+r.location;(groups[k]=groups[k]||{date:r.date,location:r.location,bioregion:r.bioregion,recs:[]}).recs.push(r);});
-  const list=Object.values(groups).sort((a,b)=>b.date.localeCompare(a.date));
+  const all=Object.values(groups).sort((a,b)=>b.date.localeCompare(a.date));
+  const per=10,pages=Math.max(1,Math.ceil(all.length/per)),pg=Math.min(window.DAYS_PAGE||0,pages-1),list=all.slice(pg*per,pg*per+per);
   const rows=list.map(g=>`<tr><td>${fmtDate(g.date)}</td><td>${esc(g.location)}</td><td>${g.recs.length}</td><td>${fishCount(g.recs)}</td><td>${g.recs.filter(r=>!r.exported).length||'—'}</td>
     <td><button class="mini" data-act="openDay" data-val="${esc(g.date+'|'+g.location+'|'+g.bioregion)}">Open</button></td></tr>`).join('');
   return `<div class="page"><h2>Days</h2><p class="note">Every survey day stored on this iPad.</p>
-    ${list.length?`<div class="tablewrap"><table><thead><tr><th>Date</th><th>Location</th><th>Records</th><th>Animals</th><th>Not backed up</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`:'<p class="note">No days recorded yet.</p>'}
+    ${list.length?`<div class="tablewrap"><table><thead><tr><th>Date</th><th>Location</th><th>Records</th><th>Animals</th><th>Not backed up</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>${pager('daysPage',pg,pages)}`:'<p class="note">No days recorded yet.</p>'}
     <div class="btns" style="margin-top:16px"><button class="btn primary" data-act="newDay">Start a new day</button></div></div>`;
 }
 
 function listHTML(){
   if(!S.location)return emptyState('Choose a location to see its records.','header','Open header');
   const recs=dayRecs().slice().reverse();
-  const rows=recs.map(r=>`<tr><td>${r.ctime||fmtTime(r.time)}</td><td>${esc(r.site)}</td><td>${r.mesh==='ALL'?'All':r.mesh}</td>
+  const per=11,pages=Math.max(1,Math.ceil(recs.length/per)),pg=Math.min(window.LIST_PAGE||0,pages-1);
+  const rows=recs.slice(pg*per,pg*per+per).map(r=>`<tr><td>${r.ctime||fmtTime(r.time)}</td><td>${esc(r.site)}</td><td>${r.mesh==='ALL'?'All':r.mesh}</td>
     <td>${r.empty?'<i>Empty net</i>':esc(r.species)}</td><td>${r.length!==''&&r.length!=null?r.length+' mm '+r.measure:(r.empty?'':'—')}</td><td>${r.count}</td>
     <td>${r.empty?'':sexOf(r.sex).label}</td><td>${esc(r.geneticId||'')}</td>
     <td><button class="mini" data-act="edit" data-val="${r.id}">Edit</button> <button class="mini del" data-act="del" data-val="${r.id}">Delete</button></td></tr>`).join('');
   return `<div class="page"><h2>Full list</h2><p class="note">${fmtDate(S.date)} · ${esc(S.location)} · ${recs.length} records, ${fishCount(recs)} animals. Newest first.</p>
-    ${recs.length?`<div class="tablewrap"><table><thead><tr><th>Time</th><th>Site</th><th>Mesh</th><th>Species</th><th>Size</th><th>Count</th><th>Sex</th><th>Genetic ID</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`:'<p class="note">Nothing recorded yet for this day.</p>'}</div>`;
+    ${recs.length?`<div class="tablewrap"><table><thead><tr><th>Time</th><th>Site</th><th>Mesh</th><th>Species</th><th>Size</th><th>Count</th><th>Sex</th><th>Genetic ID</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>${pager('listPage',pg,pages)}`:'<p class="note">Nothing recorded yet for this day.</p>'}</div>`;
 }
 
 function exportHTML(){
@@ -748,14 +770,22 @@ function refHTML(){
       <button class="btn" data-act="refTemplate">Download template</button>${n?'<button class="btn danger" data-act="refClear">Clear codes</button>':''}</div>
     <p class="note" style="margin:14px 0 0">${n?`${n} species loaded. `:'No species codes loaded yet. '}${n&&missing.length?`No codes yet for: ${missing.map(esc).join(', ')}.`:n?'Every species in the app has a match.':''}</p></div>`;
 }
+function staffHTML(){
+  return `<div class="page"><h2>Staff</h2><p class="note">Names shown in the Recorder 1 and Recorder 2 dropdowns.</p>
+    <div class="stafflist">${staffList().map(n=>`<div class="staffrow"><span>${esc(n)}</span><button class="mini del" data-act="staffDel" data-val="${esc(n)}">Remove</button></div>`).join('')}</div>
+    <div class="staffadd"><input class="inp" id="staff-new" placeholder="New staff member’s name" autocomplete="off" autocapitalize="words"><button class="btn primary" data-act="staffAdd">Add</button></div></div>`;
+}
 function setupHTML(){
-  return `<div class="page"><h2>Sites</h2><p class="note">Each survey type has its own sites. Enter site codes for each location, separated by commas, in fishing order.</p>
+  const tab=window.SETUP_TAB||'sites';
+  const tabs=`<div class="svtabs four">${[['sites','Sites'],['codes','Species codes'],['staff','Staff'],['data','Clear data']].map(([k,l])=>`<button class="${tab===k?'on':''}" data-act="setupTab" data-val="${k}">${l}</button>`).join('')}</div>`;
+  if(tab==='codes')return tabs+refHTML().replace(' style="margin-top:14px"','');
+  if(tab==='staff')return tabs+staffHTML();
+  if(tab==='data')return tabs+`<div class="page"><h2>Clear this tablet</h2><p class="note">Removes every record, environment entry and note. Export first.</p>
+    <button class="btn danger" data-act="wipe">Delete all data</button></div>`;
+  return tabs+`<div class="page"><h2>Sites</h2><p class="note">Each survey type has its own sites. Enter site codes for each location, separated by commas, in fishing order.</p>
     <div class="svtabs">${Object.entries(SURVEYS).map(([k,v])=>`<button class="${(window.SETUP_SV||S.survey||'gillnet')===k?'on':''}" data-act="setupSv" data-val="${k}">${esc(v.label)} sites</button>`).join('')}</div>
     ${(()=>{const sv=window.SETUP_SV||S.survey||'gillnet',pre=sitePrefix(sv);return Object.entries(BIOREGIONS).map(([b,locs])=>`<div class="region"><h3>${esc(b)}</h3>${locs.flatMap(l=>hasAreas(l)?AREAS[l].map(a=>[l+'|'+a,l+' · '+a]):[[l,l]]).map(([k,lab])=>`<label class="siteline"><span>${esc(lab)}</span><input class="inp" data-sites="${esc(pre+k)}" value="${esc(sitesFor(pre+k).join(', '))}" placeholder="${sv==='seine'?'e.g. WI1S, WI2S':sv==='line'?'e.g. WI1L':''}" autocapitalize="characters" autocomplete="off"></label>`).join('')}</div>`).join('');})()}
-  </div>
-  ${refHTML()}
-  <div class="page" style="margin-top:14px"><h2>Clear this iPad</h2><p class="note">Removes every record, environment entry and note. Export first.</p>
-    <button class="btn danger" data-act="wipe">Delete all data</button></div>`;
+  </div>`;
 }
 
 /* ===== Modals ===== */
@@ -805,7 +835,7 @@ function editModal(id){
       <label class="field">Mesh${sel('ed-mesh',MESHES.map(m=>[m,meshLabel(m)]),r.mesh)}</label>
       <label class="field">Length (mm)<input id="ed-length" inputmode="decimal" value="${esc(r.length)}"></label>
       <label class="field">Count<input id="ed-count" inputmode="numeric" value="${esc(r.count)}"></label>
-      <label class="field">Sex and maturity${sel('ed-sex',SEX.map(s=>[s.id,s.label]),r.sex)}</label>
+      <label class="field">Sex and maturity${sel('ed-sex',[[NOSEX.id,NOSEX.label]].concat(SEX.map(s=>[s.id,s.label])),r.sex||'U')}</label>
       <label class="field">Egg stage${sel('ed-egg',[['',''],['1','Stage 1'],['2','Stage 2'],['3','Stage 3']],r.egg)}</label>
       <label class="field">Moult${sel('ed-moult',[['',''],['H','Hard'],['S','Soft']],r.moult)}</label>
       <label class="field">Genetic ID<input id="ed-gen" value="${esc(r.geneticId)}"></label>
@@ -1014,7 +1044,7 @@ function catchCSV(recs){
 }
 function envCSV(filter){
   const keys=Object.keys(S.env).filter(filter).sort();
-  const head=['Date','Time','Bioregion','Location','Estuary_area','Site_code','Site_type','Region2','Site_lat','Site_lon'];ENV_ROWS.forEach(([k,,u])=>{head.push(`${k}_top_${u.replace('°','')}`,`${k}_bottom_${u.replace('°','')}`);});
+  const head=['Date','Time','Bioregion','Location','Estuary_area','Site_code','Site_type','Region2','Site_lat','Site_lon'];ENV_ROWS.forEach(([k,,u])=>{head.push(`${k}_top_${u.replace(/[^A-Za-z]/g,'')}`,`${k}_bottom_${u.replace(/[^A-Za-z]/g,'')}`);});
   return toCSV(head,keys.map(k=>{const [d,l,s]=k.split('|');const e=S.env[k]||{};const bio=Object.keys(BIOREGIONS).find(b=>BIOREGIONS[b].includes(l))||'';
     const sm=siteMeta(s)||{};const row=[d,e._time||'',bio,l,sm.region||areaOfSite(l,s),s,sm.type||'',sm.region2||'',sm.lat||'',sm.lon||''];ENV_ROWS.forEach(([id])=>row.push(e[id+'_top'],e[id+'_bottom']));return row;}),true);
 }
@@ -1070,6 +1100,14 @@ document.addEventListener('click',e=>{
       newRecord({species:labGroup,measure:'',length:'',count:n?parseInt(n,10):'',sex:'',egg:'',moult:'',lab:true,sub:parseFloat(labFrac),jar:$('lab-jar').value.trim(),notes:$('lab-notes').value.trim()});
       S.species=keep;closeModal();render();toast('Lab sample recorded');return;}
     case 'setupSv':window.SETUP_SV=v;break;
+    case 'setupTab':window.SETUP_TAB=v;break;
+    case 'daysPage':window.DAYS_PAGE=+v;break;
+    case 'listPage':window.LIST_PAGE=+v;break;
+    case 'staffAdd':{const n=($('staff-new').value||'').trim().replace(/\s+/g,' ');if(!n){toast('Type a name first');return;}
+      const l=staffList().slice();if(l.some(x=>x.toLowerCase()===n.toLowerCase())){toast('Already on the list');return;}l.push(n);S.staff=l;toast(`${n} added`);break;}
+    case 'staffDel':{if(!confirm(`Remove ${v} from the staff list? Records already entered keep the name.`))return;S.staff=staffList().filter(x=>x!==v);break;}
+    case 'siteInfo':{const m=siteMeta(sitesFor(curKey())[S.siteIdx]);if(!m)return;
+      openModal(`<h3>${esc(m.code)}</h3><p class="sub">${esc(m.region)} · ${esc(m.region2)} · ${m.lat.toFixed(5)}, ${m.lon.toFixed(5)}</p><div class="sitenote">${esc(m.notes)}</div><div class="mbtns one"><button class="save" data-act="close">Close</button></div>`);return;}
     case 'siteMenu':window.SITE_OPEN=!window.SITE_OPEN;break;
     case 'pickSite':{const i=+v,x=sitesFor(curKey())[i];window.SITE_OPEN=false;
       if(i===S.siteIdx)break;
@@ -1105,10 +1143,10 @@ document.addEventListener('click',e=>{
     case 'empty':markEmpty();return;
     case 'sex':if(isCrab(S.species)&&S.attr.egg&&v!=='FM'){
         warnModal('Egg stage is set',[v==='M'?'A male crab can’t be mature or carry eggs.':'A crab with eggs is a mature female.','Changing sex will clear the egg stage.'],'Change and clear eggs',()=>{S.attr.sex=v;S.attr.egg='';render();});return;}
-      S.attr.sex=v;if(v!=='FM')S.attr.egg='';break;
+      S.attr.sex=S.attr.sex===v?'U':v;if(S.attr.sex!=='FM')S.attr.egg='';break;
     case 'egg':if(S.species!==EGG_SPECIES){warnModal('Egg stage not allowed',[`Egg stages can only be recorded for ${esc(EGG_SPECIES)}.`]);return;}
       S.attr.egg=S.attr.egg===v?'':v;if(S.attr.egg)S.attr.sex='FM';break;
-    case 'moult':S.attr.moult=v;break;
+    case 'moult':if(!isCrab(S.species)){warnModal('Moult not allowed',[`Moult can only be recorded for ${esc(EGG_SPECIES)}.`]);return;}S.attr.moult=v;break;
     case 'defToggle':S.settings.defaultOn=!S.settings.defaultOn;break;
     case 'setDefault':S.settings.defaults={sex:S.attr.sex,moult:S.attr.moult||'H'};S.settings.defaultOn=true;toast('Default saved');break;
     case 'mark':markPosition();return;
@@ -1121,7 +1159,7 @@ document.addEventListener('click',e=>{
     case 'edit':editModal(v);return;
     case 'editSave':{const r=S.records.find(x=>x.id===v);if(!r)break;
       const sp=$('ed-species').value,L0=$('ed-length').value.trim();let sx=sp?$('ed-sex').value:'';const eg=$('ed-egg').value;
-      if(isCrab(sp)&&eg&&(sx==='FI'||sx==='U')){sx='FM';$('ed-sex').value='FM';}
+      if(isCrab(sp)&&eg&&(sx==='FI'||sx==='U'||sx==='F')){sx='FM';$('ed-sex').value='FM';}
       if(eg&&sp!==EGG_SPECIES){$('mwarn').innerHTML=`<ul class="warnlist"><li>Egg stages can only be recorded for ${esc(EGG_SPECIES)}. Clear the egg stage first.</li></ul>`;return;}
       if(SEX_REQUIRED.includes(sp)&&L0!==''&&(!sx||sx==='U')){$('mwarn').innerHTML=`<ul class="warnlist"><li>Choose a sex for ${esc(sp)}. It’s required when a measurement is recorded.</li></ul>`;return;}
       if(showModalWarn(b,checkAnimal({species:sp,length:L0===''?'':parseFloat(L0),sex:sx,egg:eg})))return;
@@ -1181,6 +1219,8 @@ document.addEventListener('change',e=>{
       S.siteIdx=i;}
     if(h==='area'){S.area=e.target.value;S.siteIdx=0;}
     if(h==='netType')S.netType=e.target.value;
+    if((h==='recorder1'||h==='recorder2')&&e.target.value==='__add'){const n=(prompt('New staff member name')||'').trim();
+      if(n){S.staff=staffList().slice();if(!S.staff.includes(n))S.staff.push(n);S[h]=n;toast(n+' added to staff');}render();return;}
     if(h==='recorder1'||h==='recorder2')S[h]=e.target.value;
     if(h==='soak'){S.soak=e.target.value.trim();persist();return;}
     render();return;}
@@ -1188,6 +1228,9 @@ document.addEventListener('change',e=>{
   if(l!==undefined){S.sites[l]=e.target.value.split(/[,\n]/).map(s=>s.trim().toUpperCase()).filter(Boolean);persist();renderChips();toast('Sites saved');}
 });
 document.addEventListener('keydown',e=>{
+  if(e.target.dataset&&e.target.dataset.henv&&e.key==='Enter'){e.preventDefault();
+    const all=[...document.querySelectorAll('[data-henv]')],i=all.indexOf(e.target);
+    if(i>=0&&i<all.length-1)all[i+1].focus();else e.target.blur();return;}
   if(locked){e.preventDefault();return;}
   if(!$('modal').classList.contains('hidden')){if(e.key==='Escape')closeModal();return;}
   if(S.tab!=='entry'||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
