@@ -715,11 +715,11 @@ function headerHTML(){
       ${S.survey==='gillnet'||!S.survey?'':`<p class="dtnote" style="margin:-6px 0 0">${esc(gearOf(S.netType).code||'')} · ${esc(gearOf(S.netType).desc||'')}</p>`}
       <div class="pair two">${['recorder1','recorder2'].map((k,i)=>`<label class="field">Recorder ${i+1}<select data-h="${k}"><option value="">Choose…</option>${staffList().concat(S[k]&&!staffList().includes(S[k])?[S[k]]:[]).map(n=>`<option${n===S[k]?' selected':''}>${esc(n)}</option>`).join('')}<option value="__add">+ Add new staff…</option></select></label>`).join('')}</div>
     </div>
-      ${(()=>{const site=sitesFor(curKey())[S.siteIdx];if(!site)return '';const v=S.env[siteKey(site)]||{};
+      ${(()=>{const site=sitesFor(curKey())[S.siteIdx];const v=site?(S.env[siteKey(site)]||{}):{};/* always shown; locked until a site is chosen */
         const n=ENV_ROWS.length;
-        const cell=(id,u,row,col,last)=>`<div class="unitin" style="grid-row:${row};grid-column:${col}"><input class="inp ${envIssue(id,v[id])?'warn':''}" data-henv="${id}" inputmode="decimal" enterkeyhint="${last?'done':'next'}" value="${esc(v[id]||'')}"><span>${u}</span></div>`;
+        const cell=(id,u,row,col,last)=>`<div class="unitin" style="grid-row:${row};grid-column:${col}"><input class="inp ${envIssue(id,v[id])?'warn':''}" data-henv="${id}" inputmode="decimal" enterkeyhint="${last?'done':'next'}" value="${esc(v[id]||'')}" ${site?'':'disabled'}><span>${u}</span></div>`;
         const issues=Object.keys(v).map(k=>envIssue(k,v[k])).filter(Boolean);
-        return `<div class="envhdr"><div class="field">Environmental data · ${esc(site)}</div>
+        return `<div class="envhdr"><div class="field">Environmental data${site?' · '+esc(site):' · choose a site first'}</div>
           <div class="envtbl"><div></div><div class="hd">TOP</div><div class="hd">BOTTOM</div>
           ${ENV_ROWS.map(([k,l],i)=>`<div class="rl" style="grid-row:${i+2};grid-column:1">${l}</div>`).join('')}
           ${ENV_ROWS.map(([k,,u],i)=>cell(k+'_top',u,i+2,2,false)).join('')}
