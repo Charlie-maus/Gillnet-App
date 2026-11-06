@@ -179,6 +179,9 @@ main{padding:16px 18px 30px;max-width:1100px;margin:0 auto}
 .linkbtn{border:0;background:none;color:var(--cyan);font-weight:700;padding:0 0 0 6px;text-decoration:underline}
 @media (max-width:560px){.surveys{grid-template-columns:1fr}.surveybtn{min-height:160px}}
 
+.one{margin-top:10px}
+.one .ghost{width:100%}
+
 /* Action tiles */
 .actions{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:20px}
 .tile{min-height:78px;border-radius:14px;border:1.5px solid var(--tile-line);background:var(--tile);font-weight:700;font-size:19px;line-height:1.2;padding:6px}
@@ -403,6 +406,16 @@ const SURVEYS = {
 const siteDone = site => S.records.some(r=>r.date===S.date&&r.location===S.location&&r.site===site&&(r.survey||'Gillnet')===surveyOf().label)||!!S.env[siteKey(site)];
 /* Each site header keeps its own time and comments */
 function soakFrom(a,b){if(!a||!b)return '';const [h1,m1]=a.split(':').map(Number),[h2,m2]=b.split(':').map(Number);let d=(h2*60+m2)-(h1*60+m1);if(d<0)d+=1440;return String(Math.round(d/60*100)/100);}
+/* Required header fields (checked by Save header) */
+function headerMissing(){const m=[];
+  if(!S.location)m.push('Location');
+  if(hasAreas(S.location)&&!S.area)m.push('Estuary area');
+  if(S.location&&!sitesFor(curKey())[S.siteIdx])m.push('Site');
+  if(!S.netType)m.push('Gear');
+  if(!S.recorder1)m.push('Recorder 1');
+  if(S.survey==='gillnet'||!S.survey){if(!S.netIn)m.push('Time net in');if(!S.netOut)m.push('Time net out');if(S.netType==='GN27'&&!S.meshManual)m.push('Mesh size');}
+  if(S.survey==='seine'&&S.retained==='Y'&&!S.sampleId)m.push('Sample / jar ID');
+  return m;}
 function saveSiteHeader(){const site=sitesFor(curKey())[S.siteIdx];if(!site)return;S.hdr=S.hdr||{};S.hdr[siteKey(site)]={time:S.time,comments:S.comments||'',netIn:S.netIn||'',netOut:S.netOut||'',soak:S.soak||''};}
 function loadSiteHeader(i,fresh){S.siteIdx=i;const site=sitesFor(curKey())[i];const h=(S.hdr||{})[siteKey(site)];
   if(h&&!fresh){S.time=h.time;S.comments=h.comments;S.netIn=h.netIn||'';S.netOut=h.netOut||'';if(h.soak)S.soak=h.soak;}else{S.time=nowTime();S.comments='';S.netIn='';S.netOut='';}}
@@ -618,7 +631,7 @@ function entryHTML(){
   const num=S.pad||'0';
   let code,sub;
   if(!S.species){code='—';sub='Choose a species';}
-  else if(S.countMode){code=`COUNT ${S.pad||0}`;sub=`${esc(S.species)} · Batch count`;}
+  else if(S.countMode){code=`COUNT ${S.pad||0}`;sub=`${esc(S.species)} · No length (count only)`;}
   else{code=`${sexOf(a.sex).code}${S.pad} ${crab?a.moult:m}`;
     sub=[esc(S.species),MEASURES[m],a.sex&&a.sex!=='U'?sexOf(a.sex).label:'',crab?(a.moult==='H'?'Hard':'Soft'):'',a.egg&&crab?'Egg stage '+a.egg:''].filter(Boolean).join(' · ');}
 
@@ -657,7 +670,7 @@ function entryHTML(){
   <section class="work${left}">
     <div class="keys">
       <div class="pad">${['7','8','9','4','5','6','1','2','3','.','0'].map(k=>`<button data-act="key" data-val="${k}">${k}</button>`).join('')}<button data-act="back" aria-label="Backspace">⌫</button></div>
-      <div class="two"><button class="ghost" data-act="unknown">Unknown size</button><button class="ghost ${S.countMode?'on':''}" data-act="countMode">${S.countMode?'Batch count on':'Batch count'}</button></div>
+      <div class="one"><button class="ghost ${S.countMode?'on':''}" data-act="countMode">${S.countMode?'No length · count only (on)':'No length (count only)'}</button></div>
     </div>
     <div class="attrs">
       <div class="lbl">Sex and maturity</div><div class="g2">${sexBtns}</div>
@@ -699,8 +712,8 @@ function headerHTML(){
         return `<button class="sitedd ${window.SITE_OPEN?'open':''}" data-act="siteMenu"><span>${esc(L[S.siteIdx])}</span><i>▾</i></button>
         ${window.SITE_OPEN?`<div class="siteopts">${L.map((x,i)=>`<button class="opt2 ${i===S.siteIdx?'sel':''}" data-act="pickSite" data-val="${i}"><span>${esc(x)}</span>${siteDone(x)?'<em>✓ Done</em>':''}</button>`).join('')}</div>`:''}`;})()}</div>
         <label class="field">Site position<input value="${(m=>m?m.lat.toFixed(5)+', '+m.lon.toFixed(5):'')(siteMeta(sitesFor(curKey())[S.siteIdx]))}" disabled style="font-size:18px"><span class="dtnote">${(m=>m?esc(m.region2)+' · from the site list':'')(siteMeta(sitesFor(curKey())[S.siteIdx]))}</span></label></div>
-      ${(()=>{const opts=GEAR.filter(g=>g.type===sv.gear);if(!opts.some(g=>g.code===S.netType))S.netType=opts[0].code;
-        const gearSel=`<label class="field">Gear<select data-h="netType">${opts.map(g=>`<option value="${g.code}"${g.code===S.netType?' selected':''}>${esc(g.name)}</option>`).join('')}</select></label>`;
+      ${(()=>{const opts=GEAR.filter(g=>g.type===sv.gear);if(S.netType&&!opts.some(g=>g.code===S.netType))S.netType='';
+        const gearSel=`<label class="field">Gear<select data-h="netType"><option value=""${S.netType?'':' selected'}>Choose…</option>${opts.map(g=>`<option value="${g.code}"${g.code===S.netType?' selected':''}>${esc(g.name)}</option>`).join('')}</select></label>`;
         if(sv.gear==='gill')return `<div class="pair two">${gearSel}
           <label class="field">Mesh size${S.netType==='GN27'?`<input data-h="meshManual" inputmode="decimal" placeholder="mm, e.g. 76" value="${esc(S.meshManual||'')}">`:'<input value="Multi-mesh" disabled>'}</label></div>
           <p class="dtnote" style="margin:-6px 0 0">${esc(gearOf(S.netType).code||'')} · ${esc(gearOf(S.netType).desc||'')}</p>
@@ -726,7 +739,7 @@ function headerHTML(){
           ${ENV_ROWS.map(([k,,u],i)=>cell(k+'_bottom',u,i+2,3,i===n-1)).join('')}</div>
           <div id="henv-warn">${issues.length?`<ul class="warnlist">${issues.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}</div></div>`;})()}
       <label class="field" style="max-width:none">Header comments<textarea data-h="comments" rows="3" placeholder="Site-specific notes, e.g. weed in net, strong current, net shifted">${esc(S.comments||'')}</textarea></label>
-    <div class="hdrbtns"><button class="btn primary hdr-go" data-act="tab" data-val="entry">Save header and go to data entry</button><button class="btn hdr-go" data-act="nextSite">+ New header for next site</button></div>
+    <div class="hdrbtns"><button class="btn primary hdr-go" data-act="saveHeader">Save header and go to data entry</button><button class="btn hdr-go" data-act="nextSite">+ New header for next site</button></div>
 </div>`;
 }
 
@@ -763,7 +776,30 @@ function exportHTML(){
       <button class="btn primary" data-act="exp" data-val="share-day" ${S.location?'':'disabled'}>Email this day</button>
       <button class="btn" data-act="exp" data-val="share-all">Email all days</button>
       <button class="btn" data-act="exp" data-val="dl-all">Download all days</button>
-    </div></div>`;
+    </div></div>
+  <div class="page" style="margin-top:14px"><h2>Backup</h2>
+    <p class="note">${S.lastBackup?`Last backup: ${fmtDate(S.lastBackup.date)} ${esc(S.lastBackup.time)} · ${S.lastBackup.n} records.`:'No backup made yet.'} A backup holds every record, header, environmental reading, setting and staff name on this tablet. It saves to the Downloads folder and needs no internet.</p>
+    <div class="btns"><button class="btn primary" data-act="backupNow">Back up now</button>
+      <label class="btn" style="display:inline-flex;align-items:center">Restore from backup…<input type="file" id="restore-file" accept=".json,application/json" style="display:none"></label></div>
+    <label style="display:flex;align-items:center;gap:12px;margin-top:16px;font-size:17px"><input type="checkbox" data-act="autoBackup" ${S.settings.autoBackup!==false?'checked':''} style="width:26px;height:26px"> Back up automatically each time a site header is saved</label></div>`;
+}
+/* ---------- Backup and restore ---------- */
+function backupFile(){
+  const d=new Date(),stamp=today()+'_'+nowTime().replace(':','');
+  return new File([JSON.stringify({app:'estuarine-gillnet',version:1,created:d.toISOString(),data:S})],`gillnet-backup_${stamp}.json`,{type:'application/json'});
+}
+function backupNow(auto){
+  S.lastBackup={date:today(),time:nowTime(),n:S.records.length};persist();
+  download(backupFile());if(!auto)toast('Backup saved to Downloads');
+}
+function restoreFrom(text){
+  let b;try{b=JSON.parse(text);}catch(e){toast('That file is not a backup');return;}
+  if(!b||b.app!=='estuarine-gillnet'||!b.data){toast('That file is not a gillnet app backup');return;}
+  const n=(b.data.records||[]).length;
+  openModal(`<h3>Restore backup</h3><p class="sub">Backup from ${esc(new Date(b.created).toLocaleString())} with ${n} records.</p>
+    <ul class="warnlist"><li><b>Add to this tablet</b> keeps everything here and adds any records from the backup that aren’t already on this tablet.</li><li><b>Replace everything</b> wipes this tablet and loads the backup exactly.</li></ul>
+    <div class="mbtns three"><button data-act="close">Cancel</button><button data-act="restoreMerge">Add to this tablet</button><button class="save warnbtn" data-act="restoreReplace">Replace everything</button></div>`);
+  window.PENDING_RESTORE=b.data;
 }
 
 function refHTML(){
@@ -1081,9 +1117,11 @@ document.addEventListener('click',e=>{
   if(locked)return;
   if(e.target.id==='modal'){closeModal();return;}
   const b=e.target.closest('[data-act]');if(!b||b.disabled)return;
+  if(b.type==='checkbox'&&b.dataset.act!=='autoBackup')e.preventDefault();
   const a=b.dataset.act,v=b.dataset.val;
   switch(a){
-    case 'tab':if(v==='entry')S.carriedFrom='';S.tab=v;break;
+    case 'saveHeader':{const miss=headerMissing();if(miss.length){warnModal('Header not complete',['Fill in before entering catch:'].concat(miss));return;}saveSiteHeader();S.carriedFrom='';S.tab='entry';if(S.settings.autoBackup!==false)backupNow(true);break;}
+    case 'tab':if(v==='entry'&&S.tab==='header'){const miss=headerMissing();if(miss.length){warnModal('Header not complete',['Fill in before entering catch:'].concat(miss));return;}}if(v==='entry')S.carriedFrom='';S.tab=v;break;
     case 'theme':S.settings.theme=S.settings.theme==='dark'?'light':'dark';break;
     case 'hand':S.settings.left=!S.settings.left;break;
     case 'gps':if(S.tab==='entry'&&currentSite()){markPosition();return;}toast('Use Mark position on the data entry screen');return;
@@ -1093,7 +1131,7 @@ document.addEventListener('click',e=>{
     case 'meshUp':goMesh(S.meshIdx+1);return;
     case 'warnGo':{const f=pendingFn;pendingFn=null;closeModal();if(f)f();return;}
     case 'lock':setLock(true);return;
-    case 'survey':if(S.survey!==v||!S.time){stampHeader();}if(S.survey!==v){S.survey=v;S.netType=(GEAR.find(g=>g.type===SURVEYS[v].gear)||{}).code;if(!SURVEYS[v].soak)S.soak='';}S.tab='header';break;
+    case 'survey':if(S.survey!==v||!S.time){stampHeader();}if(S.survey!==v){S.survey=v;S.netType='';if(!SURVEYS[v].soak)S.soak='';}S.tab='header';break;
     case 'stampNow':stampHeader();toast('Date and time updated');break;
     case 'retain':S.retained=v;break;
     case 'sub':{if(!S.species)return;S.subs=S.subs||{};const k=subKey(currentSite(),S.species);
@@ -1121,7 +1159,7 @@ document.addEventListener('click',e=>{
     case 'nextSite':{const list=sitesFor(curKey());if(!list.length)return;saveSiteHeader();const cur=list[S.siteIdx];
       let i=list.findIndex((x,k)=>k>S.siteIdx&&!siteDone(x)&&x!==cur);if(i<0)i=list.findIndex(x=>!siteDone(x)&&x!==cur);
       if(i<0){warnModal('All sites sampled',['Every site in this area already has data entered today. Pick a site from the Site dropdown to add another header.']);return;}
-      loadSiteHeader(i,true);S.carriedFrom=cur;window.SITE_OPEN=false;S.pad='';toast(`New header for ${list[i]}`);break;}
+      if(S.settings.autoBackup!==false)backupNow(true);loadSiteHeader(i,true);S.carriedFrom=cur;window.SITE_OPEN=false;S.pad='';toast(`New header for ${list[i]}`);break;}
     case 'otherPage':otherPageModal();return;
     case 'refTemplate':download(new File([templateCSV()],'gillnet_species_codes_template.csv',{type:'text/csv'}));toast('Template downloaded');return;
     case 'refClear':if(!confirm('Remove all imported species codes?'))return;S.speciesRef={};break;
@@ -1177,6 +1215,16 @@ document.addEventListener('click',e=>{
     case 'openDay':{const [d,l,bio]=v.split('|');S.date=d;S.location=l;S.bioregion=bio;S.siteIdx=0;S.area=(S.records.filter(r=>r.date===d&&r.location===l).at(-1)||{}).area||'';S.tab='entry';break;}
     case 'newDay':stampHeader();Object.assign(S,{survey:'',bioregion:'',location:'',area:'',siteIdx:0,meshIdx:0,netType:'',soak:'',meshManual:'',recorder1:'',recorder2:'',comments:'',retained:'N',sampleId:'',netIn:'',netOut:'',carriedFrom:'',species:'',pad:''});S.tab='survey';toast('New day started');break;
     case 'exp':doExport(v);return;
+    case 'backupNow':backupNow(false);render();return;
+    case 'autoBackup':S.settings.autoBackup=b.checked;persist();toast(b.checked?'Automatic backup on':'Automatic backup off');return;
+    case 'restoreMerge':{const d=window.PENDING_RESTORE;if(!d)return;const ids=new Set(S.records.map(r=>r.id));let added=0;
+      (d.records||[]).forEach(r=>{if(!ids.has(r.id)){S.records.push(r);added++;}});
+      ['env','hdr','speciesRef','positions','sites','subs'].forEach(k=>{if(d[k])S[k]=Object.assign({},d[k],S[k]||{});});
+      (d.staff||[]).forEach(x=>{S.staff=S.staff||[];if(!S.staff.includes(x))S.staff.push(x);});
+      (d.extraSpecies||[]).forEach(x=>{if(!S.extraSpecies.some(y=>y.name===x.name))S.extraSpecies.push(x);});
+      window.PENDING_RESTORE=null;closeModal();toast(`${added} records added from backup`);break;}
+    case 'restoreReplace':{const d=window.PENDING_RESTORE;if(!d)return;if(!confirm('Replace everything on this tablet with the backup?'))return;
+      S=Object.assign(fresh(),d);S.settings=Object.assign(fresh().settings,d.settings||{});window.PENDING_RESTORE=null;closeModal();S.tab='export';toast('Backup restored');break;}
     case 'wipe':if(confirm('Delete every record on this iPad? This cannot be undone.')&&confirm('Are you sure? Export first if you need this data.')){
       const keep={sites:S.sites,settings:S.settings,bioregion:S.bioregion,location:S.location};S=Object.assign(fresh(),keep);S.tab='setup';toast('All data deleted');}break;
   }
@@ -1207,6 +1255,7 @@ document.addEventListener('input',e=>{
   if(sb){delete sb.dataset.force;sb.textContent='Save';sb.classList.remove('warnbtn');$('mwarn').innerHTML='';}
 });
 document.addEventListener('change',e=>{
+  if(e.target.id==='restore-file'){const f=e.target.files&&e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>restoreFrom(String(rd.result));rd.readAsText(f);e.target.value='';return;}
   if(e.target.id==='ref-file'){const f=e.target.files&&e.target.files[0];if(!f)return;const rd=new FileReader();
     rd.onload=()=>{const n=importRef(String(rd.result));render();toast(n?`${n} species codes imported`:'No species found in that file');};rd.readAsText(f);return;}
   if(e.target.closest('#modal')&&e.target.tagName==='SELECT')e.target.dispatchEvent(new Event('input',{bubbles:true}));
