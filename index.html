@@ -362,7 +362,7 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 <body>
 <div id="app">
 <header class="appbar" id="appbar">
-  <div class="row1"><div class="brand">ESTUARINE GILLNET APP <small class="appver">v30</small></div><nav id="tabs"></nav><button class="lockbtn" id="lockbtn" data-act="lock" aria-label="Lock screen"></button></div>
+  <div class="row1"><div class="brand">ESTUARINE GILLNET APP <small class="appver">v31</small></div><nav id="tabs"></nav><button class="lockbtn" id="lockbtn" data-act="lock" aria-label="Lock screen"></button></div>
   <div class="row2"><div class="title" id="title"></div><div class="chips" id="chips"></div></div>
 </header>
 <main id="main"></main>
@@ -792,7 +792,7 @@ function exportHTML(){
     <p class="note">${S.lastBackup?`Last backup: ${fmtDate(S.lastBackup.date)} ${esc(S.lastBackup.time)} · ${S.lastBackup.n} records.`:'No backup made yet.'} A backup holds every record, header, environmental reading, setting and staff name on this tablet. It saves to the Downloads folder and needs no internet.</p>
     <div class="btns"><button class="btn primary" data-act="backupNow">Back up now</button>
       <label class="btn" style="display:inline-flex;align-items:center">Restore from backup…<input type="file" id="restore-file" accept=".json,application/json" style="display:none"></label></div>
-    <label style="display:flex;align-items:center;gap:12px;margin-top:16px;font-size:17px"><input type="checkbox" data-act="autoBackup" ${S.settings.autoBackup!==false?'checked':''} style="width:26px;height:26px"> Back up automatically each time a site header is saved</label></div>`;
+</div>`;
 }
 /* ---------- Backup and restore ---------- */
 function backupFile(){
@@ -1058,7 +1058,7 @@ function markPosition(){
 
 /* ===== Export ===== */
 const csvCell=v=>{v=v==null?'':String(v);return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
-const toCSV=(head,rows,na)=>[head.join(',')].concat(rows.map(r=>r.map(v=>csvCell(na&&(v==null||v==='')?'NA':v)).join(','))).join('\r\n');
+const toCSV=(head,rows,na)=>[head.join(',')].concat(rows.map(r=>r.map(v=>csvCell(na&&(v==null||v==='')?'NA':v)).join(','))).join('\n'); // LF only: email apps add their own CR, which gave blank rows
 const normName = t => String(t||'').toLowerCase().replace(/[^a-z0-9]/g,'');
 function refFor(name){
   const r=S.speciesRef[normName(name)]||{};
@@ -1131,7 +1131,7 @@ document.addEventListener('click',e=>{
   if(b.type==='checkbox'&&b.dataset.act!=='autoBackup')e.preventDefault();
   const a=b.dataset.act,v=b.dataset.val;
   switch(a){
-    case 'saveHeader':{const miss=headerMissing();if(miss.length){warnModal('Header not complete',['Fill in before entering catch:'].concat(miss));return;}saveSiteHeader();S.carriedFrom='';S.tab='entry';if(S.settings.autoBackup!==false)backupNow(true);break;}
+    case 'saveHeader':{const miss=headerMissing();if(miss.length){warnModal('Header not complete',['Fill in before entering catch:'].concat(miss));return;}saveSiteHeader();S.carriedFrom='';S.tab='entry';break;}
     case 'tab':if(v==='entry'&&S.tab==='header'){const miss=headerMissing();if(miss.length){warnModal('Header not complete',['Fill in before entering catch:'].concat(miss));return;}}if(v==='entry')S.carriedFrom='';S.tab=v;break;
     case 'theme':S.settings.theme=S.settings.theme==='dark'?'light':'dark';break;
     case 'hand':S.settings.left=!S.settings.left;break;
@@ -1170,7 +1170,7 @@ document.addEventListener('click',e=>{
     case 'nextSite':{const list=sitesFor(curKey());if(!list.length)return;saveSiteHeader();const cur=list[S.siteIdx];
       let i=list.findIndex((x,k)=>k>S.siteIdx&&!siteDone(x)&&x!==cur);if(i<0)i=list.findIndex(x=>!siteDone(x)&&x!==cur);
       if(i<0){warnModal('All sites sampled',['Every site in this area already has data entered today. Pick a site from the Site dropdown to add another header.']);return;}
-      if(S.settings.autoBackup!==false)backupNow(true);loadSiteHeader(i,true);S.carriedFrom=cur;window.SITE_OPEN=false;S.pad='';toast(`New header for ${list[i]}`);break;}
+      loadSiteHeader(i,true);S.carriedFrom=cur;window.SITE_OPEN=false;S.pad='';toast(`New header for ${list[i]}`);break;}
     case 'otherPage':otherPageModal();return;
     case 'refTemplate':download(new File([templateCSV()],'gillnet_species_codes_template.csv',{type:'text/csv'}));toast('Template downloaded');return;
     case 'refClear':if(!confirm('Remove all imported species codes?'))return;S.speciesRef={};break;
