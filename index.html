@@ -223,10 +223,10 @@ td .mini.del{color:var(--red);border-color:var(--red)}
 .region h3{font-family:var(--cond);font-size:20px;margin:0 0 8px}
 .siteline{display:grid;grid-template-columns:230px 1fr;gap:10px;align-items:center;margin-bottom:8px}
 
-.form.hdr{grid-template-columns:1fr;gap:18px;max-width:none}
+.form.hdr{grid-template-columns:1fr;gap:12px;max-width:none}
 .form.hdr .field{font-size:18px}
 .pair{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px}
-.form.hdr input,.form.hdr select{font-size:24px;min-height:70px;padding:14px 16px;border-radius:14px}
+.form.hdr input,.form.hdr select{font-size:21px;min-height:56px;padding:10px 14px;border-radius:12px}
 .hdr-go{min-height:70px;font-size:22px;padding:0 28px}
 
 /* Landscape: keypad and buttons on the right, species and display on the left */
@@ -242,7 +242,8 @@ td .mini.del{color:var(--red);border-color:var(--red)}
 }
 
 /* Fit to screen */
-#app{transform-origin:top left}
+#app{transform-origin:0 0;position:relative}
+html,body{overflow:hidden;height:100%}
 #app.scrolltab{display:flex;flex-direction:column;height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
 #app.scrolltab main{flex:1;min-height:0;overflow:auto;width:100%;-webkit-overflow-scrolling:touch}
 html.fitted,html.fitted body{overflow:hidden}
@@ -572,22 +573,23 @@ function render(){
 /* Scale the screen so each page fits the device without scrolling.
    Data entry, Header and Export are scaled to fit; list pages keep the top bar fixed and scroll inside. */
 const FIT_TABS=['entry','export','survey','header','days','list','setup']; // every page scales to fit the screen
+/* Scale-to-fit. The app is laid out at a fixed design width (820 px portrait, 1200 px landscape)
+   and the whole page is scaled with a CSS transform so it fills any screen without scrolling.
+   transform behaves the same in Safari (iPad) and Chrome (Android), unlike CSS zoom. */
 function fit(){
   const app=$('app'),root=document.documentElement;if(!app)return;
   const cs=getComputedStyle(root);
-  const avail=window.innerHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
-  if(!FIT_TABS.includes(S.tab)){app.style.zoom=1;app.classList.add('scrolltab');root.classList.remove('fitted');return;}
-  app.classList.remove('scrolltab');app.style.zoom=1;
-  const maxS=Math.min(1.25,window.innerWidth/760);
-  let z=Math.min(maxS,avail/app.scrollHeight);
-  for(let i=0;i<4;i++){
-    app.style.zoom=z;
-    const h=app.getBoundingClientRect().height;
-    if(h<=avail+1)break;
-    z=z*avail/h;
-  }
-  z=Math.max(.35,Math.min(maxS,z));app.style.zoom=z;
-  root.classList.toggle('fitted',app.getBoundingClientRect().height<=avail+1);
+  const W=window.innerWidth,H=window.innerHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
+  /* pick a design width whose shape matches the screen, so the page fills both width and height */
+  const base=W>H*1.15?1200:820,maxDW=base*1.6;
+  app.classList.remove('scrolltab');app.style.zoom='';app.style.transform='none';
+  let DW=base,h=0;
+  for(let k=0;k<3;k++){app.style.width=DW+'px';h=app.scrollHeight;const want=Math.round(h*W/H);if(Math.abs(want-DW)<8)break;DW=Math.max(base,Math.min(maxDW,want));}
+  app.style.width=DW+'px';h=app.scrollHeight;
+  const s=Math.max(.4,Math.min(1.8,Math.min(W/DW,H/h)));
+  const left=Math.max(0,(W-DW*s)/2);
+  app.style.transform=`translate(${left}px,0) scale(${s})`;
+  window.APP_SCALE=s;root.classList.add('fitted');
 }
 let fitTimer;
 function refit(){
