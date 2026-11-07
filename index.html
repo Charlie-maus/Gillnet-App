@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -323,6 +323,9 @@ html.fitted,html.fitted body{overflow:hidden}
 .mini{min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:transparent;font-weight:600;color:var(--ink)}
 .mini.del{color:var(--red);border-color:var(--red)}
 
+html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.appver{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--muted);letter-spacing:0;vertical-align:middle}
+
 /* Modal */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
 .modal.hidden{display:none}
@@ -359,7 +362,7 @@ html.fitted,html.fitted body{overflow:hidden}
 <body>
 <div id="app">
 <header class="appbar" id="appbar">
-  <div class="row1"><div class="brand">ESTUARINE GILLNET APP</div><nav id="tabs"></nav><button class="lockbtn" id="lockbtn" data-act="lock" aria-label="Lock screen"></button></div>
+  <div class="row1"><div class="brand">ESTUARINE GILLNET APP <small class="appver">v30</small></div><nav id="tabs"></nav><button class="lockbtn" id="lockbtn" data-act="lock" aria-label="Lock screen"></button></div>
   <div class="row2"><div class="title" id="title"></div><div class="chips" id="chips"></div></div>
 </header>
 <main id="main"></main>
@@ -579,9 +582,10 @@ const FIT_TABS=['entry','export','survey','header','days','list','setup']; // ev
 function fit(){
   const app=$('app'),root=document.documentElement;if(!app)return;
   const cs=getComputedStyle(root);
-  const W=window.innerWidth,H=window.innerHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
+  const vv=window.visualViewport;
+  const W=Math.round(vv?vv.width:window.innerWidth),H=Math.round(vv?vv.height:window.innerHeight)-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
   /* pick a design width whose shape matches the screen, so the page fills both width and height */
-  const base=W>H*1.15?1200:820,maxDW=base*1.6;
+  const base=W>H*1.15?1200:820,maxDW=base*2.2;
   app.classList.remove('scrolltab');app.style.zoom='';app.style.transform='none';
   let DW=base,h=0;
   for(let k=0;k<3;k++){app.style.width=DW+'px';h=app.scrollHeight;const want=Math.round(h*W/H);if(Math.abs(want-DW)<8)break;DW=Math.max(base,Math.min(maxDW,want));}
@@ -598,6 +602,11 @@ function refit(){
   clearTimeout(fitTimer);fitTimer=setTimeout(fit,120);
 }
 window.addEventListener('resize',refit);
+if(window.visualViewport)window.visualViewport.addEventListener('resize',refit);
+/* Block pinch-zoom and double-tap zoom (Safari ignores user-scalable=no, so stop its gesture events too) */
+['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
+document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)e.preventDefault();},{passive:false});
+let lastTouchEnd=0;document.addEventListener('touchend',e=>{const n=Date.now();if(n-lastTouchEnd<350&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))e.preventDefault();lastTouchEnd=n;},{passive:false});
 window.addEventListener('orientationchange',()=>setTimeout(fit,300));
 document.addEventListener('focusout',()=>setTimeout(refit,300));
 function renderChips(){
@@ -1297,6 +1306,7 @@ document.addEventListener('keydown',e=>{
 });
 
 load();render();setLock(false);
+setTimeout(fit,300);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);window.addEventListener('pageshow',()=>setTimeout(fit,100));
 if(!S.time)stampHeader(),render();
 (()=>{const h=$('holdbtn');['pointerdown'].forEach(t=>h.addEventListener(t,holdStart));['pointerup','pointerleave','pointercancel'].forEach(t=>h.addEventListener(t,holdEnd));
   $('lockscreen').addEventListener('contextmenu',e=>e.preventDefault());})();
